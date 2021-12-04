@@ -44,17 +44,6 @@ class ProfilLibrary{
         }
     }
 
-    async isAdmin(user){
-        user="briancarlsone@gmail.com";
-        const response = await fetch("/api/quizz/forUser/1"); 
-      
-            if (!response.ok) {
-              throw new Error(
-                "fetch error : " + response.status + " : " + response.statusText
-              );
-            }
-            const quizzs = await response.json(); 
-    }
 
     async getQuizzFromUser(user){
         const response = await fetch("/api/quizz/byEmail/"+user); 
