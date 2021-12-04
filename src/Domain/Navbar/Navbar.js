@@ -7,7 +7,7 @@ const Navbar = () => {
 
   // Get the user object from the localStorage
   let user = getSessionObject("user");
-  if (!user) {
+  if (user) { //TODO : mettre !user quand ça sera implémenté
         Redirect("/RegisterAndLoginPage");
   }
    else{
@@ -37,6 +37,16 @@ const Navbar = () => {
         </div>
         </div>
         </nav>`;
+        const navItems = document.querySelectorAll(".nav-link");
+        navItems.forEach((item) => {
+            item.addEventListener("click", (e) => {
+                e.preventDefault();
+                if (e.target.innerHTML === "Home") {
+                    Redirect("/HomePage");
+                    console.log("ici");
+                }
+            });
+        });
         navbarWrapper.innerHTML = navbar;
         
     }
