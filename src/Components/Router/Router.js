@@ -1,4 +1,5 @@
 import Logout from "../Logout/Logout";
+import CreateQuizz from "../Pages/CreateQuizz";
 import HomePage from "../Pages/HomePage";
 import RegisterAndLoginPage from "../Pages/RegisterAndLoginPage";
 
@@ -7,6 +8,7 @@ const routes = {
   "/": HomePage,
   "/logout": Logout,
   "/RegisterAndLoginPage": RegisterAndLoginPage,
+  "/CreateQuizz": CreateQuizz,
 };
 
 const Router = () => {
