@@ -1,11 +1,12 @@
 import adminImage from "../img/admin.png";
 import userImage from "../img/user.png";
+import UserLibrary from "./UserLibrary";
+const userLibrary = new UserLibrary();
 
-class ProfilLibrary{
-    async getMyProfilPage(user){
-        try {
-
-            let page = `
+class ProfilLibrary {
+  async getMyProfilPage(user_email) {
+    try {
+      let page = `
                 <div class="container">
                 <div class="text-center">
                     <h1>Mon profil</h1>
@@ -34,68 +35,98 @@ class ProfilLibrary{
                     </div>
                 </div>`;
 
-            const quizzs = await this.getQuizzFromUser(user);
-            let boxOfQuizz = this.displayQuizzs(quizzs);
-            page+= boxOfQuizz;
-            return page;
-      
-        } catch (error) {
-            console.error("getMyProfilPage::error: ", error);
+        
+      const quizzs = await this.getQuizzFromUser(user_email);
+
+      let boxOfQuizz = await this.displayQuizzs(quizzs,user_email);
+      page += boxOfQuizz;
+      return page;
+    } catch (error) {
+      console.error("getMyProfilPage::error: ", error);
+    }
+  }
+
+  async getQuizzFromUser(user) {
+    try {
+      const response = await fetch("/api/quizz/byEmail/" + user);
+
+      if (!response.ok) {
+        throw new Error(
+          "fetch error : " + response.status + " : " + response.statusText
+        );
+      }
+      const quizzs = await response.json();
+
+      return quizzs;
+    } catch (err) {
+      console.error("getQuizzFromUser::error: ", err);
+    }
+  }
+
+  async deleteQuizzFromProfil(id_quizz) {
+    try {
+      const options = {
+        method: "DELETE",
+        };
+
+        console.log("options:", options);
+        const response = await fetch("/api/quizz/"+id_quizz, options);
+
+        if (!response.ok) {
+        throw new Error(
+            "fetch error : " + response.status + " : " + response.statusText
+        );
         }
+        const isDeleted = await response.json(); // json() returns a promise => we wait for the data
+        return isDeleted;
+    } catch (err) {
+      console.error("deleteQuizzFromProfil::error: ", err);
     }
+  }
 
-
-    async getQuizzFromUser(user){
-        const response = await fetch("/api/quizz/byEmail/"+user); 
-      
-            if (!response.ok) {
-              throw new Error(
-                "fetch error : " + response.status + " : " + response.statusText
-              );
-            }
-            const quizzs = await response.json(); 
-
-            return quizzs;
-    }
-
-    async deleteQuizzFromProfil(){
-        const response = await fetch("/api/quizz/byEmail/"+user); 
-      
-            if (!response.ok) {
-              throw new Error(
-                "fetch error : " + response.status + " : " + response.statusText
-              );
-            }
-            const quizzs = await response.json(); 
-
-            return quizzs;
-    }
-
-    displayQuizzs(quizzs){
-        let boxOfQuizzs ='<div class="row ">'; 
-        if(quizzs.length > 0) {
-            quizzs.forEach((element) => {
-                boxOfQuizzs+=`
-                <div class="col">
-                    <div class="card m-3" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">${element.name}</h5>
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-success" type="button">Jouer</button>
-                                <button class="btn btn-danger delete" data-element-id="${element.id_quizz}  type="button">Supprimer</button>
+    async displayQuizzs(quizzs,user_email) {
+        try{
+            let pseudo = await userLibrary.getUser(user_email);
+            let boxOfQuizzs = '';
+            let fin = quizzs.length;
+            let compteur = 0;
+            if (fin > 0) {
+                boxOfQuizzs = '<div class="row justify-content-md-center">';
+                quizzs.forEach((element) => {
+                    if(!element.is_deleted){
+                        boxOfQuizzs += `
+                            <div class="col-lg-4 col-md-5">
+                                
+                                <div class="card m-3" style="width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${element.name}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">par ${pseudo.name}</h6>
+                                        <p class="card-text">${element.description}</p>
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-success" type="button">Jouer</button>
+                                            <button class="btn btn-danger delete" data-element-id="${element.id_quizz}  type="button">Supprimer</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            
                             </div>
-                        </div>
+                        `;
+                        compteur++;
+                    }
+                });
+                boxOfQuizzs += `
                     </div>
-                </div>`;
-            });
+                    `;
+            }
+            //close the div container
+            boxOfQuizzs += `
+                </div>
+                `;
+            return boxOfQuizzs;
+        }catch(err){
+            console.error("getUser::error: ", err);
         }
-        boxOfQuizzs+=`
-            </div>
-        </div>
-        `;
-        return boxOfQuizzs;
-
-    }
+  }
 }
 
 export default ProfilLibrary;
