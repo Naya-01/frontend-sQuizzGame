@@ -2,6 +2,8 @@ import Logout from "../Logout/Logout";
 import CreateQuizz from "../Pages/CreateQuizz";
 import HomePage from "../Pages/HomePage";
 import RegisterAndLoginPage from "../Pages/RegisterAndLoginPage";
+import { ProfilPage } from "../Pages/ProfilPage";
+import {PanelAdminPage} from "../Pages/PanelAdminPage"
 
 // Configure your routes here
 const routes = {
@@ -9,6 +11,8 @@ const routes = {
   "/logout": Logout,
   "/RegisterAndLoginPage": RegisterAndLoginPage,
   "/CreateQuizz": CreateQuizz,
+  "/Profil/MonProfil" : ProfilPage,
+  "/PanelAdmin" : PanelAdminPage
 };
 
 const Router = () => {
