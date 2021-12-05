@@ -1,88 +1,3 @@
-const homePage = `
-<div class="container">
-    <div class="row">
-        <h4>Les tendances</h4>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title" id="quizz1">Quizz 1</h5>
-                    <h6 class="card-subtitle mb-2 text-muted" id="creator1">par xX_Mehdi_Xx</h6>
-                    <p class="card-text">Petite description du quizz 1</p>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" type="button">Jouer</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title" id="quizz2">Quizz 2</h5>
-                    <h6 class="card-subtitle mb-2 text-muted" id="creator2">par Rayandu23</h6>
-                    <p class="card-text">Petite description du quizz 2.</p>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" type="button">Jouer</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title" id="quizz3">Quizz 3</h5>
-                    <h6 class="card-subtitle mb-2 text-muted" id="creator3">par StefanBxl</h6>
-                    <p class="card-text">Petite description du quizz 3.</p>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" type="button">Jouer</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <h4>Explorer</h4>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Quizz 1</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">par xX_Mehdi_Xx</h6>
-                    <p class="card-text">Petite description du quizz 1</p>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" type="button">Jouer</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Quizz 2</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">par Rayandu23</h6>
-                    <p class="card-text">Petite description du quizz 2.</p>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" type="button">Jouer</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Quizz 3</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">par StefanBxl</h6>
-                    <p class="card-text">Petite description du quizz 3.</p>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" type="button">Jouer</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>`;
 
 const HomePage = async () => {
   /*
@@ -91,28 +6,97 @@ const HomePage = async () => {
         Redirect("/RegisterAndLoginPage");
   }*/
   const main = document.querySelector("main");
-  main.innerHTML = homePage;
-  const response = await fetch("/api/quizz/");
-  const allQuizz = await response.json();
-  let titre_quizz;
-  let createur_quizz;
-  let id;
-  let indice;
-  let creator;
-  for(let i=0; i < 3 ; i++){ // < allQuizz.length
-    indice = i+1;
-    // Nom du quizz
-    id = 'quizz'+indice;
-    titre_quizz = document.getElementById(id);
-    titre_quizz.innerText = allQuizz[i].name;
-    
-    // Créateur du quizz
-    id = "creator"+indice;
-    createur_quizz =document.getElementById(id);
-    creator = await fetch("/api/users/"+allQuizz[i].id_creator);
-    creator = await creator.json();
-    createur_quizz.innerHTML = "par "+ creator.name;
-  }  
+  main.innerHTML = ""; // on reinitialise le main
+  let allQuizz = await fetch("/api/quizz/");
+  allQuizz = await allQuizz.json();
+
+  let container = document.createElement("div");
+  container.className = "container";
+
+  // Sous-Titre Tendances
+  let tendances = document.createElement("div")
+  tendances.className = "row m-4";
+  let tendances_title = document.createElement("h4");
+  tendances_title.innerHTML = "Tendances";
+  tendances.appendChild(tendances_title);
+  container.appendChild(tendances);
+
+  // TODO : insérer les cards Quizz tendances ici
+
+  // Sous-Titre Explorer
+  let explorer = document.createElement("div")
+  explorer.className = "row m-4";
+  let explorer_title = document.createElement("h4");
+  explorer_title.innerHTML = "Explorer";
+  explorer.appendChild(explorer_title);
+  container.appendChild(explorer);
+
+
+  // Créer une row
+  for(let j = 0; j < allQuizz.length/3; j++){
+      let row = document.createElement("div");
+      row.className = "row m-4"
+    for(let i=0; i <  3; i++){ 
+        let indice = i+(j*3);
+        if(allQuizz[indice] == undefined) break;
+        let col = document.createElement("div");
+        col.className = "col";
+
+        // Création de la card quizz
+        let divCard = document.createElement("div");
+        divCard.className = 'card';
+        divCard.style = "width: 18rem";
+        let div = document.createElement("div");
+        div.className = 'card-body';
+        
+        // Nom du quizz
+        let title = document.createElement("h5");
+        title.className = 'card-title';
+        title.innerHTML = allQuizz[indice].name;
+
+        let likes_p = document.createElement("p");
+        let likes = await fetch("/api/quizz/likes/"+allQuizz[indice].id_quizz);
+        likes = await likes.json();
+        console.log(Object.values(likes));
+        likes_p.innerHTML = likes[0].nblikes + " likes";
+
+        
+        // Créateur du quizz
+        let creator = await fetch("/api/users/"+allQuizz[indice].id_creator);
+        creator = await creator.json();
+        let subtitle = document.createElement("h6");
+        subtitle.className = "card-subtitle mb-2 text-muted";
+        subtitle.innerHTML = "par "+creator.name;
+            
+        // Description du quizz
+        let description = document.createElement("p");
+        description.className = "card-text";
+        description.innerHTML = allQuizz[indice].description; // TODO : limiter la description à x caractères
+        
+        // Bouton pour jouer au quizz
+        let divButton = document.createElement("div");
+        divButton.className = "d-grid gap-2";
+        let buttonPlay = document.createElement("button");
+        buttonPlay.className = "btn btn-primary";
+        buttonPlay.type = "button";
+        buttonPlay.innerHTML = "Jouer";
+        divButton.appendChild(buttonPlay);
+        
+        div.appendChild(title);
+        div.appendChild(likes_p);
+        div.appendChild(subtitle);
+        div.appendChild(description);
+        div.appendChild(divButton);
+        
+        divCard.appendChild(div);
+        col.appendChild(divCard);
+        row.appendChild(col);
+    } 
+    container.appendChild(row); 
+  }
+  main.appendChild(container); // On affiche déjà une première fois en attendant
+ 
+  
 };
 
 export default HomePage;
