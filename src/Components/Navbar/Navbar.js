@@ -43,6 +43,7 @@ const Navbar = () => {
                 e.preventDefault();
                 if (e.target.innerHTML === "Home") {
                     Redirect("/HomePage");
+                    console.log("ici");
                 }
             });
         });
