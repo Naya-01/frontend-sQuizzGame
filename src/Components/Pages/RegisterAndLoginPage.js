@@ -116,7 +116,7 @@ function RegisterAndLoginPage() {
             console.log("user authenticated", user);
             // save the user into the localStorage
             setSessionObject("user", user);
-
+            Navbar();
             Redirect("/");
         }catch(error){
             console.error("RegisterAndLoginPage::error: ", error);
@@ -150,7 +150,7 @@ function RegisterAndLoginPage() {
             console.log("user authenticated", user);
             // save the user into the localStorage
             setSessionObject("user", user);
-
+            Navbar();
             Redirect("/");
         }catch(error){
             console.error("RegisterAndLoginPage::error: ", error);
