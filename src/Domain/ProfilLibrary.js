@@ -89,7 +89,6 @@ class ProfilLibrary {
             let pseudo = await userLibrary.getUser(user_email);
             let boxOfQuizzs = '';
             let fin = quizzs.length;
-            let compteur = 0;
             if (fin > 0) {
                 boxOfQuizzs = '<div class="row justify-content-md-center">';
                 quizzs.forEach((element) => {
@@ -104,14 +103,13 @@ class ProfilLibrary {
                                         <p class="card-text">${element.description}</p>
                                         <div class="d-grid gap-2">
                                             <button class="btn btn-success" type="button">Jouer</button>
-                                            <button class="btn btn-danger delete" data-element-id="${element.id_quizz}  type="button">Supprimer</button>
+                                            <button class="btn btn-danger delete" data-element-id="${element.id_quizz}"  type="button">Supprimer</button>
                                         </div>
                                     </div>
                                 </div>
                             
                             </div>
                         `;
-                        compteur++;
                     }
                 });
                 boxOfQuizzs += `
