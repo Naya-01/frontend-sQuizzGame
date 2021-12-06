@@ -6,7 +6,7 @@ const Logout = () => {
   console.log("Logout");
   removeSessionObject("user");
   Navbar();
-  Redirect("/RegisterAndlogin"); 
+  Redirect("/RegisterAndLoginPage");
 };
 
 export default Logout;

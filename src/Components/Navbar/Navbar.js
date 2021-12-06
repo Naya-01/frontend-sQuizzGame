@@ -7,10 +7,10 @@ const Navbar = () => {
 
   // Get the user object from the localStorage
   let user = getSessionObject("user");
-  if (user) { //TODO : mettre !user quand ça sera implémenté
-        Redirect("/RegisterAndLoginPage");
-  }
-   else{
+  if (!user) { //TODO : mettre !user quand ça sera implémenté
+      navbar=undefined;
+      return Redirect("/RegisterAndLoginPage");
+  } else{
         navbar = `<nav class="navbar navbar-expand-lg navbar-light bg-success">
         <div class="container-fluid">
         <a class="navbar-brand" href="#">sQuizz Game</a>
@@ -37,20 +37,8 @@ const Navbar = () => {
         </div>
         </div>
         </nav>`;
-        const navItems = document.querySelectorAll(".nav-link");
-        navItems.forEach((item) => {
-            item.addEventListener("click", (e) => {
-                e.preventDefault();
-                if (e.target.innerHTML === "Home") {
-                    Redirect("/HomePage");
-                    console.log("ici");
-                }
-            });
-        });
-        navbarWrapper.innerHTML = navbar;
-        
+      navbarWrapper.innerHTML = navbar;
     }
-    
 };
 
 export default Navbar;
