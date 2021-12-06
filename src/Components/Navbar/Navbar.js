@@ -2,15 +2,15 @@ import { getSessionObject } from "../../utils/session";
 import { Redirect } from "../Router/Router";
 
 const Navbar = () => {
-  const navbarWrapper = document.querySelector("#navbar");
-  let navbar;
+    const navbarWrapper = document.querySelector("#navbar");
+    let navbar;
 
-  // Get the user object from the localStorage
-  let user = getSessionObject("user");
-  if (user) { //TODO : mettre !user quand ça sera implémenté
+    // Get the user object from the localStorage
+    let user = getSessionObject("user");
+    if (user) { //TODO : mettre !user quand ça sera implémenté
         Redirect("/RegisterAndLoginPage");
-  }
-   else{
+    }
+    else{
         navbar = `<nav class="navbar navbar-expand-lg navbar-light bg-success">
         <div class="container-fluid">
         <a class="navbar-brand" href="#">sQuizz Game</a>
@@ -48,9 +48,9 @@ const Navbar = () => {
             });
         });
         navbarWrapper.innerHTML = navbar;
-        
+
     }
-    
+
 };
 
 export default Navbar;

@@ -5,7 +5,7 @@ import './stylesheets/main.css';
 
 import { Router } from './Components/Router/Router';
 import Navbar from './Components/Navbar/Navbar';
-
+"use strict";
 // This is the entry point to your app : add all relevant import and custom code
 
 Navbar();
