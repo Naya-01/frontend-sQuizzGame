@@ -5,6 +5,7 @@ import RegisterAndLoginPage from "../Pages/RegisterAndLoginPage";
 import { ProfilPage } from "../Pages/ProfilPage";
 import {PanelAdminPage} from "../Pages/PanelAdminPage"
 import {GamePage} from "../Pages/GamePage"
+import {QuizzPage} from "../Pages/QuizzPage";
 
 // Configure your routes here
 const routes = {
@@ -15,6 +16,7 @@ const routes = {
   "/Profil/MonProfil" : ProfilPage,
   "/PanelAdmin" : PanelAdminPage,
   "/Game" : GamePage,
+  "/Quizz" : QuizzPage,
 };
 
 const Router = () => {

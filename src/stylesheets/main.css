@@ -1,0 +1,39 @@
+.creator-size{
+    width: 250px;
+    font-size: 30px;
+}
+
+#thumb{
+    width: 80px;
+}
+
+@media screen and (max-width: 1024px) {
+    .creator-size {
+        width: 250px;
+        font-size: 25px;
+    }
+
+    #thumb {
+        width: 60px;
+    }
+}
+
+@media screen and (max-width: 667px) {
+    .creator-size {
+        width: 260px;
+        font-size: 25px;
+    }
+
+    #thumb {
+        width: 60px;
+    }
+}
+/* */
+.scores-size{
+    width: 100px;
+    margin-right: 100px;
+}
+
+.score{
+    width: 270px;
+}
