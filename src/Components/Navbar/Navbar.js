@@ -14,7 +14,7 @@ const Navbar = () => {
     else{
         navbar = `<nav class="navbar navbar-expand-lg navbar-light bg-success">
         <div class="container-fluid">
-        <a class="navbar-brand" href="#">sQuizz Game</a>
+        <a class="navbar-brand" href="#" data-page="/">sQuizz Game</a>
         <button
             class="navbar-toggler"
             type="button"
@@ -30,6 +30,9 @@ const Navbar = () => {
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="#" data-page="/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#" data-page="/CreateQuizz">Créer un quizz</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#" data-page="/logout">Se deconnecter</a>
