@@ -46,6 +46,38 @@ class UserLibrary {
     }
   }
 
+  async getSubscribers(id_user) {
+    try {
+      const reponse = await fetch("/api/users/subscribers/"+id_user);
+
+      if (!reponse.ok) {
+        throw new Error(
+          "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const nb = await reponse.json();
+      return nb.count;
+    } catch (err) {
+      console.error("getSubscribers::error: ", err);
+    }
+  }
+
+  async getSubscriptions(id_user) {
+    try {
+      const reponse = await fetch("/api/users/subscriptions/"+id_user);
+
+      if (!reponse.ok) {
+        throw new Error(
+          "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const nb = await reponse.json();
+      return nb.count;
+    } catch (err) {
+      console.error("getSubscriptions::error: ", err);
+    }
+  }
+
   async banUser(user_object) {
     try {
 
