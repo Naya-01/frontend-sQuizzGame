@@ -9,13 +9,13 @@ let myPage = `<div id="page" class="container-fluid">
 
         <div id="diff-question-pos" class="container-md  pt-5">
             <div class="row header-question align-items-center text-center">
-                <div class="col-sm-3">
+                <div class="col-sm-3" id="difficulty">
                     easy
                 </div>
                 <div class="col-sm-6">
-                    <p class="h2">Les pommes sont de quelle couleur ?</p>
+                    <p class="h2" id="theQuestion"></p>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-3" id="nbQuestion">
                 1/15
                 </div>
 
@@ -25,38 +25,7 @@ let myPage = `<div id="page" class="container-fluid">
 
 
         <div id="answers" class="container-md text-center">
-            <div class="row">
-                <div class="answer p-5 mt-4 bg-danger shadow p-3 container" style="width: 70%;">
-                    ANSWER 1
-                </div>
-            </div>
-            <div class="row ">
-                <div class="answer p-5  mt-4 bg-success shadow p-3 container" style="width: 70%;">
-                    ANSWER 2
-                </div>
-            </div>
-            <div class="row ">
-                <div class="answer p-5 mt-4 bg-danger shadow p-3 container" style="width: 70%;">
-                    ANSWER 3
-                </div>
-            </div>
-            <div class="row ">
-                <div class="answer p-5 mt-4 bg-danger shadow p-3 container" style="width: 70%;">
-                    ANSWER 4
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="progress mt-5">
-                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
-                </div>
-            </div>
-
-            <button class="btn btn-primary mt-5" type="submit">Question suivante</button>
-
         </div>
-
-
 
     </div>`;
 
@@ -64,8 +33,41 @@ let easy=3000;
 let medium=2000;
 let hard=1000;
 
+async function getQuestions(_id_quizz){
+    try {
+        const response = await fetch("/api/questions?quizz=" + _id_quizz);
 
-function GamePage() {
+        if (!response.ok) {
+            throw new Error(
+                "fetch error : " + response.status + " : " + response.statusText
+            );
+        }
+        const questions = await response.json();
+
+        return questions;
+    } catch (err) {
+        console.error("getQuizz::error: ", err);
+    }
+}
+
+async function getAnswers(_id_question){
+    try {
+        const response = await fetch("/api/answers/allAnswers/" + _id_question);
+
+        if (!response.ok) {
+            throw new Error(
+                "fetch error : " + response.status + " : " + response.statusText
+            );
+        }
+        const answers = await response.json();
+
+        return answers;
+    } catch (err) {
+        console.error("getAnswers::error: ", err);
+    }
+}
+
+async function GamePage() {
     const myMain = document.querySelector("main");
     myMain.innerHTML = myPage;
 
@@ -78,12 +80,45 @@ function GamePage() {
         color: '#FFEA82',
         svgStyle: {width: '100%', height: '25px'},
     });
-    let pc =1;
+    let pc = 1;
     bar.set(pc);  // Number from 0.0 to 1.0
     bar.animate(0);
 
+    //recupération de mes questions depuis 1 quizz
+    let questions = await getQuestions(3);
+    let Quest = document.getElementById('theQuestion');
+    Quest.innerText=questions[0].question;
 
+    //recuperation des reponses du quizz
+    const divAnswer= document.getElementById('answers');
+    let answers = await getAnswers(questions[0].id_question);
 
+    //nb question
+    const nbQuestion = document.getElementById('nbQuestion');
+    nbQuestion.innerText=1+"/"+questions.length;
+
+    //mise des reponses dans html
+    let html_answer="";
+    for (const element of answers) {
+        html_answer += `
+                    <div class="row">
+                <div class="answer p-5 mt-4 shadow p-3 container" style="width: 70%;">
+                    ${element.answer}
+                </div>
+            </div>
+        `;
+        answers.in
+    }
+    html_answer +=`
+                <div class="row">
+                <div class="progress mt-5">
+                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary mt-5" type="submit">Question suivante</button>
+    `;
+    divAnswer.innerHTML = html_answer;
 }
 
 export {GamePage};
