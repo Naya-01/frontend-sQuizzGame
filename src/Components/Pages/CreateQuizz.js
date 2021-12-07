@@ -1,7 +1,8 @@
+import closeIcon from "../../img/closeIcon.png";
+
 let nbQuestions = 0;
 const main = document.querySelector("main");
 const formAllQuestions = document.createElement("form");
-const formNvQuestion = document.createElement("form");
 
 
 let containerNewQButton = document.createElement("div");
@@ -16,15 +17,18 @@ const CreateQuizz = async () => {
 
   // Titre de la page
   main.innerHTML = "";
-  let createQuizzTitle = document.createElement("h4");
+  let createQuizzTitle = document.createElement("h1");
   createQuizzTitle.innerHTML = "Créer un quizz";
-  main.appendChild(createQuizzTitle);
+  let containerTitle = document.createElement("div");
+  containerTitle.className = "container-fluid my-5 text-center text-danger";
+  containerTitle.appendChild(createQuizzTitle);
+  main.appendChild(containerTitle);
 
   // Ajout du titre du quizz
   let containerTitleQuizz = document.createElement("div");
-  containerTitleQuizz.className = "container";
+  containerTitleQuizz.className = "container rounded-lg m-5 p-2";
   let divTitleQuizz = document.createElement("div");
-  divTitleQuizz.className = "row";
+  divTitleQuizz.className = "row ";
   let titleQuizz = document.createElement("input");
   titleQuizz.type = "text";
   titleQuizz.id = "titleQuizz";
@@ -40,9 +44,9 @@ const CreateQuizz = async () => {
 
   // Ajout description du quizz
   let containerDescQuizz = document.createElement("div");
-  containerDescQuizz.className = "container";
+  containerDescQuizz.className = "container rounded-lg m-5 p-2";
   let divDescQuizz = document.createElement("div");
-  divDescQuizz.className = "row";
+  divDescQuizz.className = "row ";
   let descQuizz = document.createElement("input");
   descQuizz.type = "text";
   descQuizz.id = "descQuizz";
@@ -60,12 +64,11 @@ const CreateQuizz = async () => {
 
   nouvelleQuestion();
   main.appendChild(formAllQuestions);
-  main.appendChild(formNvQuestion);
   
-
+  //TODO : changer taille de nouvelle question et créer un quizz
   // Formulaire pour ajouter une question au quizz
   const newQuestionButton = document.createElement("input");
-  containerNewQButton.className = "row";
+  containerNewQButton.className = "container-fluid my-3 text-center";
   newQuestionButton.value = "+ Nouvelle Question +";
   newQuestionButton.type = "button";
   newQuestionButton.className = "btn btn-primary";
@@ -73,10 +76,10 @@ const CreateQuizz = async () => {
   containerNewQButton.appendChild(newQuestionButton);
   formAllQuestions.appendChild(containerNewQButton);
   
-
+  
   // Bouton pour creer un quizz
   let containerCreateButton = document.createElement("div");
-  containerCreateButton.className = "row";
+  containerCreateButton.className = "container-fluid text-center";
   const createQuizzButton = document.createElement("input");
   createQuizzButton.value = "Créer le quizz";
   createQuizzButton.type = "submit";
@@ -111,7 +114,8 @@ async function soumettreQuizz(e){
     let cBool = false;
     let dBool = false;
     
-    let radiosBonneRep = document.getElementsByName('radioBonneRep');
+    let radiosName = "radioBonneRep"+(i+1);
+    let radiosBonneRep = document.getElementsByName(radiosName);
     for (let j = 0; j < radiosBonneRep.length; j++) {
       if (radiosBonneRep[j].checked) {
         switch(radiosBonneRep[j].value){
@@ -155,6 +159,7 @@ async function soumettreQuizz(e){
   };
   let response = await fetch("/api/quizz/", options);
   console.log("j'ajoute");
+  main.innerHTML = "Le quizz a été ajouté avec succès";
   
 }
 
@@ -163,11 +168,15 @@ async function soumettreQuizz(e){
  * @param {*} e evenement
  */
 async function nouvelleQuestion(e) {
+  //TODO : limiter questions à 15
   if (e != undefined) e.preventDefault();
   nbQuestions++;
+
   //Création du container
   let divContainer = document.createElement("div");
-  divContainer.className = "container border border-dark rounded m-2";
+  divContainer.className = "container border border-success rounded-lg m-5 p-2";
+  divContainer.style = "background-color: #3cb371";
+  divContainer.id = "containerQ"+nbQuestions;
   let divRowTitre = document.createElement("div");
   divRowTitre.className = "row m-2";
 
@@ -177,7 +186,34 @@ async function nouvelleQuestion(e) {
   enonceQuestion.placeholder = "Saisissez votre question"
   enonceQuestion.id = "enonceQ" + nbQuestions;
   enonceQuestion.required = true;
-  divRowTitre.appendChild(enonceQuestion);
+  enonceQuestion.style.width = "100%";
+  let num = document.createElement("label");
+  num.innerHTML = nbQuestions;
+  num.id = "numQ"+nbQuestions;
+  num.for = "enonceQ" + nbQuestions;
+  num.style.fontSize = "large";
+
+  let closeImage = document.createElement("img");
+  closeImage.src = closeIcon;
+  closeImage.alt = "bouton pour supprimer une question"
+  closeImage.style.width = "30px";
+  closeImage.id = "closeQ"+nbQuestions;
+  closeImage.addEventListener("click", supprimerQuestion);
+
+
+  let divColTitre1 = document.createElement("div");
+  divColTitre1.className = "col-1";
+  divColTitre1.appendChild(num);
+  let divColTitre2 = document.createElement("div");
+  divColTitre2.className = "col-10";
+  divColTitre2.appendChild(enonceQuestion);
+  let divColTitre3 = document.createElement("div");
+  divColTitre3.className = "col-1";
+  divColTitre3.appendChild(closeImage);
+
+  divRowTitre.appendChild(divColTitre1);
+  divRowTitre.appendChild(divColTitre2);
+  divRowTitre.appendChild(divColTitre3);
 
   // Réponses A et B
   let divRowAB = document.createElement("div");
@@ -191,26 +227,92 @@ async function nouvelleQuestion(e) {
   divRowAB.appendChild(divColA);
   divRowAB.appendChild(divColB);
 
+  
+
   // Réponses C et D
   let divRowCD = document.createElement("div");
-  divRowCD.className = "row m-2";
+  divRowCD.className = "row justify-content-around";
   let divColC = document.createElement("div");
-  divColC.className = "col m-2";
+  divColC.className = "col-6";
   createReponse(divColC,"C");
   let divColD = document.createElement("div");
-  divColD.className = "col";
+  divColD.className = "col-6";
   createReponse(divColD,"D");
   divRowCD.appendChild(divColC);
   divRowCD.appendChild(divColD);
 
   divContainer.appendChild(divRowTitre);
   divContainer.appendChild(divRowAB);
+  
+  // A modifier
+  let br = document.createElement("br")
+  divContainer.appendChild(br);
+  //
+  
   divContainer.appendChild(divRowCD);
 
   if(e != undefined) formAllQuestions.insertBefore(divContainer, containerNewQButton);
   else formAllQuestions.appendChild(divContainer);
 };
 
+async function supprimerQuestion(e){
+  e.preventDefault();
+  if(nbQuestions === 1) return;
+
+  //On récupère celui qu'on doit supprimer
+  let numQuestion = e.target.id.substring(6, 7);
+  console.log("on supprime"+numQuestion);
+  let nomContainerQuestion =  "containerQ"+numQuestion;
+
+  //On le supprime
+  formAllQuestions.removeChild(document.getElementById(nomContainerQuestion));
+  
+  numQuestion = parseInt(numQuestion, 10);
+
+  //Cas où on supprime la dernière question
+  if(numQuestion === nbQuestions) {
+    nbQuestions --;
+    return;
+  }
+  //On décale tt les numeros des id
+  while(numQuestion !== nbQuestions){
+    let message = "containerQ"+(numQuestion+1);
+    document.getElementById(message).id = "containerQ"+numQuestion;
+    message = "enonceQ"+(numQuestion+1);
+    document.getElementById(message).id = "enonceQ"+numQuestion;
+    message = "numQ"+(numQuestion+1);
+    document.getElementById(message).id = "numQ"+numQuestion;
+    message = "numQ"+numQuestion;
+    let element = document.getElementById(message);
+    element.for = "enonceQ" + numQuestion;
+    element.innerHTML = numQuestion;
+    message = "closeQ"+(numQuestion+1);
+    document.getElementById(message).id = "closeQ"+numQuestion;
+    
+
+    let lettres = ["A","B","C","D"];
+    // on change le name des radios button pour la bonne réponse
+    message = "radioBonneRep"+(numQuestion+1);
+    let radioBonneRepQNLN = document.getElementsByName(message);
+    for(let h=0; h < lettres.length; h++){
+      radioBonneRepQNLN[0].name = "radioBonneRep"+numQuestion;
+    }
+
+    // On change l'id des 4 reponses
+    for(let i = 0; i < lettres.length; i++){
+      message = "reponse"+lettres[i]+""+(numQuestion+1);
+      document.getElementById(message).id = "reponse"+lettres[i]+""+numQuestion;
+    }
+
+
+    numQuestion ++;
+  }
+
+
+
+  nbQuestions --;
+
+}
 
 async function createReponse(divCol, lettre){
   let reponseN = document.createElement("input");
@@ -218,16 +320,17 @@ async function createReponse(divCol, lettre){
   reponseN.id = "reponse"+lettre+ "" + nbQuestions;
   reponseN.required = true;
   reponseN.placeholder = "Saisissez la réponse "+lettre;
+  reponseN.style.width = "80%";
 
   let bonneReponse = document.createElement("input");
   bonneReponse.type = "radio"
   bonneReponse.value = lettre;
-  bonneReponse.name = "radioBonneRep";
+  bonneReponse.name = "radioBonneRep"+nbQuestions;
+  bonneReponse.id = "radioBonneRep"+nbQuestions+""+lettre;
   bonneReponse.className = "form-check-input";
   if(lettre === "A") bonneReponse.checked = true;
 
   divCol.appendChild(bonneReponse);
-
   divCol.appendChild(reponseN);
   
 };
