@@ -1,11 +1,9 @@
-import closeIcon from "../../img/closeIcon.png";
+import closeIcon from "../../img/croix.png";
 
-let nbQuestions = 0;
-const main = document.querySelector("main");
-const formAllQuestions = document.createElement("form");
-
-
-let containerNewQButton = document.createElement("div");
+let nbQuestions;
+let main ;
+let formAllQuestions;
+let containerNewQButton; 
 
 
 const CreateQuizz = async () => {
@@ -14,9 +12,12 @@ const CreateQuizz = async () => {
   if (!user) {
         Redirect("/RegisterAndLoginPage");
   }*/
-
+  nbQuestions = 0;
   // Titre de la page
-  main.innerHTML = "";
+  main = document.querySelector("main");
+  main.innerHTML = " ";
+  formAllQuestions = document.createElement("form");
+  containerNewQButton =  document.createElement("div");
   let createQuizzTitle = document.createElement("h1");
   createQuizzTitle.innerHTML = "Créer un quizz";
   let containerTitle = document.createElement("div");
@@ -47,7 +48,7 @@ const CreateQuizz = async () => {
   containerDescQuizz.className = "container rounded-lg m-5 p-2";
   let divDescQuizz = document.createElement("div");
   divDescQuizz.className = "row ";
-  let descQuizz = document.createElement("input");
+  let descQuizz = document.createElement("input"); //TODO : description entre 35
   descQuizz.type = "text";
   descQuizz.id = "descQuizz";
   descQuizz.required = true;
@@ -60,12 +61,10 @@ const CreateQuizz = async () => {
   containerDescQuizz.appendChild(divDescQuizz);
   formAllQuestions.appendChild(containerDescQuizz);
 
-
-
   nouvelleQuestion();
-  main.appendChild(formAllQuestions);
+
   
-  //TODO : changer taille de nouvelle question et créer un quizz
+  
   // Formulaire pour ajouter une question au quizz
   const newQuestionButton = document.createElement("input");
   containerNewQButton.className = "container-fluid my-3 text-center";
@@ -75,8 +74,7 @@ const CreateQuizz = async () => {
   newQuestionButton.addEventListener("click", nouvelleQuestion);
   containerNewQButton.appendChild(newQuestionButton);
   formAllQuestions.appendChild(containerNewQButton);
-  
-  
+
   // Bouton pour creer un quizz
   let containerCreateButton = document.createElement("div");
   containerCreateButton.className = "container-fluid text-center";
@@ -89,6 +87,7 @@ const CreateQuizz = async () => {
   formAllQuestions.addEventListener("submit", soumettreQuizz);
   
   
+  main.appendChild(formAllQuestions);
   
 };
 
@@ -174,8 +173,8 @@ async function nouvelleQuestion(e) {
 
   //Création du container
   let divContainer = document.createElement("div");
-  divContainer.className = "container border border-success rounded-lg m-5 p-2";
-  divContainer.style = "background-color: #3cb371";
+  divContainer.className = "container border bg-dark border-success rounded-lg m-5 p-2";
+  // divContainer.style = "background-color: #3cb371";
   divContainer.id = "containerQ"+nbQuestions;
   let divRowTitre = document.createElement("div");
   divRowTitre.className = "row m-2";
@@ -192,6 +191,7 @@ async function nouvelleQuestion(e) {
   num.id = "numQ"+nbQuestions;
   num.for = "enonceQ" + nbQuestions;
   num.style.fontSize = "large";
+  num.style = "color : white";
 
   let closeImage = document.createElement("img");
   closeImage.src = closeIcon;
