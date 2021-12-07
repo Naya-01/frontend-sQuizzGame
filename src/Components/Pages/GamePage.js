@@ -3,8 +3,7 @@ import ProgressBar from "progressbar.js";
 let myPage = `<div id="page" class="container-fluid">
         <div id="bar-progress" class="row">
         </div>
-        <div id="couldown" class="bg-success row justify-content-center">
-        24h
+        <div id="couldown" class="row justify-content-center h2 text-danger">
         </div>
 
         <div id="diff-question-pos" class="container-md  pt-5">
@@ -28,10 +27,6 @@ let myPage = `<div id="page" class="container-fluid">
         </div>
 
     </div>`;
-
-let easy=3000;
-let medium=2000;
-let hard=1000;
 
 async function getQuestions(_id_quizz){
     try {
@@ -67,22 +62,42 @@ async function getAnswers(_id_question){
     }
 }
 
-async function GamePage() {
-    const myMain = document.querySelector("main");
-    myMain.innerHTML = myPage;
-
+function insertProgressBar(){
     //Bar
     let divBar = document.getElementById('bar-progress');
     let bar = new ProgressBar.Line(divBar, {
         strokeWidth: 4,
         easing: 'linear',
-        duration: 3000,
+        duration: easy,
         color: '#FFEA82',
         svgStyle: {width: '100%', height: '25px'},
     });
     let pc = 1;
     bar.set(pc);  // Number from 0.0 to 1.0
     bar.animate(0);
+}
+
+function timer(){
+    //countdown
+    let decompte=30;
+    let timer = function (){
+        if(decompte===0) clearInterval(countdown());
+        const cool = document.getElementById('couldown');
+        decompte-=1;
+        cool.innerText=decompte;
+        return decompte;
+    }
+    let test = setInterval(timer,1000);
+}
+
+const myMain = document.querySelector("main");
+let easy=30000;
+let medium=20000;
+let hard=10000;
+async function GamePage() {
+    myMain.innerHTML = myPage;
+    insertProgressBar();
+    timer();
 
     //recupération de mes questions depuis 1 quizz
     let questions = await getQuestions(3);
@@ -102,7 +117,7 @@ async function GamePage() {
     for (const element of answers) {
         html_answer += `
                     <div class="row">
-                <div class="answer p-5 mt-4 shadow p-3 container" style="width: 70%;">
+                <div class="answer p-5 mt-4 shadow p-3 container bg-dark text-white" style="width: 70%;">
                     ${element.answer}
                 </div>
             </div>
