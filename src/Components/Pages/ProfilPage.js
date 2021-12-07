@@ -9,9 +9,9 @@ const ProfilPage = async () => {
   main.innerHTML = page;
 
   main.querySelectorAll(".delete").forEach((button) => {
-    button.addEventListener("click", (e) => {
+    button.addEventListener("click", async (e) => {
       let elementId = e.target.dataset.elementId;
-      profilLibrary.deleteQuizzFromProfil(elementId);
+      await profilLibrary.deleteQuizzFromProfil(elementId);
       ProfilPage();
     });
   });

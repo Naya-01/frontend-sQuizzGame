@@ -40,6 +40,7 @@ class ProfilLibrary {
 
       let boxOfQuizz = await this.displayQuizzs(quizzs,user_email);
       page += boxOfQuizz;
+      page += `</div>`;
       return page;
     } catch (error) {
       console.error("getMyProfilPage::error: ", error);
@@ -87,10 +88,9 @@ class ProfilLibrary {
     async displayQuizzs(quizzs,user_email) {
         try{
             let pseudo = await userLibrary.getUser(user_email);
-            let boxOfQuizzs = '';
+            let boxOfQuizzs = '<div class="row justify-content-md-center">';
             let fin = quizzs.length;
             if (fin > 0) {
-                boxOfQuizzs = '<div class="row justify-content-md-center">';
                 quizzs.forEach((element) => {
                     if(!element.is_deleted){
                         boxOfQuizzs += `
@@ -116,10 +116,6 @@ class ProfilLibrary {
                     </div>
                     `;
             }
-            //close the div container
-            boxOfQuizzs += `
-                </div>
-                `;
             return boxOfQuizzs;
         }catch(err){
             console.error("getUser::error: ", err);
