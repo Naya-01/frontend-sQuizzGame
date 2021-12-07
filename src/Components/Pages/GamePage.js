@@ -15,7 +15,6 @@ let myPage = `<div id="page" class="container-fluid">
                     <p class="h2" id="theQuestion"></p>
                 </div>
                 <div class="col-sm-3" id="nbQuestion">
-                1/15
                 </div>
 
             </div>
@@ -90,27 +89,19 @@ function timer(){
     let test = setInterval(timer,1000);
 }
 
-const myMain = document.querySelector("main");
-let easy=30000;
-let medium=20000;
-let hard=10000;
-async function GamePage() {
-    myMain.innerHTML = myPage;
-    insertProgressBar();
-    timer();
-
+async function questionSuivante(id_quizz,index){
     //recupération de mes questions depuis 1 quizz
-    let questions = await getQuestions(3);
+    let questions = await getQuestions(id_quizz);
     let Quest = document.getElementById('theQuestion');
-    Quest.innerText=questions[0].question;
-
-    //recuperation des reponses du quizz
-    const divAnswer= document.getElementById('answers');
-    let answers = await getAnswers(questions[0].id_question);
+    Quest.innerText=questions[position].question;
 
     //nb question
     const nbQuestion = document.getElementById('nbQuestion');
-    nbQuestion.innerText=1+"/"+questions.length;
+    nbQuestion.innerText=(position+1)+"/"+questions.length;
+
+    //recuperation des reponses du quizz
+    const divAnswer= document.getElementById('answers');
+    let answers = await getAnswers(questions[position].id_question);
 
     //mise des reponses dans html
     let html_answer="";
@@ -131,9 +122,27 @@ async function GamePage() {
                 </div>
             </div>
 
-            <button class="btn btn-primary mt-5" type="submit">Question suivante</button>
+            <button class="btn btn-primary mt-5" type="submit" id="nextQuestion">Question suivante</button>
     `;
     divAnswer.innerHTML = html_answer;
+}
+const myMain = document.querySelector("main");
+let easy=30000;
+let medium=20000;
+let hard=10000;
+let position=0;
+async function GamePage() {
+    myMain.innerHTML = myPage;
+    insertProgressBar();
+    timer();
+    await questionSuivante(3,position);
+
+    let btnNext = document.getElementById('nextQuestion');
+    btnNext.addEventListener("click", async e => {
+        e.preventDefault();
+        position++;
+        await questionSuivante(3, position)
+    })
 }
 
 export {GamePage};
