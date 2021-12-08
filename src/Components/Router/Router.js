@@ -64,4 +64,14 @@ const Redirect = (page) => {
   }
 };
 
-export { Router, Redirect };
+const RedirectWithParams = (page, params) => {
+  //window.history.pushState({}, page, window.location.origin + page);
+  const componentToRender = routes[page];
+  if (routes[page]) {
+    componentToRender(params);
+  } else {
+    throw Error("La " + page + " n'existe pas");
+  }
+};
+
+export { Router, Redirect, RedirectWithParams };
