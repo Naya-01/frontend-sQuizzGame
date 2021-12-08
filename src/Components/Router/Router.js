@@ -65,7 +65,7 @@ const Redirect = (page) => {
 };
 
 const RedirectWithParams = (page, params) => {
-  //window.history.pushState({}, page, window.location.origin + page);
+  window.history.pushState({}, page, window.location.origin + page);
   const componentToRender = routes[page];
   if (routes[page]) {
     componentToRender(params);
