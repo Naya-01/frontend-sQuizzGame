@@ -1,5 +1,12 @@
 import ProgressBar from "progressbar.js";
 "use strict";
+
+const myMain = document.querySelector("main");
+let easy=30000;
+let medium=20000;
+let hard=10000;
+let position=0;
+let list_answer = [];
 let myPage = `<div id="page" class="container-fluid">
         <div id="bar-progress" class="row">
         </div>
@@ -89,31 +96,28 @@ function timer(){
     let test = setInterval(timer,1000);
 }
 
-async function questionSuivante(id_quizz,index){
-    //recupération de mes questions depuis 1 quizz
-    let questions = await getQuestions(id_quizz);
-    let Quest = document.getElementById('theQuestion');
-    Quest.innerText=questions[position].question;
-
-    //nb question
-    const nbQuestion = document.getElementById('nbQuestion');
-    nbQuestion.innerText=(position+1)+"/"+questions.length;
-
-    //recuperation des reponses du quizz
+function html_answer(answers){
     const divAnswer= document.getElementById('answers');
-    let answers = await getAnswers(questions[position].id_question);
-
-    //mise des reponses dans html
     let html_answer="";
+    list_answer=[]; // reset de la liste
     for (const element of answers) {
+        list_answer[list_answer.length]=element;
+        let color;
+        if(element.correct) color="bg-success";
+        else color="bg-danger";
         html_answer += `
-                    <div class="row">
-                <div class="answer p-5 mt-4 shadow p-3 container bg-dark text-white" style="width: 70%;">
-                    ${element.answer}
-                </div>
+            <div class="cards__single">
+            
+                 <div class="cards__front">
+                    <div class="answer p-5 mt-4 shadow p-3 container bg-dark text-white" style="width: 70%;">
+                        ${element.answer}
+                    </div>
+                </div>  
+                 <div class="cards__back" id="answer_${list_answer.length}">
+                 </div>  
             </div>
+                  
         `;
-        answers.in
     }
     html_answer +=`
                 <div class="row">
@@ -126,23 +130,74 @@ async function questionSuivante(id_quizz,index){
     `;
     divAnswer.innerHTML = html_answer;
 }
-const myMain = document.querySelector("main");
-let easy=30000;
-let medium=20000;
-let hard=10000;
-let position=0;
+
+async function questionSuivante(id_quizz,index){
+    //recupération de mes questions depuis 1 quizz
+    let questions = await getQuestions(id_quizz);
+    let Quest = document.getElementById('theQuestion');
+    Quest.innerText=questions[index].question;
+
+    //nb question
+    const nbQuestion = document.getElementById('nbQuestion');
+    nbQuestion.innerText=(index+1)+"/"+questions.length;
+
+    //recuperation des reponses du quizz
+    let answers = await getAnswers(questions[index].id_question);
+
+    //mise des reponses dans html
+    html_answer(answers);
+    let btnNext = document.getElementById('nextQuestion');
+    btnNext.addEventListener("click", async e => {
+        e.preventDefault();
+        await questionSuivante(41,++position);
+    })
+
+    let answerFlip = document.querySelectorAll(".cards__single");
+    answerFlip.forEach((answer) => answer.addEventListener("click", flipAnswer));
+}//fin question suivant
+
+function insertionAnswer(){
+    for(let i=0; i<=3;i++){
+        let string = `answer_`+(i+1);
+        let getDivBack = document.getElementById(string);
+        let color;
+        let element = list_answer[i];
+        if(element.correct)color="bg-success";
+        else color="bg-danger";
+        let divBack = `
+                     <div class="answer p-5 mt-4 shadow p-3 container ${color} text-white" style="width: 70%;">
+                        ${element.answer}
+                    </div>
+        `;
+        getDivBack.innerHTML = divBack;
+    }
+}
+
+function flipAnswer(){
+    insertionAnswer();
+    let answers = document.querySelectorAll(".cards__single");
+    for(const theAnswer of answers){
+        theAnswer.classList.toggle("flip");
+    }
+}
+
+// async function zebi(){
+//     await questionSuivante(41,++position)
+// }
+
 async function GamePage() {
     myMain.innerHTML = myPage;
     insertProgressBar();
     timer();
-    await questionSuivante(3,position);
+    await questionSuivante(41,position);
 
-    let btnNext = document.getElementById('nextQuestion');
-    btnNext.addEventListener("click", async e => {
-        e.preventDefault();
-        position++;
-        await questionSuivante(3, position)
-    })
+
+
+
+
+
+
+
 }
 
 export {GamePage};
