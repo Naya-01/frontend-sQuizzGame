@@ -126,10 +126,7 @@ async function questionSuivante(id_quizz,index){
                         ${element.answer}
                     </div>
                 </div>  
-                 <div class="cards__back">
-                    <div class="answer p-5 mt-4 shadow p-3 container ${color} text-white" style="width: 70%;">
-                        ${element.answer}
-                    </div>
+                 <div class="cards__back" id="answer_${list_answer.length}">
                  </div>  
             </div>
                   
@@ -156,7 +153,25 @@ async function questionSuivante(id_quizz,index){
     answerFlip.forEach((answer) => answer.addEventListener("click", flipAnswer));
 }//fin question suivant
 
+function insertionAnswer(){
+    for(let i=0; i<=3;i++){
+        let string = `answer_`+(i+1);
+        let getDivBack = document.getElementById(string);
+        let color;
+        let element = list_answer[i];
+        if(element.correct)color="bg-success";
+        else color="bg-danger";
+        let divBack = `
+                     <div class="answer p-5 mt-4 shadow p-3 container ${color} text-white" style="width: 70%;">
+                        ${element.answer}
+                    </div>
+        `;
+        getDivBack.innerHTML = divBack;
+    }
+}
+
 function flipAnswer(){
+    insertionAnswer();
     let answers = document.querySelectorAll(".cards__single");
     for(const theAnswer of answers){
         theAnswer.classList.toggle("flip");
