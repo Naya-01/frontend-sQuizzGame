@@ -96,23 +96,10 @@ function timer(){
     let test = setInterval(timer,1000);
 }
 
-async function questionSuivante(id_quizz,index){
-    //recupération de mes questions depuis 1 quizz
-    let questions = await getQuestions(id_quizz);
-    let Quest = document.getElementById('theQuestion');
-    Quest.innerText=questions[index].question;
-
-    //nb question
-    const nbQuestion = document.getElementById('nbQuestion');
-    nbQuestion.innerText=(index+1)+"/"+questions.length;
-
-    //recuperation des reponses du quizz
+function html_answer(answers){
     const divAnswer= document.getElementById('answers');
-    let answers = await getAnswers(questions[index].id_question);
-
-    //mise des reponses dans html
     let html_answer="";
-    list_answer=[];
+    list_answer=[]; // reset de la liste
     for (const element of answers) {
         list_answer[list_answer.length]=element;
         let color;
@@ -142,7 +129,23 @@ async function questionSuivante(id_quizz,index){
             <button class="btn btn-primary mt-5" type="submit" id="nextQuestion">Question suivante</button>
     `;
     divAnswer.innerHTML = html_answer;
+}
 
+async function questionSuivante(id_quizz,index){
+    //recupération de mes questions depuis 1 quizz
+    let questions = await getQuestions(id_quizz);
+    let Quest = document.getElementById('theQuestion');
+    Quest.innerText=questions[index].question;
+
+    //nb question
+    const nbQuestion = document.getElementById('nbQuestion');
+    nbQuestion.innerText=(index+1)+"/"+questions.length;
+
+    //recuperation des reponses du quizz
+    let answers = await getAnswers(questions[index].id_question);
+
+    //mise des reponses dans html
+    html_answer(answers);
     let btnNext = document.getElementById('nextQuestion');
     btnNext.addEventListener("click", async e => {
         e.preventDefault();
