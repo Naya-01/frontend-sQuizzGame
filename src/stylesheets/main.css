@@ -37,3 +37,64 @@
 .score{
     width: 270px;
 }
+
+
+
+/*  ##################################   GAME PAGE   #########################################      */
+
+.cards__single {
+    display: flex;
+    flex-direction: column;
+    /*border-radius: 16px;*/
+    /*box-shadow: 0 5px 18px rgba(0, 0, 0, 0.6);*/
+    /*cursor: pointer;*/
+    /*text-align: center;*/
+    transform-style: preserve-3d;
+    /*position: relative;*/
+    transition: transform 0.6s;
+    -webkit-transition: transform 0.6s;
+}
+
+
+
+.cards__single.flip {
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+}
+
+/*.cards__front {*/
+/*    height: 100%;*/
+/*    transform: rotateX(0deg);*/
+/*    -webkit-transform: rotateX(0deg);*/
+/*}*/
+
+.cards__back {
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    position: absolute;
+    text-align: center;
+    right: 0;
+    left: 0;
+    /*top: 10px;*/
+    color: #20263f;
+}
+
+
+@media (min-width: 768px) {
+    .cards {
+        /*display: flex;*/
+        /*flex-direction: row;*/
+        /*justify-content: space-around;*/
+        /*align-content: center;*/
+        /*position: relative;*/
+        /*perspective: 1000px;*/
+        /*align-items: stretch;*/
+    }
+    .cards__single {
+        /*width: 20%;*/
+    }
+}
+
+.answer{
+    cursor: pointer;
+}
