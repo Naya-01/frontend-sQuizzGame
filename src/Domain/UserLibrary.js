@@ -5,7 +5,26 @@ class UserLibrary {
         <div class="container">
           <div class="text-center">
               <h1>Gestion administrative</h1>
-          </div>`;
+          </div>
+          
+          <div class="boxContainer">
+              <table class="elementsContainer">
+                  <tr>
+                      <td>
+                          <input type="text" placeholder="Search" class="search">
+                      </td>
+                      <td>
+                        <a href="#">
+                          <span class="material-icons">
+                            search
+                          </span>
+                        </a>
+                      </td>
+                  </tr>
+              </table>
+          </div>
+          
+`;
       page += await this.displayUsers();
       page += `</div>`;
       return page;
@@ -190,8 +209,8 @@ class UserLibrary {
                           <button class="btn btn-secondary ban " disabled data-element-id="${element.id_user}"  type="button">Bannir</button>`;}
                         else if(element.banned){
                           boxOfUsers +=`
-                          <button class="btn btn-success upgrade" disabled data-element-id="${element.id_user}" type="button">Promouvoir</button>
-                          <button class="btn btn-primary unban" data-element-id="${element.id_user}"  type="button">Rappeler</button>`;
+                          <button class="btn btn-secondary upgrade" disabled data-element-id="${element.id_user}" type="button">Promouvoir</button>
+                          <button class="btn btn-primary unban" data-element-id="${element.id_user}"  type="button">Debannir</button>`;
                         }
                         else{
                         boxOfUsers +=`
