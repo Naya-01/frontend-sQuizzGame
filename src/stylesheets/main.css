@@ -267,3 +267,11 @@
     height: auto;
     width: 40px;
  }
+ #CreateQuizzId #errorTitle {
+    color: red;
+ }
+
+
+ #CreateQuizzId *[id^="errorQ"]{
+    color: red;
+ }
