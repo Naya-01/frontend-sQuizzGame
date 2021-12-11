@@ -1,20 +1,19 @@
 class UserLibrary {
-  async getPanelAdminPage() {
+  async getPanelAdminPage(filter) {
     try {
       let page = `
         <div class="container">
           <div class="text-center">
               <h1>Gestion administrative</h1>
           </div>
-          
           <div class="boxContainer">
               <table class="elementsContainer">
                   <tr>
                       <td>
-                          <input type="text" placeholder="Search" class="search">
+                          <input type="text" placeholder="Chercher" class="search" id="seachInput" name="searchBar" id="searchBar">
                       </td>
                       <td>
-                        <a href="#">
+                        <a href="#" id="searchButton">
                           <span class="material-icons">
                             search
                           </span>
@@ -23,13 +22,44 @@ class UserLibrary {
                   </tr>
               </table>
           </div>
+          <h3>`;
+          if(!filter) page +="Tous les utilisateurs"; else page +=`Filtre : ${filter}`;
+
+          page += `
+          </h3>
+          <div id="users">
+          
           
 `;
-      page += await this.displayUsers();
-      page += `</div>`;
+      let users;
+      if(!filter) users = await this.getUsers();
+      else users = await this.getUsersWithFilter(filter);
+      page += await this.displayUsers(users);
+
+    
+      page += `
+        </div>
+      </div>`;
       return page;
     } catch (err) {
       console.error("getPanelAdminPage::error: ", err);
+    }
+  }
+
+  async getUsersWithFilter(filter) {
+    try {
+      
+      const reponse = await fetch("/api/users/filter/"+filter);
+
+      if (!reponse.ok) {
+        throw new Error(
+          "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const users = await reponse.json();
+      return users;
+    } catch (err) {
+      console.error("getUsersWithFilter::error: ", err);
     }
   }
 
@@ -48,10 +78,11 @@ class UserLibrary {
       console.error("getUser::error: ", err);
     }
   }
+  
 
   async getUsers() {
     try {
-      const reponse = await fetch("/api/users/");
+      const reponse = await fetch("/api/users//");
 
       if (!reponse.ok) {
         throw new Error(
@@ -164,6 +195,8 @@ class UserLibrary {
     }
   }
 
+  
+
   async unbanUser(user_object) {
     try {
 
@@ -189,9 +222,9 @@ class UserLibrary {
     }
   }
 
-  async displayUsers() {
+  async displayUsers(users) {
     try {
-      const users = await this.getUsers();
+      
       let boxOfUsers = `<div class="row justify-content-md-center">`;
       let fin = users.length;
       if (fin > 0) {
@@ -226,6 +259,9 @@ class UserLibrary {
         });
         boxOfUsers += `</div>`;
         return boxOfUsers;
+      }
+      else{
+        return "Aucun résultat pour cette recherche";
       }
     } catch (err) {
       console.error("displayUsers::error: ", err);
