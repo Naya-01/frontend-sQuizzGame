@@ -2,26 +2,29 @@ import { getSessionObject } from "../../utils/session";
 import { RedirectWithParams } from "../Router/Router";
 let main;
 let divPage;
+
 //TODO : avoir plusieurs pages au lieu d'un scroll infini
 const HomePage = async () => {
-  let idUser = await (await fetch("/api/users/email/"+getSessionObject("user").email)).json();
-  console.log(idUser);
+  
   main = document.querySelector("main");
-  main.innerHTML = " "; // on reinitialise le main
+  main.innerHTML = "";  // on reinitialise le main
+  
 
   divPage = document.createElement("div");
   divPage.className = "container-fluid";
   divPage.id = "HomePageId";
-  main.appendChild(divPage);
-
+  
+  
   // Titre de la page
   let containerSquizzGame = document.createElement("div");
   containerSquizzGame.className = "container-fluid my-5 text-center text-danger";
   let titleSquizzGame = document.createElement("h1");
   titleSquizzGame.innerHTML = "sQuizzGame";
   containerSquizzGame.appendChild(titleSquizzGame);
-  divPage.appendChild(containerSquizzGame);
-
+  //divPage.appendChild(containerSquizzGame);
+  main.appendChild(containerSquizzGame);
+  boutonRecherche();
+  main.appendChild(divPage);
 
   let container = document.createElement("div");
   container.className = "container";
@@ -54,8 +57,9 @@ const HomePage = async () => {
   abonnements_title.innerHTML = "Abonnements";
   abonnements.appendChild(abonnements_title);
   divPage.appendChild(abonnements);
-  
-  let allQuizzAbonnements = await fetch("/api/quizz/abonnements/"+idUser.id_user);
+
+  let idUser = getSessionObject("user").id_user;
+  let allQuizzAbonnements = await fetch("/api/quizz/abonnements/"+idUser);
   allQuizzAbonnements = await allQuizzAbonnements.json();
   
   // Si il n'y a pas de quizz dans les abonnements
@@ -77,7 +81,7 @@ const HomePage = async () => {
   explorer.appendChild(explorer_title);
   divPage.appendChild(explorer);
 
-  let allQuizz = await fetch("/api/quizz/");
+  let allQuizz = await fetch("/api/quizz/explorer");
   allQuizz = await allQuizz.json();
   afficherQuizz(allQuizz);
 };
@@ -134,8 +138,8 @@ async function afficherQuizz(allQuizz){
         let descriptionTexte = allQuizz[indice].description;
 
         // Tronquage de la description si elle est trop longue
-        if(descriptionTexte.length > 40){
-          descriptionTexte = descriptionTexte.substring(0, 40);
+        if(descriptionTexte.length > 60){
+          descriptionTexte = descriptionTexte.substring(0, 60);
           descriptionTexte += " ...";
         }
         description.innerHTML = descriptionTexte;
@@ -158,6 +162,37 @@ async function afficherQuizz(allQuizz){
 async function redirectionQuizzPage(e){
   e.preventDefault();
   RedirectWithParams("/Quizz",this.id);
+}
+
+async function boutonRecherche(){
+  main.innerHTML += `<div class="boxContainer">
+                          <table class="elementsContainer">
+                            <tr>
+                              <td>
+                                <input type="text" placeholder="Chercher" class="search" name="searchBar" id="searchBar" >
+                              </td>
+                              <td>
+                                <a href="#" id="searchButton">
+                                  <span class="material-icons">search</span>
+                                </a>
+                              </td>
+                            </tr>
+                          </table>
+                        </div>`;
+
+  let search = main.querySelector("#searchButton");
+  search.addEventListener("click", async (e) => {
+    e.preventDefault();
+    rechercherQuizz();
+  });
+}
+async function rechercherQuizz(){
+  console.log("ici : "+document.getElementById("searchBar").value);
+  divPage.innerHTML = "";
+  let critere = document.getElementById("searchBar").value;
+  let allQuizzRecherche = await fetch("/api/quizz/recherche/"+critere);
+  allQuizzRecherche = await allQuizzRecherche.json();
+  afficherQuizz(allQuizzRecherche);
 }
 
 export default HomePage;
