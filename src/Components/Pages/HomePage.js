@@ -4,12 +4,6 @@ let main;
 let divPage;
 //TODO : avoir plusieurs pages au lieu d'un scroll infini
 const HomePage = async () => {
-  /*
-  let user = getSessionObject("user");
-  if (!user) {
-        Redirect("/RegisterAndLoginPage");
-  }*/
- 
   let idUser = await (await fetch("/api/users/email/"+getSessionObject("user").email)).json();
   console.log(idUser);
   main = document.querySelector("main");
@@ -88,6 +82,7 @@ const HomePage = async () => {
   afficherQuizz(allQuizz);
 };
 
+
 async function afficherQuizz(allQuizz){
    // Créer une row
    for(let j = 0; j < allQuizz.length/3; j++){
@@ -113,11 +108,17 @@ async function afficherQuizz(allQuizz){
         divCard.appendChild(div);
         col.appendChild(divCard);
         
-        
         // Nom du quizz
         let title = document.createElement("h5");
         title.className = 'card-title';
-        title.innerHTML = allQuizz[indice].name;
+        let titleTexte = allQuizz[indice].name;
+        // Tronquage du titre du quizz si il est trop long
+        if(titleTexte.length > 25){
+          titleTexte = titleTexte.substring(0, 25);
+          titleTexte += " ...";
+        }
+        title.innerHTML = titleTexte;
+
         div.appendChild(title);
         
         // Créateur du quizz

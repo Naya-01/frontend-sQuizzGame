@@ -7,9 +7,12 @@ let medium=20000;
 let hard=10000;
 let position=0;
 let list_answer = [];
+let answer_user=[];
 let myInterval;
 let decompte=30;
 let bar = new ProgressBar.Line();
+let questions;
+let answers;
 let myPage = `<div id="page" class="container-fluid">
         <div id="bar-progress" class="row">
         </div>
@@ -46,9 +49,7 @@ async function getQuestions(_id_quizz){
                 "fetch error : " + response.status + " : " + response.statusText
             );
         }
-        const questions = await response.json();
-
-        return questions;
+        questions = await response.json();
     } catch (err) {
         console.error("getQuizz::error: ", err);
     }
@@ -63,9 +64,9 @@ async function getAnswers(_id_question){
                 "fetch error : " + response.status + " : " + response.statusText
             );
         }
-        const answers = await response.json();
+        const _answers = await response.json();
 
-        return answers;
+        return _answers;
     } catch (err) {
         console.error("getAnswers::error: ", err);
     }
@@ -101,6 +102,8 @@ function timer(){
     myInterval=setInterval(timer,1000);
 }
 
+
+//we make the answer html
 function html_answer(answers){
     const divAnswer= document.getElementById('answers');
     let html_answer="";
@@ -136,9 +139,12 @@ function html_answer(answers){
     divAnswer.innerHTML = html_answer;
 }
 
-async function questionSuivante(id_quizz,index){
+// we change the question and the answer
+async function questionSuivante(index){
     //recupération de mes questions depuis 1 quizz
-    let questions = await getQuestions(id_quizz);
+    if(index>questions.length-1){
+        console.log("plus de questions !!"); /// on va redigirer vers la page de fin de jeu ici
+    }
     let Quest = document.getElementById('theQuestion');
     Quest.innerText=questions[index].question;
 
@@ -147,21 +153,23 @@ async function questionSuivante(id_quizz,index){
     nbQuestion.innerText=(index+1)+"/"+questions.length;
 
     //recuperation des reponses du quizz
-    let answers = await getAnswers(questions[index].id_question);
-
+    answers = await getAnswers(questions[index].id_question);
+    console.log(answers);
     //mise des reponses dans html
     html_answer(answers);
     let btnNext = document.getElementById('nextQuestion');
     btnNext.addEventListener("click", async e => {
         e.preventDefault();
+        clearInterval(myInterval);
         restartCooldown();
-        await questionSuivante(41,++position);
+        await questionSuivante(++position);
     })
 
     let answerFlip = document.querySelectorAll(".cards__single");
-    answerFlip.forEach((answer) => answer.addEventListener("click", flipAnswer));
+    answerFlip.forEach((answer) => answer.addEventListener("click", saveAnswerUser));
 }//fin question suivant
 
+//restart the cooldown when the user click on the next question button
 function restartCooldown(){
     bar.set(1); //restart progress bar
     bar.animate(0); //restart progress bar
@@ -186,7 +194,24 @@ function insertionAnswerBack(){
     }
 }
 
+//save answer user in the list answer_user
+// this.children[1].id: it's to receive the id of the answer select
+function saveAnswerUser(){
+    console.log(answer_user);
+    if(answer_user[position]){ // cant change his answer !!
+        flipAnswer();
+        return;
+    }
+    console.log(this.children[1].id);
+    console.log(position);
+    answer_user[position]=this.children[1].id;
+    console.log(answer_user);
+    flipAnswer();
+}
+//we stop the cooldown here and the progress bar
+// we add the the true result behind the choices because the user can see the answers with F12 with the function "insertionAnswerBack"
 function flipAnswer(){
+    if(answer_user[position]===undefined) answer_user[position]=null;
     clearInterval(myInterval);
     bar.stop();
     insertionAnswerBack();
@@ -196,15 +221,14 @@ function flipAnswer(){
     }
 }
 
-// async function zebi(){
-//     await questionSuivante(41,++position)
-// }
 
 async function GamePage() {
     myMain.innerHTML = myPage;
     insertProgressBar();
     timer();
-    await questionSuivante(41,position);
+    await getQuestions(41);
+    console.log(questions);
+    await questionSuivante(position);
 
 
 
