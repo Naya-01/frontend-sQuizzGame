@@ -11,7 +11,7 @@ class UserLibrary {
               <table class="elementsContainer">
                   <tr>
                       <td>
-                          <input type="text" placeholder="Chercher" class="search" id="seachInput" name="searchBar" id="searchBar" value="${filter}">
+                          <input type="text" placeholder="Chercher" class="search" name="searchBar" id="searchBar" value="${filter}">
                       </td>
                       <td>
                         <a href="#" id="searchButton">
@@ -64,9 +64,9 @@ class UserLibrary {
     }
   }
 
-  async getUser(user_email) {
+  async getUser(id) {
     try {
-      const reponse = await fetch("/api/users/email/" + user_email);
+      const reponse = await fetch("/api/users/" + id);
 
       if (!reponse.ok) {
         throw new Error(
