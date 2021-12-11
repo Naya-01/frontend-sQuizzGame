@@ -1,5 +1,6 @@
 import closeIcon from "../../img/croix.png";
 import { Redirect } from "../Router/Router";
+import { getSessionObject } from "../../utils/session";
 
 const Swal = require('sweetalert2');
 
@@ -125,7 +126,6 @@ async function soumettreQuizz(e){
     let answerD = escape(document.getElementById("reponseD" + (i+1)).value);
 
     let idError = "errorQ"+(i+1);
-    //TODO : changer avec des createelement p qu'on insert à la div erreur
     document.getElementById(idError).innerHTML = ""; // on reinitialise
     if(enonceQuestionN.length > 200){
       let errorQ = document.createElement("p");
@@ -198,7 +198,7 @@ async function soumettreQuizz(e){
   let options = {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     body: JSON.stringify({
-      id_creator: 1,  //TODO : modifier en récupérant le id dans le cookie
+      id_creator: getSessionObject("user").id_user,  
       name: titleQuizz,
       description: descQuizz,
       questions:  allQuestions,
