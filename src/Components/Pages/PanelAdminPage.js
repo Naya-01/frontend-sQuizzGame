@@ -54,6 +54,32 @@ const PanelAdminPage = async (filter) => {
     PanelAdminPage(inputSearchBox.value);
     
   });
+
+  main.querySelectorAll(".emailsUsersBox").forEach(async (emailDisplayed) => {
+    emailDisplayed.addEventListener("click", async (e) => {
+      let elementId = e.target.dataset.elementId;
+      let elementEmail = e.target.dataset.elementEmail;
+      let elementLongEmail = e.target.dataset.elementLongEmail;
+      let hiddenState = document.getElementById("email"+elementId);
+      //display whole email
+      if(hiddenState.innerHTML==0){
+        let height = parseInt((elementLongEmail.length/28)+1);
+        emailDisplayed.style=`height:${height}rm`;
+        emailDisplayed.innerHTML=elementLongEmail;
+        
+        hiddenState.innerHTML=1;
+      }
+      //display a part of email
+      else{
+        emailDisplayed.style="height:2rem";
+        emailDisplayed.innerHTML=elementEmail;
+        console.log(emailDisplayed);
+        hiddenState.innerHTML=0;
+      }
+      
+      
+    });
+  });
 };
 
 
