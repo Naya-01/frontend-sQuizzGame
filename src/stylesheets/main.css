@@ -216,3 +216,49 @@
 .answer{
     cursor: pointer;
 }
+
+/* La Page d'accueil */
+
+#HomePageId .card { 
+    animation: fadeInAnimation ease 4s; 
+    animation-fill-mode: forwards; 
+    animation-iteration-count: 1; 
+    width: 80%;
+} 
+#HomePageId .card-text{
+    height: 4rem;
+}
+#HomePageId .btnJouer {
+    width:100%;
+}
+@keyframes fadeInAnimation { 
+    0% { 
+            opacity: 0; 
+       } 
+    100% { 
+            opacity: 1; 
+         } 
+} 
+
+/* La page Créer un Quizz */
+
+
+#CreateQuizzId *[id^="numQ"]{
+    color : white;
+    font-size: large;
+}
+
+#CreateQuizzId *[id^="reponse"]{
+    background-color:#D8D8D8;
+    width : 80%;
+}
+
+#CreateQuizzId *[id^="enonceQ"]{
+    background-color:#D8D8D8;
+    width : 100%;
+}
+
+#CreateQuizzId *[id^="closeQ"] {
+    height: auto;
+    width: 40px;
+ }
