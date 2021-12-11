@@ -1,40 +1,45 @@
 import closeIcon from "../../img/croix.png";
+const escape = require("escape-html");
 
 let nbQuestions;
 let main ;
 let formAllQuestions;
 let containerNewQButton; 
+let containerCreateButton;
 
 
 const CreateQuizz = async () => {
-  /*
-  let user = getSessionObject("user");
-  if (!user) {
-        Redirect("/RegisterAndLoginPage");
-  }*/
   nbQuestions = 0;
-  // Titre de la page
+  
   main = document.querySelector("main");
   main.innerHTML = " ";
+
+  let divPage = document.createElement("div");
+  divPage.className = "container-fluid";
+  divPage.id = "CreateQuizzId";
+  main.appendChild(divPage);
   formAllQuestions = document.createElement("form");
-  containerNewQButton =  document.createElement("div");
+  containerNewQButton = document.createElement("div");
+
+  //Ajout Titre de la page
   let createQuizzTitle = document.createElement("h1");
   createQuizzTitle.innerHTML = "Créer un quizz";
   let containerTitle = document.createElement("div");
-  containerTitle.className = "container-fluid my-5 text-center text-danger";
+  containerTitle.className = "container my-5 text-center text-danger";
   containerTitle.appendChild(createQuizzTitle);
-  main.appendChild(containerTitle);
+  divPage.appendChild(containerTitle);
 
   // Ajout du titre du quizz
   let containerTitleQuizz = document.createElement("div");
   containerTitleQuizz.className = "container rounded-lg m-5 p-2";
   let divTitleQuizz = document.createElement("div");
-  divTitleQuizz.className = "row ";
+  divTitleQuizz.className = "row";
   let titleQuizz = document.createElement("input");
   titleQuizz.type = "text";
   titleQuizz.id = "titleQuizz";
   titleQuizz.required = true;
   titleQuizz.placeholder = "Saisissez le titre du quizz";
+  titleQuizz.className = "form-control";
   divTitleQuizz.appendChild(titleQuizz);
   let titleLabel = document.createElement("label");
   titleLabel.for = "titleQuizz";
@@ -48,11 +53,12 @@ const CreateQuizz = async () => {
   containerDescQuizz.className = "container rounded-lg m-5 p-2";
   let divDescQuizz = document.createElement("div");
   divDescQuizz.className = "row ";
-  let descQuizz = document.createElement("input"); //TODO : description entre 35
-  descQuizz.type = "text";
+  let descQuizz = document.createElement("textarea");
+  descQuizz.row = "8";
   descQuizz.id = "descQuizz";
   descQuizz.required = true;
   descQuizz.placeholder = "Saisissez la description du quizz";
+  descQuizz.className = "form-control";
   divDescQuizz.appendChild(descQuizz);
   let descLabel = document.createElement("label");
   descLabel.for = "descQuizz";
@@ -61,13 +67,13 @@ const CreateQuizz = async () => {
   containerDescQuizz.appendChild(divDescQuizz);
   formAllQuestions.appendChild(containerDescQuizz);
 
+  // Ajout d'une nouvelle question qui est là par défaut
   nouvelleQuestion();
 
-  
-  
   // Formulaire pour ajouter une question au quizz
   const newQuestionButton = document.createElement("input");
   containerNewQButton.className = "container-fluid my-3 text-center";
+  newQuestionButton.id = "AjouterQuestion";
   newQuestionButton.value = "+ Nouvelle Question +";
   newQuestionButton.type = "button";
   newQuestionButton.className = "btn btn-primary";
@@ -76,7 +82,7 @@ const CreateQuizz = async () => {
   formAllQuestions.appendChild(containerNewQButton);
 
   // Bouton pour creer un quizz
-  let containerCreateButton = document.createElement("div");
+  containerCreateButton = document.createElement("div");
   containerCreateButton.className = "container-fluid text-center";
   const createQuizzButton = document.createElement("input");
   createQuizzButton.value = "Créer le quizz";
@@ -86,27 +92,22 @@ const CreateQuizz = async () => {
   formAllQuestions.appendChild(containerCreateButton);
   formAllQuestions.addEventListener("submit", soumettreQuizz);
   
-  
-  main.appendChild(formAllQuestions);
-  
+  divPage.appendChild(formAllQuestions);  
 };
 
 async function soumettreQuizz(e){
   e.preventDefault();
-  
-  let titleQuizz = document.getElementById("titleQuizz").value;
-  let descQuizz = document.getElementById("descQuizz").value;
+  let titleQuizz = escape(document.getElementById("titleQuizz").value);
+  let descQuizz = escape(document.getElementById("descQuizz").value);
   let allQuestions = [];
   //Récupération des questions
   for(let i=0; i < nbQuestions; i++){
     let message = "enonceQ"+(i+1);
-    let enonceQuestionN = document.getElementById(message);// + (i+1));
-    console.log(enonceQuestionN);
-    console.log("enonceQ" + (i+1));
-    let answerA = document.getElementById("reponseA" + (i+1));
-    let answerB = document.getElementById("reponseB" + (i+1));
-    let answerC = document.getElementById("reponseC" + (i+1));
-    let answerD =document.getElementById("reponseD" + (i+1));
+    let enonceQuestionN = escape(document.getElementById(message).value);// + (i+1));
+    let answerA = escape(document.getElementById("reponseA" + (i+1)).value);
+    let answerB = escape(document.getElementById("reponseB" + (i+1)).value);
+    let answerC = escape(document.getElementById("reponseC" + (i+1)).value);
+    let answerD = escape(document.getElementById("reponseD" + (i+1)).value);
 
     let aBool = false;
     let bBool = false;
@@ -134,11 +135,11 @@ async function soumettreQuizz(e){
         break;
       }
     }
-    let newQuestion = {question: enonceQuestionN.value,
-                        answers : [{answer:answerA.value, "correct":aBool},
-                                   {answer:answerB.value, "correct":bBool},
-                                   {answer:answerC.value, "correct":cBool},
-                                   {answer:answerD.value, "correct":dBool}, ]};
+    let newQuestion = {question: enonceQuestionN,
+                        answers : [{answer:answerA, "correct":aBool},
+                                   {answer:answerB, "correct":bBool},
+                                   {answer:answerC, "correct":cBool},
+                                   {answer:answerD, "correct":dBool}, ]};
     allQuestions[i] = newQuestion;
   }
 
@@ -159,6 +160,7 @@ async function soumettreQuizz(e){
   let response = await fetch("/api/quizz/", options);
   console.log("j'ajoute");
   main.innerHTML = "Le quizz a été ajouté avec succès";
+  console.log("prob");
   
 }
 
@@ -167,47 +169,43 @@ async function soumettreQuizz(e){
  * @param {*} e evenement
  */
 async function nouvelleQuestion(e) {
-  //TODO : limiter questions à 15
   if (e != undefined) e.preventDefault();
   nbQuestions++;
 
   //Création du container
   let divContainer = document.createElement("div");
-  divContainer.className = "container border bg-dark border-success rounded-lg m-5 p-2";
-  // divContainer.style = "background-color: #3cb371";
+  divContainer.className = "container-fluid mr-5 my-3 text-center border bg-dark border-success rounded-lg p-2";
   divContainer.id = "containerQ"+nbQuestions;
   let divRowTitre = document.createElement("div");
-  divRowTitre.className = "row m-2";
+  divRowTitre.className = "row m-3";
 
-  // Titre de la question
+  //Ajout le numéro de la question
+  let num = document.createElement("label");
+  num.innerHTML = nbQuestions;
+  num.id = "numQ"+nbQuestions;
+  num.for = "enonceQ" + nbQuestions;
+  let divColTitre1 = document.createElement("div");
+  divColTitre1.className = "col-1";
+  divColTitre1.appendChild(num);
+
+  //Ajout titre de la question
   let enonceQuestion = document.createElement("input");
   enonceQuestion.type = "text";
   enonceQuestion.placeholder = "Saisissez votre question"
   enonceQuestion.id = "enonceQ" + nbQuestions;
   enonceQuestion.required = true;
-  enonceQuestion.style.width = "100%";
-  let num = document.createElement("label");
-  num.innerHTML = nbQuestions;
-  num.id = "numQ"+nbQuestions;
-  num.for = "enonceQ" + nbQuestions;
-  num.style.fontSize = "large";
-  num.style = "color : white";
-
-  let closeImage = document.createElement("img");
-  closeImage.src = closeIcon;
-  closeImage.alt = "bouton pour supprimer une question"
-  closeImage.style.width = "30px";
-  closeImage.id = "closeQ"+nbQuestions;
-  closeImage.addEventListener("click", supprimerQuestion);
-
-
-  let divColTitre1 = document.createElement("div");
-  divColTitre1.className = "col-1";
-  divColTitre1.appendChild(num);
+  enonceQuestion.className = "form-control";
   let divColTitre2 = document.createElement("div");
   divColTitre2.className = "col-10";
   divColTitre2.appendChild(enonceQuestion);
   let divColTitre3 = document.createElement("div");
+
+  // Ajout du bouton pour supprimer une question
+  let closeImage = document.createElement("img");
+  closeImage.src = closeIcon;
+  closeImage.alt = "bouton pour supprimer une question"
+  closeImage.id = "closeQ"+nbQuestions;
+  closeImage.addEventListener("click", supprimerQuestion);
   divColTitre3.className = "col-1";
   divColTitre3.appendChild(closeImage);
 
@@ -219,13 +217,19 @@ async function nouvelleQuestion(e) {
   let divRowAB = document.createElement("div");
   divRowAB.className = "row justify-content-around";
   let divColA = document.createElement("div");
-  divColA.className = "col-6";
-  createReponse(divColA, "A");
-  let divColB = document.createElement("div");
-  divColB.className = "col-6";
-  createReponse(divColB, "B");
+  divColA.className = "col-1 m-auto";
+  let divColA2 = document.createElement("div");
+  divColA2.className = "col-5";
+  createReponse(divColA,divColA2, "A");
   divRowAB.appendChild(divColA);
+  divRowAB.appendChild(divColA2);
+  let divColB = document.createElement("div");
+  divColB.className = "col-1 m-auto";
+  let divColB2 = document.createElement("div");
+  divColB2.className = "col-5";
+  createReponse(divColB,divColB2, "B");
   divRowAB.appendChild(divColB);
+  divRowAB.appendChild(divColB2);
 
   
 
@@ -233,47 +237,63 @@ async function nouvelleQuestion(e) {
   let divRowCD = document.createElement("div");
   divRowCD.className = "row justify-content-around";
   let divColC = document.createElement("div");
-  divColC.className = "col-6";
-  createReponse(divColC,"C");
-  let divColD = document.createElement("div");
-  divColD.className = "col-6";
-  createReponse(divColD,"D");
-  divRowCD.appendChild(divColC);
-  divRowCD.appendChild(divColD);
+  divColC.className = "col-1 m-auto";
 
+  let divColC2 = document.createElement("div");
+  divColC2.className = "col-5";
+
+  createReponse(divColC,divColC2,"C");
+  let divColD = document.createElement("div");
+  divColD.className = "col-1 m-auto";
+  let divColD2 = document.createElement("div");
+  divColD2.className = "col-5";
+  createReponse(divColD,divColD2,"D");
+  divRowCD.appendChild(divColC);
+  divRowCD.appendChild(divColC2);
+  divRowCD.appendChild(divColD);
+  divRowCD.appendChild(divColD2);
+  
   divContainer.appendChild(divRowTitre);
   divContainer.appendChild(divRowAB);
   
-  // A modifier
+  // TODO : A modifier le br
   let br = document.createElement("br")
   divContainer.appendChild(br);
-  //
+  
   
   divContainer.appendChild(divRowCD);
 
   if(e != undefined) formAllQuestions.insertBefore(divContainer, containerNewQButton);
   else formAllQuestions.appendChild(divContainer);
+  console.log(nbQuestions);
+  if(nbQuestions == 15) document.getElementById("AjouterQuestion").disabled = true; //ici
+  
 };
 
 async function supprimerQuestion(e){
   e.preventDefault();
+  //Cas où on essaye de supprimer une question alors qu'il y en a qu'une
   if(nbQuestions === 1) return;
 
   //On récupère celui qu'on doit supprimer
-  let numQuestion = e.target.id.substring(6, 7);
-  console.log("on supprime"+numQuestion);
+  let numQuestion = e.target.id.substring(6, 8);
   let nomContainerQuestion =  "containerQ"+numQuestion;
 
   //On le supprime
   formAllQuestions.removeChild(document.getElementById(nomContainerQuestion));
   
+  //On convertis en entier
   numQuestion = parseInt(numQuestion, 10);
 
   //Cas où on supprime la dernière question
   if(numQuestion === nbQuestions) {
     nbQuestions --;
+    if(nbQuestions == 14){
+      document.getElementById("AjouterQuestion").disabled = false;
+    }
     return;
   }
+
   //On décale tt les numeros des id
   while(numQuestion !== nbQuestions){
     let message = "containerQ"+(numQuestion+1);
@@ -307,20 +327,21 @@ async function supprimerQuestion(e){
 
     numQuestion ++;
   }
-
-
-
   nbQuestions --;
 
+  //On rend le bouton Nouvelle question à nouveau cliquable
+  if(nbQuestions == 14){
+    document.getElementById("AjouterQuestion").disabled = false;
+  }
 }
 
-async function createReponse(divCol, lettre){
+async function createReponse(divCol,divCol2, lettre){
   let reponseN = document.createElement("input");
   reponseN.type = "text";
   reponseN.id = "reponse"+lettre+ "" + nbQuestions;
   reponseN.required = true;
   reponseN.placeholder = "Saisissez la réponse "+lettre;
-  reponseN.style.width = "80%";
+  reponseN.className = "form-control";
 
   let bonneReponse = document.createElement("input");
   bonneReponse.type = "radio"
@@ -331,7 +352,7 @@ async function createReponse(divCol, lettre){
   if(lettre === "A") bonneReponse.checked = true;
 
   divCol.appendChild(bonneReponse);
-  divCol.appendChild(reponseN);
+  divCol2.appendChild(reponseN);
   
 };
 

@@ -9,12 +9,17 @@ const HomePage = async () => {
   if (!user) {
         Redirect("/RegisterAndLoginPage");
   }*/
+ 
+  let idUser = await (await fetch("/api/users/email/"+getSessionObject("user").email)).json();
+  console.log(idUser);
   main = document.querySelector("main");
   main.innerHTML = " "; // on reinitialise le main
-  
+
   divPage = document.createElement("div");
   divPage.className = "container-fluid";
+  divPage.id = "HomePageId";
   main.appendChild(divPage);
+
   // Titre de la page
   let containerSquizzGame = document.createElement("div");
   containerSquizzGame.className = "container-fluid my-5 text-center text-danger";
@@ -55,10 +60,8 @@ const HomePage = async () => {
   abonnements_title.innerHTML = "Abonnements";
   abonnements.appendChild(abonnements_title);
   divPage.appendChild(abonnements);
-  console.log(getSessionObject("user").email);
-  let idUser = await fetch("/api/users/email/"+getSessionObject("user").email);
-  idUser = await idUser.json();
-  let allQuizzAbonnements = await fetch("/api/quizz/abonnements/"+idUser.id_user); //TODO : récupérer l'id ici et remplacer le 1
+  
+  let allQuizzAbonnements = await fetch("/api/quizz/abonnements/"+idUser.id_user);
   allQuizzAbonnements = await allQuizzAbonnements.json();
   
   // Si il n'y a pas de quizz dans les abonnements
@@ -82,9 +85,7 @@ const HomePage = async () => {
 
   let allQuizz = await fetch("/api/quizz/");
   allQuizz = await allQuizz.json();
-  console.log(allQuizz);
   afficherQuizz(allQuizz);
- 
 };
 
 async function afficherQuizz(allQuizz){
@@ -99,7 +100,7 @@ async function afficherQuizz(allQuizz){
     for(let i=0; i <  3; i++){ 
         let indice = i+(j*3);
         let col = document.createElement("div");
-        col.className = "col-4";
+        col.className = "col-sm-4";
         row3Q.appendChild(col);
         if(allQuizz[indice] == undefined) break;
         
@@ -107,7 +108,6 @@ async function afficherQuizz(allQuizz){
         // Création de la card quizz
         let divCard = document.createElement("div");
         divCard.className = 'card';
-        divCard.style = "width: 18rem;";
         let div = document.createElement("div");
         div.className = 'card-body';
         divCard.appendChild(div);
@@ -130,7 +130,6 @@ async function afficherQuizz(allQuizz){
         // Description du quizz
         let description = document.createElement("p");
         description.className = "card-text";
-        description.style = " height: 4rem";
         let descriptionTexte = allQuizz[indice].description;
 
         // Tronquage de la description si elle est trop longue
@@ -145,10 +144,9 @@ async function afficherQuizz(allQuizz){
         let divButton = document.createElement("div");
         divButton.className = "d-grid gap-2";
         let buttonPlay = document.createElement("button");
-        buttonPlay.className = "btn btn-primary";
+        buttonPlay.className = "btn btn-primary btnJouer";
         buttonPlay.type = "button";
         buttonPlay.innerHTML = "Jouer";
-        buttonPlay.style = "width:100%";
         buttonPlay.addEventListener("click", redirectionQuizzPage);
         buttonPlay.id = allQuizz[indice].id_quizz;
         div.appendChild(buttonPlay);
