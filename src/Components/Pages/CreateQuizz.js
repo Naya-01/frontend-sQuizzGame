@@ -1,4 +1,8 @@
 import closeIcon from "../../img/croix.png";
+import { Redirect } from "../Router/Router";
+
+const Swal = require('sweetalert2');
+
 const escape = require("escape-html");
 
 let nbQuestions;
@@ -46,6 +50,12 @@ const CreateQuizz = async () => {
   titleLabel.innerHTML = "Titre du Quizz : ";
   containerTitleQuizz.appendChild(titleLabel);
   containerTitleQuizz.appendChild(divTitleQuizz);
+  let divErrorTitle = document.createElement("div");
+  divErrorTitle.className = "row";
+  let errorTitle = document.createElement("p");
+  errorTitle.id = "errorTitle";
+  divErrorTitle.appendChild(errorTitle);
+  containerTitleQuizz.appendChild(divErrorTitle);
   formAllQuestions.appendChild(containerTitleQuizz);
 
   // Ajout description du quizz
@@ -97,7 +107,12 @@ const CreateQuizz = async () => {
 
 async function soumettreQuizz(e){
   e.preventDefault();
+  let erreur = 0;
   let titleQuizz = escape(document.getElementById("titleQuizz").value);
+  if(titleQuizz.length > 150){
+    document.getElementById("errorTitle").innerHTML = "Le titre est trop long";
+    erreur++;
+  }
   let descQuizz = escape(document.getElementById("descQuizz").value);
   let allQuestions = [];
   //Récupération des questions
@@ -108,6 +123,43 @@ async function soumettreQuizz(e){
     let answerB = escape(document.getElementById("reponseB" + (i+1)).value);
     let answerC = escape(document.getElementById("reponseC" + (i+1)).value);
     let answerD = escape(document.getElementById("reponseD" + (i+1)).value);
+
+    let idError = "errorQ"+(i+1);
+    //TODO : changer avec des createelement p qu'on insert à la div erreur
+    document.getElementById(idError).innerHTML = ""; // on reinitialise
+    if(enonceQuestionN.length > 200){
+      let errorQ = document.createElement("p");
+      errorQ.innerHTML += "L'énonce est trop long.";
+      document.getElementById(idError).appendChild(errorQ);
+      erreur++;
+    }
+    if(answerA.length > 200){ 
+      let errorQ = document.createElement("p");
+      errorQ.innerHTML += "La réponse A est trop longue.";
+      document.getElementById(idError).appendChild(errorQ);
+      erreur++;    
+    }
+    if(answerB.length > 200){ 
+      let errorQ = document.createElement("p");
+      errorQ.innerHTML += "La réponse B est trop longue.";
+      document.getElementById(idError).appendChild(errorQ);
+      erreur++;
+    }
+    if(answerC.length > 200){ 
+      let errorQ = document.createElement("p");
+      errorQ.innerHTML += "La réponse C est trop longue.";
+      document.getElementById(idError).appendChild(errorQ);
+      erreur++;
+    }
+    if(answerD.length > 200){ 
+      let errorQ = document.createElement("p");
+      errorQ.innerHTML += "La réponse D est trop longue.";
+      document.getElementById(idError).appendChild(errorQ);
+      erreur++;
+    }
+
+
+
 
     let aBool = false;
     let bBool = false;
@@ -143,7 +195,6 @@ async function soumettreQuizz(e){
     allQuestions[i] = newQuestion;
   }
 
-  //getSessionObject;
   let options = {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     body: JSON.stringify({
@@ -154,13 +205,27 @@ async function soumettreQuizz(e){
     }), 
     headers: {
       "Content-Type": "application/json",
-      //Authorization: user.token,
     },
   };
+  if(erreur != 0 ) return;
   let response = await fetch("/api/quizz/", options);
-  console.log("j'ajoute");
-  main.innerHTML = "Le quizz a été ajouté avec succès";
-  console.log("prob");
+  Redirect("/");
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 5000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  })
+  
+  Toast.fire({
+    icon: 'success',
+    title: 'Votre quizz a bien été créé.'
+  })
   
 }
 
@@ -263,6 +328,18 @@ async function nouvelleQuestion(e) {
   
   divContainer.appendChild(divRowCD);
 
+  //Ajout de la div pour afficher l'erreur
+  let divErrorQ = document.createElement("div");
+  divErrorQ.className = "row mt-2";
+  divErrorQ.id = "errorQ"+(nbQuestions);
+  /*
+  let errorQ = document.createElement("p");
+  errorQ.id = "errorQ"+(nbQuestions);
+  divErrorQ.appendChild(errorQ);
+  */
+  divContainer.appendChild(divErrorQ);
+
+
   if(e != undefined) formAllQuestions.insertBefore(divContainer, containerNewQButton);
   else formAllQuestions.appendChild(divContainer);
   console.log(nbQuestions);
@@ -308,7 +385,8 @@ async function supprimerQuestion(e){
     element.innerHTML = numQuestion;
     message = "closeQ"+(numQuestion+1);
     document.getElementById(message).id = "closeQ"+numQuestion;
-    
+    message = "errorQ"+(numQuestion+1);
+    document.getElementById(message).id = "errorQ"+(numQuestion);
 
     let lettres = ["A","B","C","D"];
     // on change le name des radios button pour la bonne réponse
