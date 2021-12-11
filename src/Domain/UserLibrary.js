@@ -253,12 +253,17 @@ class UserLibrary {
                         else if(element.banned){
                           boxOfUsers +=`
                           <span class="card-text">Role : Banni</span>
+                          <span id="ban${element.id_user}"></span>
+                          
                           <button class="btn btn-secondary upgrade" disabled data-element-id="${element.id_user}" type="button">Promouvoir</button>
-                          <button class="btn btn-primary unban" data-element-id="${element.id_user}"  type="button">Debannir</button>`;
+                          <button class="btn btn-primary unban" data-element-id="${element.id_user}"  type="button">Debannir</button>
+                          `;
+                          
                         }
                         else{
                         boxOfUsers +=`
                           <span class="card-text">Role : Membre</span>
+                          <span id="user${element.id_user}"></span>
                             <button class="btn btn-success upgrade" data-element-id="${element.id_user}" type="button">Promouvoir</button>
                             <button class="btn btn-danger ban" data-element-id="${element.id_user}"  type="button">Bannir</button>`;}
                         boxOfUsers +=`
