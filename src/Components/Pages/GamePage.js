@@ -102,6 +102,8 @@ function timer(){
     myInterval=setInterval(timer,1000);
 }
 
+
+//we make the answer html
 function html_answer(answers){
     const divAnswer= document.getElementById('answers');
     let html_answer="";
@@ -137,6 +139,7 @@ function html_answer(answers){
     divAnswer.innerHTML = html_answer;
 }
 
+// we change the question and the answer
 async function questionSuivante(index){
     //recupération de mes questions depuis 1 quizz
     if(index>questions.length-1){
@@ -166,6 +169,7 @@ async function questionSuivante(index){
     answerFlip.forEach((answer) => answer.addEventListener("click", saveAnswerUser));
 }//fin question suivant
 
+//restart the cooldown when the user click on the next question button
 function restartCooldown(){
     bar.set(1); //restart progress bar
     bar.animate(0); //restart progress bar
@@ -189,6 +193,9 @@ function insertionAnswerBack(){
         getDivBack.innerHTML = divBack;
     }
 }
+
+//save answer user in the list answer_user
+// this.children[1].id: it's to receive the id of the answer select
 function saveAnswerUser(){
     console.log(answer_user);
     if(answer_user[position]){ // cant change his answer !!
@@ -201,6 +208,8 @@ function saveAnswerUser(){
     console.log(answer_user);
     flipAnswer();
 }
+//we stop the cooldown here and the progress bar
+// we add the the true result behind the choices because the user can see the answers with F12 with the function "insertionAnswerBack"
 function flipAnswer(){
     if(answer_user[position]===undefined) answer_user[position]=null;
     clearInterval(myInterval);
@@ -212,9 +221,6 @@ function flipAnswer(){
     }
 }
 
-// async function zebi(){
-//     await questionSuivante(41,++position)
-// }
 
 async function GamePage() {
     myMain.innerHTML = myPage;
