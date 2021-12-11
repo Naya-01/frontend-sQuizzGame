@@ -7,10 +7,13 @@ let medium=20000;
 let hard=10000;
 let position=0;
 let list_answer = [];
+let myInterval;
+let decompte=30;
+let bar = new ProgressBar.Line();
 let myPage = `<div id="page" class="container-fluid">
         <div id="bar-progress" class="row">
         </div>
-        <div id="couldown" class="row justify-content-center h2 text-danger">
+        <div id="cooldown" class="row justify-content-center h2 text-danger">
         </div>
 
         <div id="diff-question-pos" class="container-md  pt-5">
@@ -71,7 +74,7 @@ async function getAnswers(_id_question){
 function insertProgressBar(){
     //Bar
     let divBar = document.getElementById('bar-progress');
-    let bar = new ProgressBar.Line(divBar, {
+    bar = new ProgressBar.Line(divBar, {
         strokeWidth: 4,
         easing: 'linear',
         duration: easy,
@@ -85,15 +88,17 @@ function insertProgressBar(){
 
 function timer(){
     //countdown
-    let decompte=30;
-    let timer = function (){
-        if(decompte===0) clearInterval(countdown());
-        const cool = document.getElementById('couldown');
+    timer = function (){
+        if(decompte===0){
+            clearInterval(timer);
+            flipAnswer();
+            return;
+        }
+        const cool = document.getElementById('cooldown');
         decompte-=1;
         cool.innerText=decompte;
-        return decompte;
     }
-    let test = setInterval(timer,1000);
+    myInterval=setInterval(timer,1000);
 }
 
 function html_answer(answers){
@@ -149,6 +154,7 @@ async function questionSuivante(id_quizz,index){
     let btnNext = document.getElementById('nextQuestion');
     btnNext.addEventListener("click", async e => {
         e.preventDefault();
+        restartCooldown();
         await questionSuivante(41,++position);
     })
 
@@ -156,7 +162,14 @@ async function questionSuivante(id_quizz,index){
     answerFlip.forEach((answer) => answer.addEventListener("click", flipAnswer));
 }//fin question suivant
 
-function insertionAnswer(){
+function restartCooldown(){
+    bar.set(1); //restart progress bar
+    bar.animate(0); //restart progress bar
+    decompte=30;
+    myInterval=setInterval(timer,1000);
+}
+
+function insertionAnswerBack(){
     for(let i=0; i<=3;i++){
         let string = `answer_`+(i+1);
         let getDivBack = document.getElementById(string);
@@ -174,10 +187,12 @@ function insertionAnswer(){
 }
 
 function flipAnswer(){
-    insertionAnswer();
+    clearInterval(myInterval);
+    bar.stop();
+    insertionAnswerBack();
     let answers = document.querySelectorAll(".cards__single");
     for(const theAnswer of answers){
-        theAnswer.classList.toggle("flip");
+        theAnswer.classList.add("flip");
     }
 }
 
