@@ -1,5 +1,7 @@
 import ProgressBar from "progressbar.js";
+import {Redirect} from "../Router/Router";
 const Swal = require('sweetalert2');
+const Swal2 = require('sweetalert2');
 "use strict";
 
 const myMain = document.querySelector("main");
@@ -142,7 +144,21 @@ function html_answer(answers){
 
 function showQuestionWithMyAnswer(){
     let id = this.id;
-    console.log(id);
+    let index = id-1;
+    Swal.fire({
+        title: ` Question : ${questions[index].question}`,
+        html: `Votre réponse : ${answer_user[index].answer}`,
+        width: 500,
+        padding: '3em',
+        color: '#090808',
+        scrollbarPadding: false,
+        backdrop: `  rgba(80,80,80,0.7) `,
+        allowOutsideClick : false,
+        confirmButtonText: 'Retour au recap de vos questions',
+        preConfirm: (login)=> {
+            endGame();
+        }
+    })
 }
 
 function html_endGame(){
@@ -165,11 +181,6 @@ function html_endGame(){
         }
         modalPage +=`</div>`;
     }
-    // let btnRecap = document.querySelectorAll(".btn-recap");
-    // btnRecap.forEach((recap)=>recap.addEventListener("click",showQuestionWithMyAnswer));
-    // for (let i=0;i<answer_user.length;i++){
-    //
-    // }
     return modalPage;
 }
 function endGame(){
@@ -181,7 +192,14 @@ function endGame(){
         color: '#bf1139',
         scrollbarPadding: false,
         backdrop: `  rgba(80,80,80,0.7) `,
+        allowOutsideClick : false,
+        confirmButtonText: 'Retour à la page d\'accueil',
+        preConfirm: (login)=> {
+            Redirect("/");
+        }
     })
+    let btnRecap = document.querySelectorAll(".btn-recap");
+    btnRecap.forEach((recap)=>recap.addEventListener("click",showQuestionWithMyAnswer));
     let sal = document.getElementById('swal2-html-container');
     sal.style.overflow="visible";
 }
