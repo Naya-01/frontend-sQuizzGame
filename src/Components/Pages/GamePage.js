@@ -1,4 +1,5 @@
 import ProgressBar from "progressbar.js";
+const Swal = require('sweetalert2');
 "use strict";
 
 const myMain = document.querySelector("main");
@@ -139,11 +140,59 @@ function html_answer(answers){
     divAnswer.innerHTML = html_answer;
 }
 
+function showQuestionWithMyAnswer(){
+    let id = this.id;
+    console.log(id);
+}
+
+function html_endGame(){
+    let modalPage="";
+    let color;
+    let compteur=1;
+    for(let i=0;i<8/3;i++){
+        modalPage +=`
+        <div class="row" >
+    `;
+        for(let j=0;j<3;j++){
+            let indice = j+(i*3);
+            if(questions[indice] === undefined) break;
+            if(answer_user[indice]!==undefined && answer_user[indice].correct)color="btn-success";
+            else color="btn-danger";
+            modalPage += `<div class="col">
+            <button class="btn ${color} mt-3 btn-recap" id="${compteur}">Question ${compteur}</button>
+        </div>`;
+            compteur++;
+        }
+        modalPage +=`</div>`;
+    }
+    // let btnRecap = document.querySelectorAll(".btn-recap");
+    // btnRecap.forEach((recap)=>recap.addEventListener("click",showQuestionWithMyAnswer));
+    // for (let i=0;i<answer_user.length;i++){
+    //
+    // }
+    return modalPage;
+}
+function endGame(){
+    Swal.fire({
+        title: 'Récapitulatif des réponses',
+        html: html_endGame(),
+        width: 1000,
+        padding: '3em',
+        color: '#bf1139',
+        scrollbarPadding: false,
+        backdrop: `  rgba(80,80,80,0.7) `,
+    })
+    let sal = document.getElementById('swal2-html-container');
+    sal.style.overflow="visible";
+}
 // we change the question and the answer
 async function questionSuivante(index){
     //recupération de mes questions depuis 1 quizz
     if(index>questions.length-1){
         console.log("plus de questions !!"); /// on va redigirer vers la page de fin de jeu ici
+        flipAnswer();
+        await endGame();
+        return;
     }
     let Quest = document.getElementById('theQuestion');
     Quest.innerText=questions[index].question;
@@ -207,7 +256,7 @@ function saveAnswerUser(){
     for(let i=1;i<=list_answer.length;i++){
         let id_tmp="answer_"+i;
         if(id===id_tmp){
-            answer_user[position]=list_answer[i].id_answer;
+            answer_user[position]=list_answer[i-1];
         }
     }
     console.log(this.children[1].id);
@@ -218,7 +267,7 @@ function saveAnswerUser(){
 //we stop the cooldown here and the progress bar
 // we add the the true result behind the choices because the user can see the answers with F12 with the function "insertionAnswerBack"
 function flipAnswer(){
-    if(answer_user[position]===undefined) answer_user[position]=null;
+    // if(answer_user[position]===undefined) answer_user[position]=null;
     clearInterval(myInterval);
     bar.stop();
     insertionAnswerBack();
@@ -233,6 +282,7 @@ async function GamePage() {
     myMain.innerHTML = myPage;
     insertProgressBar();
     timer();
+    //57
     await getQuestions(41);
     console.log(questions);
     await questionSuivante(position);
