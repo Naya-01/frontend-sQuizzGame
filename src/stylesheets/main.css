@@ -39,6 +39,16 @@
 }
 
 
+
+
+.in-middle{
+    flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  height: 100vh;
+  }
+
 /*  ##################################   SEARCH BOX   #########################################      */
 .boxContainer{
     margin-left: 70%;

@@ -79,6 +79,91 @@ class UserLibrary {
       console.error("getUser::error: ", err);
     }
   }
+  /**
+   * 
+   * @param integer id_user 
+   * @paraminteger id_follower 
+   * @returns 1 if id_follower is following id_user
+   */
+  async isFollowing(id_user,id_follower) {
+    try {
+      const reponse = await fetch(`/api/users/isFollowing/ids?id1=${id_user}&id2=${id_follower}`);
+
+      if (!reponse.ok) {
+        throw new Error(
+          "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const bool = await reponse.json();
+      return bool;
+    } catch (err) {
+      console.error("isFollowing::error: ", err);
+    }
+  }
+
+  async subscribe(users) {
+    try {
+      if(!users) return false;
+      const options = {
+        method: "POST", 
+        body: JSON.stringify(users),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const reponse = await fetch("/api/users/subscribe",options);
+
+      if (!reponse.ok) {
+        throw new Error(
+          "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const usersToReturn = await reponse.json();
+      return usersToReturn;
+    } catch (err) {
+      console.error("getUser::error: ", err);
+    }
+  }
+
+  async unsubscribe(id_user,id_follower) {
+    try {
+      const options = {
+        method: "DELETE", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const reponse = await fetch(`/api/users/delete/subscription?id_user=${id_user}&id_follower=${id_follower}`,options);
+
+
+      if (!reponse.ok) {
+        throw new Error(
+          "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const usersToReturn = await reponse.json();
+      return usersToReturn;
+    } catch (err) {
+      console.error("unsubscribe::error: ", err);
+    }
+  }
+
+  async getTwoUsersById(id1,id2) {
+    try {
+      const reponse = await fetch(`/api/users/getTwoUsers/ids?id1=${id1}&id2=${id2}`);
+
+      if (!reponse.ok) {
+        throw new Error(
+          "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const users = await reponse.json();
+      return users;
+    } catch (err) {
+      console.error("getUser::error: ", err);
+    }
+  }
   
 
   async getUsers() {

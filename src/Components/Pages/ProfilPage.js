@@ -1,11 +1,17 @@
 import ProfilLibrary from "../../Domain/ProfilLibrary";
-
+import { getSessionObject } from "../../utils/session";
+import { Redirect } from "../Router/Router";
 
 const profilLibrary = new ProfilLibrary();
 
 const ProfilPage = async () => {
   const main = document.querySelector("main");
-  const page = await profilLibrary.getMyProfilPage("stefanIPL@gmail.com");
+  let userSession = getSessionObject("user");
+  if (!userSession) {
+    Redirect("/RegisterAndLoginPage");
+  }
+
+  const page = await profilLibrary.getMyProfilPage(userSession);
   main.innerHTML = page;
 
   main.querySelectorAll(".delete").forEach((button) => {
