@@ -1,4 +1,7 @@
 import ProgressBar from "progressbar.js";
+import {Redirect} from "../Router/Router";
+const Swal = require('sweetalert2');
+const Swal2 = require('sweetalert2');
 "use strict";
 
 const myMain = document.querySelector("main");
@@ -139,11 +142,75 @@ function html_answer(answers){
     divAnswer.innerHTML = html_answer;
 }
 
+function showQuestionWithMyAnswer(){
+    let id = this.id;
+    let index = id-1;
+    Swal.fire({
+        title: ` Question : ${questions[index].question}`,
+        html: `Votre réponse : ${answer_user[index].answer}`,
+        width: 500,
+        padding: '3em',
+        color: '#090808',
+        scrollbarPadding: false,
+        backdrop: `  rgba(80,80,80,0.7) `,
+        allowOutsideClick : false,
+        confirmButtonText: 'Retour au recap de vos questions',
+        preConfirm: (login)=> {
+            endGame();
+        }
+    })
+}
+
+function html_endGame(){
+    let modalPage="";
+    let color;
+    let compteur=1;
+    for(let i=0;i<8/3;i++){
+        modalPage +=`
+        <div class="row" >
+    `;
+        for(let j=0;j<3;j++){
+            let indice = j+(i*3);
+            if(questions[indice] === undefined) break;
+            if(answer_user[indice]!==undefined && answer_user[indice].correct)color="btn-success";
+            else color="btn-danger";
+            modalPage += `<div class="col">
+            <button class="btn ${color} mt-3 btn-recap" id="${compteur}">Question ${compteur}</button>
+        </div>`;
+            compteur++;
+        }
+        modalPage +=`</div>`;
+    }
+    return modalPage;
+}
+function endGame(){
+    Swal.fire({
+        title: 'Récapitulatif des réponses',
+        html: html_endGame(),
+        width: 1000,
+        padding: '3em',
+        color: '#bf1139',
+        scrollbarPadding: false,
+        backdrop: `  rgba(80,80,80,0.7) `,
+        allowOutsideClick : false,
+        confirmButtonText: 'Retour à la page d\'accueil',
+        preConfirm: (login)=> {
+            Redirect("/");
+        }
+    })
+    let btnRecap = document.querySelectorAll(".btn-recap");
+    btnRecap.forEach((recap)=>recap.addEventListener("click",showQuestionWithMyAnswer));
+    let sal = document.getElementById('swal2-html-container');
+    sal.style.overflow="visible";
+}
 // we change the question and the answer
 async function questionSuivante(index){
     //recupération de mes questions depuis 1 quizz
     if(index>questions.length-1){
         console.log("plus de questions !!"); /// on va redigirer vers la page de fin de jeu ici
+        flipAnswer();
+        await endGame();
+        return;
     }
     let Quest = document.getElementById('theQuestion');
     Quest.innerText=questions[index].question;
@@ -197,21 +264,28 @@ function insertionAnswerBack(){
 //save answer user in the list answer_user
 // this.children[1].id: it's to receive the id of the answer select
 function saveAnswerUser(){
-    console.log(answer_user);
     if(answer_user[position]){ // cant change his answer !!
         flipAnswer();
         return;
     }
+
+    let id = this.children[1].id;
+
+    for(let i=1;i<=list_answer.length;i++){
+        let id_tmp="answer_"+i;
+        if(id===id_tmp){
+            answer_user[position]=list_answer[i-1];
+        }
+    }
     console.log(this.children[1].id);
     console.log(position);
-    answer_user[position]=this.children[1].id;
     console.log(answer_user);
     flipAnswer();
 }
 //we stop the cooldown here and the progress bar
 // we add the the true result behind the choices because the user can see the answers with F12 with the function "insertionAnswerBack"
 function flipAnswer(){
-    if(answer_user[position]===undefined) answer_user[position]=null;
+    // if(answer_user[position]===undefined) answer_user[position]=null;
     clearInterval(myInterval);
     bar.stop();
     insertionAnswerBack();
@@ -226,6 +300,7 @@ async function GamePage() {
     myMain.innerHTML = myPage;
     insertProgressBar();
     timer();
+    //57
     await getQuestions(41);
     console.log(questions);
     await questionSuivante(position);
