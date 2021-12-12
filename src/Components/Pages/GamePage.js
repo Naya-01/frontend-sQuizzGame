@@ -107,7 +107,7 @@ function timer(){
 
 
 //we make the answer html
-function html_answer(answers){
+function html_answer(){
     const divAnswer= document.getElementById('answers');
     let html_answer="";
     list_answer=[]; // reset de la liste
@@ -145,15 +145,19 @@ function html_answer(answers){
 function showQuestionWithMyAnswer(){
     let id = this.id;
     let index = id-1;
+    let reponse;
+    if(answer_user[index]===undefined) reponse='Aucune réponse selectionner';
+    else reponse=answer_user[index].answer;
     Swal.fire({
         title: ` Question : ${questions[index].question}`,
-        html: `Votre réponse : ${answer_user[index].answer}`,
+        html: `Votre réponse : ${reponse}`,
         width: 500,
         padding: '3em',
         color: '#090808',
         scrollbarPadding: false,
         backdrop: `  rgba(80,80,80,0.7) `,
         allowOutsideClick : false,
+        allowEscapeKey: false,
         confirmButtonText: 'Retour au recap de vos questions',
         preConfirm: (login)=> {
             endGame();
@@ -193,6 +197,7 @@ function endGame(){
         scrollbarPadding: false,
         backdrop: `  rgba(80,80,80,0.7) `,
         allowOutsideClick : false,
+        allowEscapeKey: false,
         confirmButtonText: 'Retour à la page d\'accueil',
         preConfirm: (login)=> {
             Redirect("/");
@@ -223,7 +228,7 @@ async function questionSuivante(index){
     answers = await getAnswers(questions[index].id_question);
     console.log(answers);
     //mise des reponses dans html
-    html_answer(answers);
+    html_answer();
     let btnNext = document.getElementById('nextQuestion');
     btnNext.addEventListener("click", async e => {
         e.preventDefault();
@@ -296,12 +301,13 @@ function flipAnswer(){
 }
 
 
-async function GamePage() {
+async function GamePage(params) {
     myMain.innerHTML = myPage;
     insertProgressBar();
     timer();
     //57
-    await getQuestions(41);
+    console.log(params);
+    await getQuestions(params[0]);
     console.log(questions);
     await questionSuivante(position);
 
