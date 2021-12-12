@@ -158,9 +158,6 @@ async function soumettreQuizz(e){
       erreur++;
     }
 
-
-
-
     let aBool = false;
     let bBool = false;
     let cBool = false;
@@ -194,21 +191,30 @@ async function soumettreQuizz(e){
                                    {answer:answerD, "correct":dBool}, ]};
     allQuestions[i] = newQuestion;
   }
+  try{
+    let options = {
+      method: "POST",
+      body: JSON.stringify({
+        id_creator: getSessionObject("user").id_user,  
+        name: titleQuizz,
+        description: descQuizz,
+        questions:  allQuestions,
+      }), 
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    if(erreur != 0 ) return;
+    let reponse = await fetch("/api/quizz/", options);
+    if (!reponse.ok) {
+      throw new Error(
+        "fetch error : " + reponse.status + " : " + reponse.statusText
+      );
+      }
+  } catch (err) {
+    console.error("createQuizz::error: ", err);
+  }
 
-  let options = {
-    method: "POST", // *GET, POST, PUT, DELETE, etc.
-    body: JSON.stringify({
-      id_creator: getSessionObject("user").id_user,  
-      name: titleQuizz,
-      description: descQuizz,
-      questions:  allQuestions,
-    }), 
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-  if(erreur != 0 ) return;
-  let response = await fetch("/api/quizz/", options);
   Redirect("/");
   const Toast = Swal.mixin({
     toast: true,

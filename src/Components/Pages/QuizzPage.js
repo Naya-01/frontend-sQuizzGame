@@ -1,13 +1,15 @@
 import thumb from "../../img/thumb.png";
 import {getSessionObject} from "../../utils/session";
+import {setSessionObject} from "../../utils/session";
+import {removeSessionObject} from "../../utils/session";
 import {RedirectWithParams} from "../Router/Router";
 
 
 let myPage = `<div class="container">
-        <h1 class="text-center" id="titre-quizz"></h1>
+        <h1 class="text-center text-break" id="titre-quizz"></h1>
         <div class="row">
             <div class="col text-start"><a class="fs-3 btn btn-light text-dark rounded rounded-pill
-             border border-dark border-2 border creator-size">Créer par : <span id="quizz-creator">Mehdi</span></a></div>
+             border border-dark border-2 border creator-size">Créer par : <span class="text-break" id="quizz-creator">Mehdi</span></a></div>
             <div class="col text-end">
                 <button type="submit" name="button_like" class="fs-1 bg-transparent btn btn-lg shadow-none text-dark text-decoration-none" value="63">
                     <img src="${thumb}" width="60" alt="vote" class="img-fluid thumb"><span id="like-quizz"></span>
@@ -18,10 +20,10 @@ let myPage = `<div class="container">
             <div class="col-3"></div>
             <div class="col-6">
                 <h2 class="text-center">Bienvenue sur mon quizz !</h2>
-                <p class="fs-4 text-center" id="quizz-description"></p>
+                <p class="fs-4 text-center text-break" id="quizz-description"></p>
                 <p class="fs-4 text-center">Amusez-vous bien 😁</p>
             </div>
-            <div class="col-lg-3"></div>
+            <div class="col-3"></div>
         </div>
 
 
@@ -68,64 +70,32 @@ let myPage = `<div class="container">
         
 
         <!-- Scores Personnels-->
-        <div class="col">
+        <div class="col" id="personnal-best-scores">
             <div class="row m-auto">
                 <span class="fs-3 btn btn-light text-dark
                     border border-dark border-2 border">Mes meilleurs scores</span>
-            </div>
-            <div class="row mt-3">
-                <div class="col-4">
-                    <div>
-                        <span class="btn btn-light text-dark
-                        border border-dark border-2 border fs-4 margin-right-scores scores-size">Moyen</span>
-                    </div>
-                </div>
-                <div class="col-8">
-                    <div>
-                        <span class="btn btn-light text-dark
-                        border border-dark border-2 border fs-4 score">12.847</span>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-4">
-                    <div>
-                        <span class="btn btn-light text-dark
-                        border border-dark border-2 border fs-4 margin-right-scores scores-size">Facile</span>
-                    </div>
-                </div>
-                <div class="col-8">
-                    <div>
-                        <span class="btn btn-light text-dark
-                        border border-dark border-2 border fs-4 score">10.867</span>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-4">
-                    <div>
-                        <span class="btn btn-light text-dark
-                        border border-dark border-2 border fs-4 margin-right-scores scores-size">Difficile</span>
-                    </div>
-                </div>
-                <div class="col-8">
-                    <div>
-                        <span class="btn btn-light text-dark
-                        border border-dark border-2 border fs-4 score">2.617</span>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
     </div>`;
 
 function getDifficulty(id){
-    if(id===1)return "easy";
-    if(id===2)return "medium";
-    else return "hard";
+    if(id===1)return "Facile";
+    if(id===2)return "Moyen";
+    else return "Difficile";
 }
 
 async function QuizzPage(id) {
+
+    if(id){
+        const object = {
+            id_quizz: id
+        }
+        setSessionObject("current_quizz",object);
+    }else{
+        let current_quizz = getSessionObject("current_quizz");
+        id = current_quizz.id_quizz;
+    }
 
     console.log(id);
     const myMain = document.querySelector("main");
@@ -133,24 +103,40 @@ async function QuizzPage(id) {
 
     let user = getSessionObject("user");
 
-    let difficulty;
+    let quizz =  await fetch("/api/quizz/" + id);
+    quizz = await quizz.json();
 
-   /* let personnalsBestScores = await fetch("/api/participations/personnalsBestScores?id_quizz="+id+"&id_user="+user.id);
-    personnalsBestScores = personnalsBestScores.json();
-    console.log(personnalsBestScores); // A verifier dans la console, le résultat attendu n'est pas le bon.*/
+    let likes = await fetch("/api/quizz/likes/" + id)
+    likes = await likes.json();
 
-    /*if(personnalsBestScores.length===0){
-        let bestScores = document.getElementById("best-scores");
+    let like = document.getElementById("like-quizz");
+    like.innerText = likes[0].nblikes;
+
+    let titre = document.getElementById("titre-quizz");
+    titre.innerText = quizz.name;
+
+    let description = document.getElementById("quizz-description");
+    description.innerText = quizz.description;
+
+    let creatorName = document.getElementById("quizz-creator");
+    creatorName.innerText = quizz.username;
+
+   let personnalsBestScores = await fetch("/api/participations/personnalsBestScores?id_quizz="+id+"&id_user="+user.id_user);
+    personnalsBestScores = await personnalsBestScores.json();
+    console.log(personnalsBestScores);
+
+    if(personnalsBestScores.length===0){
+        let bestScores = document.getElementById("personnal-best-scores");
         let row = document.createElement("div");
-        row.className = "row mt-3 bg-danger";
+        row.className = "row mt-3";
         let span = document.createElement("span");
-        span.className = "fs-3 btn btn-light text-dark border border-dark border-2 border";
+        span.className = "fs-3 btn btn-light bg-warning fw-bolder text-dark border border-dark border-2 border";
         span.innerText = "Aucun score disponible";
         row.appendChild(span);
         bestScores.append(row);
     }else{
         for (let i = 0 ; i < personnalsBestScores.length ; i++){
-            let bestScores = document.getElementById("best-scores");
+            let bestScores = document.getElementById("personnal-best-scores");
             let rowScore = document.createElement("div");
             rowScore.className = "row mt-3";
             let rowScoreColumn1 = document.createElement("div");
@@ -160,11 +146,11 @@ async function QuizzPage(id) {
             let rowScoreColumn1Div = document.createElement("div");
             let spanFirstColumn = document.createElement("span");
             spanFirstColumn.className = "btn btn-light text-dark border border-dark border-2 border fs-4 margin-right-scores scores-size"
-            spanFirstColumn.innerText = "Difficulté"+(i+1);
+            spanFirstColumn.innerText = getDifficulty(personnalsBestScores[i].difficulty);
             let rowScoreColumn2Div = document.createElement("div");
             let spanSecondColumn = document.createElement("span");
             spanSecondColumn.className = "btn btn-light text-dark border border-dark border-2 border fs-4 score";
-            spanSecondColumn.innerText = personnalsBestScores[i].name+" | "+personnalsBestScores[i].score;
+            spanSecondColumn.innerText = personnalsBestScores[i].score;
             rowScoreColumn1Div.appendChild(spanFirstColumn);
             rowScoreColumn1.appendChild(rowScoreColumn1Div);
             rowScore.appendChild(rowScoreColumn1);
@@ -173,8 +159,9 @@ async function QuizzPage(id) {
             rowScore.appendChild(rowScoreColumn2);
             bestScores.append(rowScore);
         }
-    }*/
+    }
 
+    let difficulty;
     let btnEasy = document.getElementById("easy");
     let btnMedium = document.getElementById("medium");
     let btnHard = document.getElementById("hard");
@@ -209,39 +196,21 @@ async function QuizzPage(id) {
             notif.innerText="Veuillez selectionner une difficultée avant de jouer"
             notifRow.appendChild(notif);
         }else{
-            let params = [id,difficulty]
+            let params = [id,difficulty];
+            removeSessionObject("current_quizz");
             RedirectWithParams("/Game",params);
         }
     })
 
-
-
-    let quizz =  await fetch("/api/quizz/" + id);
-    quizz = await quizz.json();
-
-    let likes = await fetch("/api/quizz/likes/" + id)
-    likes = await likes.json();
-
-    let like = document.getElementById("like-quizz");
-    like.innerText = likes[0].nblikes;
-
-    let titre = document.getElementById("titre-quizz");
-    titre.innerText = quizz.name;
-
-    let description = document.getElementById("quizz-description");
-    description.innerText = quizz.description;
-
-    let creatorName = document.getElementById("quizz-creator");
-    creatorName.innerText = quizz.username;
-
     let allBestScores = await fetch("/api/participations/bestScores/" + id);
     allBestScores = await allBestScores.json();
+
     if(allBestScores.length===0){
         let bestScores = document.getElementById("best-scores");
         let row = document.createElement("div");
-        row.className = "row mt-3 bg-danger";
+        row.className = "row mt-3";
         let span = document.createElement("span");
-        span.className = "fs-3 btn btn-light text-dark border border-dark border-2 border";
+        span.className = "fs-3 btn btn-light bg-warning fw-bolder text-dark border border-dark border-2 border";
         span.innerText = "Aucun score disponible";
         row.appendChild(span);
         bestScores.append(row);
