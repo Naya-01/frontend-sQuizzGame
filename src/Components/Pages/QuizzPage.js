@@ -1,5 +1,7 @@
 import thumb from "../../img/thumb.png";
 import {getSessionObject} from "../../utils/session";
+import {setSessionObject} from "../../utils/session";
+import {removeSessionObject} from "../../utils/session";
 import {RedirectWithParams} from "../Router/Router";
 
 
@@ -7,7 +9,7 @@ let myPage = `<div class="container">
         <h1 class="text-center text-break" id="titre-quizz"></h1>
         <div class="row">
             <div class="col text-start"><a class="fs-3 btn btn-light text-dark rounded rounded-pill
-             border border-dark border-2 border creator-size">Créer par : <span id="quizz-creator">Mehdi</span></a></div>
+             border border-dark border-2 border creator-size">Créer par : <span class="text-break" id="quizz-creator">Mehdi</span></a></div>
             <div class="col text-end">
                 <button type="submit" name="button_like" class="fs-1 bg-transparent btn btn-lg shadow-none text-dark text-decoration-none" value="63">
                     <img src="${thumb}" width="60" alt="vote" class="img-fluid thumb"><span id="like-quizz"></span>
@@ -84,6 +86,16 @@ function getDifficulty(id){
 }
 
 async function QuizzPage(id) {
+
+    if(id){
+        const object = {
+            id_quizz: id
+        }
+        setSessionObject("current_quizz",object);
+    }else{
+        let current_quizz = getSessionObject("current_quizz");
+        id = current_quizz.id_quizz;
+    }
 
     console.log(id);
     const myMain = document.querySelector("main");
@@ -185,13 +197,10 @@ async function QuizzPage(id) {
             notifRow.appendChild(notif);
         }else{
             let params = [id,difficulty];
+            removeSessionObject("current_quizz");
             RedirectWithParams("/Game",params);
         }
     })
-
-
-
-
 
     let allBestScores = await fetch("/api/participations/bestScores/" + id);
     allBestScores = await allBestScores.json();
