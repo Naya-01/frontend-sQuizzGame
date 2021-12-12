@@ -145,7 +145,6 @@ class ProfilLibrary {
         method: "DELETE",
         };
 
-        console.log("options:", options);
         const response = await fetch("/api/quizz/"+id_quizz, options);
 
         if (!response.ok) {

@@ -29,7 +29,6 @@ const AnotherOneProfilPage = async () => {
 
     if (subscribeButton == null) {
       unsubscribeButton.addEventListener("click", async (e) => {
-        console.log("ok");
         let elementIdUser = e.target.dataset.elementIdUser;
         let elementIdFollower = e.target.dataset.elementIdFollower;
         await userLibrary.unsubscribe(elementIdUser, elementIdFollower);
@@ -37,7 +36,6 @@ const AnotherOneProfilPage = async () => {
       });
     } else {
       subscribeButton.addEventListener("click", async (e) => {
-        console.log("ok");
         let elementIdUser = e.target.dataset.elementIdUser;
         let elementIdFollower = e.target.dataset.elementIdFollower;
         let users = {

@@ -1,6 +1,6 @@
 import UserLibrary from "../../Domain/UserLibrary";
 import { getSessionObject } from "../../utils/session";
-import { Redirect } from "../Router/Router";
+import { Redirect,RedirectWithParamsInUrl } from "../Router/Router";
 const userLibrary = new UserLibrary();
 
 const PanelAdminPage = async (filter) => {
@@ -13,7 +13,7 @@ const PanelAdminPage = async (filter) => {
   if (!user.is_admin) Redirect("/");
   else {
     const main = document.querySelector("main");
-    let page = await userLibrary.getPanelAdminPage(filter);
+    let page = await userLibrary.getPanelAdminPage(filter,userSession);
     main.innerHTML = page;
 
     main.querySelectorAll(".ban").forEach(async (button) => {
@@ -63,6 +63,14 @@ const PanelAdminPage = async (filter) => {
         buttonNo.addEventListener("click", (e) => {
           PanelAdminPage(filter);
         });
+      });
+    });
+
+    main.querySelectorAll(".linkUsername").forEach(async (button) => {
+      button.addEventListener("click", async (e) => {
+        e.preventDefault();
+        let elementId = e.target.dataset.elementId;
+        RedirectWithParamsInUrl("/Profil","?idUser="+elementId);
       });
     });
 

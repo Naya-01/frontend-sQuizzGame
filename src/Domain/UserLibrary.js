@@ -1,5 +1,5 @@
 class UserLibrary {
-  async getPanelAdminPage(filter) {
+  async getPanelAdminPage(filter,userSession) {
     try {
       if(filter===undefined) filter="";
       let page = `
@@ -35,7 +35,7 @@ class UserLibrary {
       let users;
       if(!filter) users = await this.getUsers();
       else users = await this.getUsersWithFilter(filter);
-      page += await this.displayUsers(users);
+      page += await this.displayUsers(users,userSession);
 
     
       page += `
@@ -308,56 +308,58 @@ class UserLibrary {
     }
   }
 
-  async displayUsers(users) {
+  async displayUsers(users,userSession) {
     try {
       
       let boxOfUsers = `<div class="row justify-content-md-center">`;
       let fin = users.length;
       if (fin > 0) {
         users.forEach((element) => {
-          boxOfUsers += `
-            <div class="col-lg-4 col-md-5">
-                <div class="card m-3" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">${element.name}</h5>`;
-                        let descriptionTexte = element.email;
-                        if(descriptionTexte.length > 60){
-                          descriptionTexte = descriptionTexte.substring(0, 55);
-                          descriptionTexte += " ...";
-                        }
-                        boxOfUsers += `
-                        <h6 class="card-subtitle mb-2 text-muted emailsUsersBox underline" style ="height:2rem" data-element-id="${element.id_user}" data-element-long-email="${element.email}" data-element-email="${descriptionTexte} ">${descriptionTexte}</h6>
-                        <span id="email${element.id_user}" hidden>0</span>`;
-                        boxOfUsers += `
-                        <div class="d-grid gap-2">`;
-                        if(element.is_admin){
+          if(element.id_user!==userSession.id_user){
+            boxOfUsers += `
+              <div class="col-lg-4 col-md-5">
+                  <div class="card m-3" style="width: 18rem;">
+                      <div class="card-body">
+                          <a href="#" ><h5 class="card-title linkUsername" data-element-id="${element.id_user}">${element.name}</h5></a>`;
+                          let descriptionTexte = element.email;
+                          if(descriptionTexte.length > 60){
+                            descriptionTexte = descriptionTexte.substring(0, 55);
+                            descriptionTexte += " ...";
+                          }
+                          boxOfUsers += `
+                          <h6 class="card-subtitle mb-2 text-muted emailsUsersBox underline" style ="height:2rem" data-element-id="${element.id_user}" data-element-long-email="${element.email}" data-element-email="${descriptionTexte} ">${descriptionTexte}</h6>
+                          <span id="email${element.id_user}" hidden>0</span>`;
+                          boxOfUsers += `
+                          <div class="d-grid gap-2">`;
+                          if(element.is_admin){
+                            boxOfUsers +=`
+                            <span class="card-text">Role : Admin</span>
+                            <button class="btn btn-secondary upgrade " disabled data-element-id="${element.id_user}" type="button">Promouvoir</button>
+                            <button class="btn btn-secondary ban " disabled data-element-id="${element.id_user}"  type="button">Bannir</button>`;}
+                          else if(element.banned){
+                            boxOfUsers +=`
+                            <span class="card-text">Role : Banni</span>
+                            <span id="ban${element.id_user}"></span>
+                            
+                            <button class="btn btn-secondary upgrade" disabled data-element-id="${element.id_user}" type="button">Promouvoir</button>
+                            <button class="btn btn-primary unban" data-element-id="${element.id_user}"  type="button">Debannir</button>
+                            `;
+                            
+                          }
+                          else{
                           boxOfUsers +=`
-                          <span class="card-text">Role : Admin</span>
-                          <button class="btn btn-secondary upgrade " disabled data-element-id="${element.id_user}" type="button">Promouvoir</button>
-                          <button class="btn btn-secondary ban " disabled data-element-id="${element.id_user}"  type="button">Bannir</button>`;}
-                        else if(element.banned){
+                            <span class="card-text">Role : Membre</span>
+                            <span id="user${element.id_user}"></span>
+                              <button class="btn btn-success upgrade" data-element-id="${element.id_user}" type="button">Promouvoir</button>
+                              <button class="btn btn-danger ban" data-element-id="${element.id_user}"  type="button">Bannir</button>`;}
                           boxOfUsers +=`
-                          <span class="card-text">Role : Banni</span>
-                          <span id="ban${element.id_user}"></span>
-                          
-                          <button class="btn btn-secondary upgrade" disabled data-element-id="${element.id_user}" type="button">Promouvoir</button>
-                          <button class="btn btn-primary unban" data-element-id="${element.id_user}"  type="button">Debannir</button>
-                          `;
-                          
-                        }
-                        else{
-                        boxOfUsers +=`
-                          <span class="card-text">Role : Membre</span>
-                          <span id="user${element.id_user}"></span>
-                            <button class="btn btn-success upgrade" data-element-id="${element.id_user}" type="button">Promouvoir</button>
-                            <button class="btn btn-danger ban" data-element-id="${element.id_user}"  type="button">Bannir</button>`;}
-                        boxOfUsers +=`
-                        </div>
-                    </div>
-                </div>
-            
-            </div>
+                          </div>
+                      </div>
+                  </div>
+              
+              </div>
             `;
+          }    
         });
         boxOfUsers += `</div>`;
         return boxOfUsers;

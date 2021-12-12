@@ -66,6 +66,7 @@ const Redirect = (page) => {
   }
 };
 
+
 const RedirectWithParams = (page, params) => {
   window.history.pushState({}, page, window.location.origin + page);
   const componentToRender = routes[page];
@@ -76,4 +77,14 @@ const RedirectWithParams = (page, params) => {
   }
 };
 
-export { Router, Redirect, RedirectWithParams };
+const RedirectWithParamsInUrl = (page,action) => {
+  window.history.pushState({}, page, window.location.origin + page + action);
+  const componentToRender = routes[page];
+  if (routes[page]) {
+    componentToRender();
+  } else {
+    throw Error("La " + page + " n'existe pas");
+  }
+};
+
+export { Router, Redirect, RedirectWithParams, RedirectWithParamsInUrl };
