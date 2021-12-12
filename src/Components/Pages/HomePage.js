@@ -1,128 +1,156 @@
 import { getSessionObject } from "../../utils/session";
 import { RedirectWithParams } from "../Router/Router";
 let main;
-let divPage;
+let div_page;
+
 //TODO : avoir plusieurs pages au lieu d'un scroll infini
 const HomePage = async () => {
-  let idUser = await (await fetch("/api/users/email/"+getSessionObject("user").email)).json();
-  console.log(idUser);
+  
   main = document.querySelector("main");
-  main.innerHTML = " "; // on reinitialise le main
+  //TODO : supprimer le fais que en spammant ça duplique
+  let ancienne_div_page = document.getElementById("HomePageId");
+  if(ancienne_div_page != null) ancienne_div_page.innerHTML = "";
+  main.innerHTML = "";  // on reinitialise le main
 
-  divPage = document.createElement("div");
-  divPage.className = "container-fluid";
-  divPage.id = "HomePageId";
-  main.appendChild(divPage);
+  // Ajout du titre de la page
+  let container_title_page = document.createElement("div");
+  container_title_page.className = "container-fluid my-5 text-center text-danger";
+  let title_page = document.createElement("h1");
+  title_page.innerHTML = "sQuizzGame";
+  container_title_page.appendChild(title_page);
+  main.appendChild(container_title_page);
 
-  // Titre de la page
-  let containerSquizzGame = document.createElement("div");
-  containerSquizzGame.className = "container-fluid my-5 text-center text-danger";
-  let titleSquizzGame = document.createElement("h1");
-  titleSquizzGame.innerHTML = "sQuizzGame";
-  containerSquizzGame.appendChild(titleSquizzGame);
-  divPage.appendChild(containerSquizzGame);
+  // Ajout de la barre de recherche
+  boutonRecherche();
 
-
-  let container = document.createElement("div");
-  container.className = "container";
+  //Création du container qui va contenir quasi toute la page
+  div_page = document.createElement("div");
+  div_page.className = "container-fluid";
+  div_page.id = "HomePageId";
+  main.appendChild(div_page);
 
   // Sous-Titre Tendances
-  let tendances = document.createElement("div")
-  tendances.className = "container";
-  let tendances_title = document.createElement("h4");
-  tendances_title.innerHTML = "Tendances";
-  tendances.appendChild(tendances_title);
-  divPage.appendChild(tendances);
-
-  let allQuizzTendances = await fetch("/api/quizz/mostliked");
-  allQuizzTendances = await allQuizzTendances.json();
-  // Si il n'y a pas de quizz en tendances
-  if(allQuizzTendances.length == 0){
-    let messageP = document.createElement("p");
-    messageP.innerHTML = "Pas de quizz en tendances pour le moment ...";
-    tendances.appendChild(messageP);
+  creerSousTitre("Tendances");
+  try{
+    let reponse = await fetch("/api/quizz/mostliked");
+    if (!reponse.ok) {
+      throw new Error(
+        "fetch error : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+    let all_quizz_tendances = await reponse.json();
+    // Si il n'y a pas de quizz en tendances
+    if(all_quizz_tendances.length == 0){
+      let message = document.createElement("p");
+      message.innerHTML = "Pas de quizz en tendances pour le moment ...";
+      let tendances = document.getElementById("titre_Tendances");
+      tendances.appendChild(message);
+    }
+    else{
+      afficherQuizz(all_quizz_tendances);
+    }
+  } catch (err) {
+    console.error("getTendances::error: ", err);
   }
-  else{
-    afficherQuizz(allQuizzTendances);
-  }
+  
 
 
   // Sous-Titre Abonnements
-  let abonnements = document.createElement("div")
-  abonnements.className = "container";
-  let abonnements_title = document.createElement("h4");
-  abonnements_title.innerHTML = "Abonnements";
-  abonnements.appendChild(abonnements_title);
-  divPage.appendChild(abonnements);
-  
-  let allQuizzAbonnements = await fetch("/api/quizz/abonnements/"+idUser.id_user);
-  allQuizzAbonnements = await allQuizzAbonnements.json();
-  
-  // Si il n'y a pas de quizz dans les abonnements
-  if(allQuizzAbonnements.length == 0){
-    let messageP = document.createElement("p");
-    messageP.innerHTML = "Pas de quizz dans les abonnements pour le moment ...";
-    abonnements.appendChild(messageP);
-  }
-  else{
-    afficherQuizz(allQuizzAbonnements);
+  creerSousTitre("Abonnements");
+
+  let id_user = getSessionObject("user").id_user;
+  try{
+    let reponse = await fetch("/api/quizz/abonnements/"+id_user);
+    if (!reponse.ok) {
+      throw new Error(
+        "fetch error : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+
+    let all_quizz_abonnements = await reponse.json();
+    
+    // Si il n'y a pas de quizz dans les abonnements
+    if(all_quizz_abonnements.length == 0){
+      let message = document.createElement("p");
+      message.innerHTML = "Pas de quizz dans les abonnements pour le moment ...";
+      console.log("oklm");
+      let abonnements = document.getElementById("titre_Abonnements");
+      abonnements.appendChild(message);
+    }
+    else{
+      afficherQuizz(all_quizz_abonnements);
+    }
+  }catch (err) {
+    console.error("getAbonnements::error: ", err);
   }
 
 
   // Sous-Titre Explorer
-  let explorer = document.createElement("div")
-  explorer.className = "container";
-  let explorer_title = document.createElement("h4");
-  explorer_title.innerHTML = "Explorer";
-  explorer.appendChild(explorer_title);
-  divPage.appendChild(explorer);
-
-  let allQuizz = await fetch("/api/quizz/");
-  allQuizz = await allQuizz.json();
-  afficherQuizz(allQuizz);
+  creerSousTitre("Explorer");
+  try{
+    let reponse = await fetch("/api/quizz/explorer");
+    if (!reponse.ok) {
+      throw new Error(
+        "fetch error : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+    let all_quizz_explorer = await reponse.json();
+    afficherQuizz(all_quizz_explorer);
+  }catch (err) {
+    console.error("getExplorer::error: ", err);
+  }
 };
 
+async function creerSousTitre(nom_sous_titre){
+  let div_sous_titre = document.createElement("div")
+  div_sous_titre.className = "container ";
+  div_sous_titre.id = "titre_"+nom_sous_titre;
+  let sous_titre = document.createElement("h4");
+  sous_titre.innerHTML = nom_sous_titre;
+  div_sous_titre.appendChild(sous_titre);
+  div_page.appendChild(div_sous_titre);
+}
 
-async function afficherQuizz(allQuizz){
+async function afficherQuizz(all_quizz){
    // Créer une row
-   for(let j = 0; j < allQuizz.length/3; j++){
-    let container3Q = document.createElement("div");
-    container3Q.className = "container my-5"
-    divPage.appendChild(container3Q);
-    let row3Q = document.createElement("div");
-    row3Q.className = "row";
-    container3Q.appendChild(row3Q);
+   for(let j = 0; j < all_quizz.length/3; j++){
+    let container_3Q = document.createElement("div");
+    container_3Q.className = "container my-5"
+    div_page.appendChild(container_3Q);
+    let row_3Q = document.createElement("div");
+    row_3Q.className = "row";
+    container_3Q.appendChild(row_3Q);
     for(let i=0; i <  3; i++){ 
         let indice = i+(j*3);
         let col = document.createElement("div");
         col.className = "col-sm-4";
-        row3Q.appendChild(col);
-        if(allQuizz[indice] == undefined) break;
+        row_3Q.appendChild(col);
+        if(all_quizz[indice] == undefined) break;
         
 
         // Création de la card quizz
-        let divCard = document.createElement("div");
-        divCard.className = 'card';
+        let div_card = document.createElement("div");
+        div_card.className = 'card';
         let div = document.createElement("div");
         div.className = 'card-body';
-        divCard.appendChild(div);
-        col.appendChild(divCard);
+        div_card.appendChild(div);
+        col.appendChild(div_card);
         
         // Nom du quizz
         let title = document.createElement("h5");
         title.className = 'card-title';
-        let titleTexte = allQuizz[indice].name;
+        let title_texte = all_quizz[indice].name;
         // Tronquage du titre du quizz si il est trop long
-        if(titleTexte.length > 25){
-          titleTexte = titleTexte.substring(0, 25);
-          titleTexte += " ...";
+        if(title_texte.length > 25){
+          title_texte = title_texte.substring(0, 25);
+          title_texte += " ...";
         }
-        title.innerHTML = titleTexte;
+        title.innerHTML = title_texte;
 
         div.appendChild(title);
         
         // Créateur du quizz
-        let creator = allQuizz[indice].user_name;
+        let creator = all_quizz[indice].user_name;
         let subtitle = document.createElement("h6");
         subtitle.className = "card-subtitle mb-2 text-muted";
         subtitle.innerHTML = "par "+creator;
@@ -131,26 +159,26 @@ async function afficherQuizz(allQuizz){
         // Description du quizz
         let description = document.createElement("p");
         description.className = "card-text";
-        let descriptionTexte = allQuizz[indice].description;
+        let description_texte = all_quizz[indice].description;
 
         // Tronquage de la description si elle est trop longue
-        if(descriptionTexte.length > 40){
-          descriptionTexte = descriptionTexte.substring(0, 40);
-          descriptionTexte += " ...";
+        if(description_texte.length > 60){
+          description_texte = description_texte.substring(0, 60);
+          description_texte += " ...";
         }
-        description.innerHTML = descriptionTexte;
+        description.innerHTML = description_texte;
         div.appendChild(description);
         
         // Bouton pour jouer au quizz
-        let divButton = document.createElement("div");
-        divButton.className = "d-grid gap-2";
-        let buttonPlay = document.createElement("button");
-        buttonPlay.className = "btn btn-primary btnJouer";
-        buttonPlay.type = "button";
-        buttonPlay.innerHTML = "Jouer";
-        buttonPlay.addEventListener("click", redirectionQuizzPage);
-        buttonPlay.id = allQuizz[indice].id_quizz;
-        div.appendChild(buttonPlay);
+        let div_button = document.createElement("div");
+        div_button.className = "d-grid gap-2";
+        let button_play = document.createElement("button");
+        button_play.className = "btn btn-primary btnJouer";
+        button_play.type = "button";
+        button_play.innerHTML = "Jouer";
+        button_play.addEventListener("click", redirectionQuizzPage);
+        button_play.id = all_quizz[indice].id_quizz;
+        div.appendChild(button_play);
     } 
   }  
 }
@@ -158,6 +186,46 @@ async function afficherQuizz(allQuizz){
 async function redirectionQuizzPage(e){
   e.preventDefault();
   RedirectWithParams("/Quizz",this.id);
+}
+
+async function boutonRecherche(){
+  main.innerHTML += `<div class="boxContainer">
+                          <table class="elementsContainer">
+                            <tr>
+                              <td>
+                                <input type="text" placeholder="Chercher" class="search" name="searchBar" id="searchBar" >
+                              </td>
+                              <td>
+                                <a href="#" id="searchButton">
+                                  <span class="material-icons">search</span>
+                                </a>
+                              </td>
+                            </tr>
+                          </table>
+                        </div>`;
+
+  let search = main.querySelector("#searchButton");
+  search.addEventListener("click", async (e) => {
+    e.preventDefault();
+    rechercherQuizz();
+  });
+}
+async function rechercherQuizz(){
+  console.log("ici : "+document.getElementById("searchBar").value);
+  div_page.innerHTML = "";
+  let critere = document.getElementById("searchBar").value;
+  try{
+    let reponse = await fetch("/api/quizz/recherche/"+critere);
+    if (!reponse.ok) {
+      throw new Error(
+        "fetch error : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+    let all_quizz_recherche = await reponse.json();
+    afficherQuizz(all_quizz_recherche);
+  }catch (err) {
+    console.error("getRecherche::error: ", err);
+  }
 }
 
 export default HomePage;

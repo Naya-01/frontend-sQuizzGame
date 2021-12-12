@@ -1,5 +1,6 @@
 import closeIcon from "../../img/croix.png";
 import { Redirect } from "../Router/Router";
+import { getSessionObject } from "../../utils/session";
 
 const Swal = require('sweetalert2');
 
@@ -125,7 +126,6 @@ async function soumettreQuizz(e){
     let answerD = escape(document.getElementById("reponseD" + (i+1)).value);
 
     let idError = "errorQ"+(i+1);
-    //TODO : changer avec des createelement p qu'on insert à la div erreur
     document.getElementById(idError).innerHTML = ""; // on reinitialise
     if(enonceQuestionN.length > 200){
       let errorQ = document.createElement("p");
@@ -157,9 +157,6 @@ async function soumettreQuizz(e){
       document.getElementById(idError).appendChild(errorQ);
       erreur++;
     }
-
-
-
 
     let aBool = false;
     let bBool = false;
@@ -194,21 +191,30 @@ async function soumettreQuizz(e){
                                    {answer:answerD, "correct":dBool}, ]};
     allQuestions[i] = newQuestion;
   }
+  try{
+    let options = {
+      method: "POST",
+      body: JSON.stringify({
+        id_creator: getSessionObject("user").id_user,  
+        name: titleQuizz,
+        description: descQuizz,
+        questions:  allQuestions,
+      }), 
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    if(erreur != 0 ) return;
+    let reponse = await fetch("/api/quizz/", options);
+    if (!reponse.ok) {
+      throw new Error(
+        "fetch error : " + reponse.status + " : " + reponse.statusText
+      );
+      }
+  } catch (err) {
+    console.error("createQuizz::error: ", err);
+  }
 
-  let options = {
-    method: "POST", // *GET, POST, PUT, DELETE, etc.
-    body: JSON.stringify({
-      id_creator: 1,  //TODO : modifier en récupérant le id dans le cookie
-      name: titleQuizz,
-      description: descQuizz,
-      questions:  allQuestions,
-    }), 
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-  if(erreur != 0 ) return;
-  let response = await fetch("/api/quizz/", options);
   Redirect("/");
   const Toast = Swal.mixin({
     toast: true,
