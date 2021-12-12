@@ -197,14 +197,21 @@ function insertionAnswerBack(){
 //save answer user in the list answer_user
 // this.children[1].id: it's to receive the id of the answer select
 function saveAnswerUser(){
-    console.log(answer_user);
     if(answer_user[position]){ // cant change his answer !!
         flipAnswer();
         return;
     }
+
+    let id = this.children[1].id;
+
+    for(let i=1;i<=list_answer.length;i++){
+        let id_tmp="answer_"+i;
+        if(id===id_tmp){
+            answer_user[position]=list_answer[i].id_answer;
+        }
+    }
     console.log(this.children[1].id);
     console.log(position);
-    answer_user[position]=this.children[1].id;
     console.log(answer_user);
     flipAnswer();
 }

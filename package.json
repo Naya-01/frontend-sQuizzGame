@@ -23,7 +23,8 @@
   "dependencies": {
     "@popperjs/core": "^2.9.2",
     "bootstrap": "^5.0.1",
-    "progressbar.js": "^1.1.0"
+    "progressbar.js": "^1.1.0",
+    "sweetalert2": "^11.3.0"
   },
   "license": "CC-BY-SA-4.0"
 }
