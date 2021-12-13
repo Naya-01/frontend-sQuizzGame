@@ -2,6 +2,7 @@ import UserLibrary from "../../Domain/UserLibrary";
 import { getSessionObject } from "../../utils/session";
 import { Redirect,RedirectWithParamsInUrl } from "../Router/Router";
 const userLibrary = new UserLibrary();
+let filterOfSearch;
 
 const PanelAdminPage = async (filter) => {
   let userSession = getSessionObject("user");
@@ -13,6 +14,9 @@ const PanelAdminPage = async (filter) => {
   if (!user.is_admin) Redirect("/");
   else {
     const main = document.querySelector("main");
+    if(filter===undefined) filter="";
+    filterOfSearch=filter; 
+    console.log(filterOfSearch);
     let page = await userLibrary.getPanelAdminPage(filter,userSession);
     main.innerHTML = page;
 
@@ -70,7 +74,7 @@ const PanelAdminPage = async (filter) => {
       button.addEventListener("click", async (e) => {
         e.preventDefault();
         let elementId = e.target.dataset.elementId;
-        RedirectWithParamsInUrl("/Profil","?idUser="+elementId);
+        RedirectWithParamsInUrl("/Profil?idUser="+elementId);
       });
     });
 
@@ -171,12 +175,15 @@ const PanelAdminPage = async (filter) => {
       });
     });
 
-    let search = document.querySelector("#searchButton");
-    search.addEventListener("click", async (e) => {
+
+    let searchButton = document.querySelector("#searchButton");
+    let inputSearchBox = document.querySelector("#searchBar");
+    searchButton.addEventListener("click", async (e) => {
       e.preventDefault();
-      let inputSearchBox = document.getElementById("searchBar");
       PanelAdminPage(inputSearchBox.value);
     });
+    inputSearchBox.addEventListener('keydown', listenerPressEnterSearchBar);
+
 
     main.querySelectorAll(".emailsUsersBox").forEach((emailDisplayed) => {
       emailDisplayed.addEventListener("click", (e) => {
@@ -201,5 +208,12 @@ const PanelAdminPage = async (filter) => {
     });
   }
 };
+
+const listenerPressEnterSearchBar = async (e) =>{
+  if(e.key==="Enter"){
+    let inputSearchBox = document.querySelector("#searchBar");
+    await PanelAdminPage(inputSearchBox.value);
+  } 
+}
 
 export { PanelAdminPage };

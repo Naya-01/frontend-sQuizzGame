@@ -19,10 +19,7 @@ const AnotherOneProfilPage = async () => {
   if (userSession.id_user == idUserUrl) {
     Redirect("/Profil/MyProfil");
   } else {
-    const page = await profilLibrary.getAnotherOneProfilPage(
-      userSession,
-      idUserUrl
-    );
+    const page = await profilLibrary.getAnotherOneProfilPage(userSession,idUserUrl);
     main.innerHTML = page;
     const subscribeButton = document.getElementById("subscribe");
     const unsubscribeButton = document.getElementById("unsubscribe");

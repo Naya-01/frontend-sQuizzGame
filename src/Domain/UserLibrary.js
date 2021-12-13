@@ -1,7 +1,6 @@
 class UserLibrary {
   async getPanelAdminPage(filter,userSession) {
     try {
-      if(filter===undefined) filter="";
       let page = `
         <div class="container">
           <div class="text-center">
