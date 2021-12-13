@@ -3,6 +3,7 @@ import {getSessionObject} from "../../utils/session";
 import {setSessionObject} from "../../utils/session";
 import {removeSessionObject} from "../../utils/session";
 import {Redirect, RedirectWithParams, RedirectWithParamsInUrl} from "../Router/Router";
+import Swal from "sweetalert2";
 
 
 let myPage = `<div class="container">
@@ -11,7 +12,7 @@ let myPage = `<div class="container">
             <div class="col text-start"><a class="fs-3 btn btn-light text-dark rounded rounded-pill
              border border-dark border-2 border creator-size" id="quizz-creator"><span class="text-break" >Mehdi</span></a></div>
             <div class="col text-end">
-                <button type="submit" name="button_like" class="fs-1 bg-transparent btn btn-lg shadow-none text-dark text-decoration-none" value="63">
+                <button type="submit" name="button_like" id="btn-like" class="fs-1 bg-transparent btn btn-lg shadow-none text-dark text-decoration-none" value="63">
                     <img src="${thumb}" width="60" alt="vote" class="img-fluid thumb"><span id="like-quizz"></span>
                 </button>
             </div>
@@ -118,6 +119,52 @@ async function QuizzPage(id) {
         }
 
     })
+
+    let btnLike = document.getElementById("btn-like");
+    btnLike.addEventListener("click",async e => {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+        let error = false;
+        try {
+            let options = {
+                method: "POST",
+                body: JSON.stringify({
+                    id_quizz: id,
+                    id_user: user.id_user,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            };
+            let reponse = await fetch("/api/quizz/likes/", options);
+            if (!reponse.ok) {
+                throw new Error("fetch error : " + reponse.status + " : " + reponse.statusText);
+            }
+        } catch (err) {
+            error = true;
+        }
+        if(error){
+            Toast.fire({
+                icon: 'error',
+                title: 'Vous avez déjà like.'
+            })
+        }else{
+            Toast.fire({
+                icon: 'success',
+                title: 'Merci pour le like.'
+            })
+            like.innerText = parseInt(like.innerText)+1;
+        }
+    });
 
     let likes = await fetch("/api/quizz/likes/" + id)
     likes = await likes.json();
