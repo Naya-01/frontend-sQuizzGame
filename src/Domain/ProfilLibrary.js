@@ -40,7 +40,7 @@ class ProfilLibrary {
         
       const quizzs = await this.getQuizzFromUser(user.id_user);
 
-      let boxOfQuizz = await this.displayQuizzs(quizzs,user);
+      let boxOfQuizz = await this.displayQuizzs(quizzs,null,user);
       page += boxOfQuizz;
       page += `</div>`;
       return page;
@@ -105,7 +105,7 @@ class ProfilLibrary {
 
         
       const quizzs = await this.getQuizzFromUser(users.id_user2);
-      const user={
+      const userUrlObject={
         id_user: users.id_user2,
         name: users.name2,
         email: users.email2,
@@ -113,7 +113,15 @@ class ProfilLibrary {
         banned: users.banned2,
         is_admin: users.is_admin2
       }
-      let boxOfQuizz = await this.displayQuizzs(quizzs,user);
+      const userSessionObject={
+        id_user: users.id_user1,
+        name: users.name1,
+        email: users.email1,
+        password: users.password1,
+        banned: users.banned1,
+        is_admin: users.is_admin1
+      }
+      let boxOfQuizz = await this.displayQuizzs(quizzs,userUrlObject,userSessionObject);
       page += boxOfQuizz;
       page += `</div>`;
       return page;
@@ -159,7 +167,7 @@ class ProfilLibrary {
     }
   }
 
-    async displayQuizzs(quizzs,user) {
+    async displayQuizzs(quizzs,userUrlObject,userSessionObject) {
         try{
             let boxOfQuizzs = '<div class="row justify-content-md-center">';
             let fin = quizzs.length;
@@ -171,8 +179,13 @@ class ProfilLibrary {
                           
                           <div class="card m-3" style="width: 18rem;">
                               <div class="card-body">
-                                  <h5 class="card-title">${element.name}</h5>
-                                  <h6 class="card-subtitle mb-2 text-muted">par ${user.name}</h6>`;
+                                  <h5 class="card-title">${element.name}</h5>`;
+                                  if(userUrlObject==null)
+                                    boxOfQuizzs += `
+                                    <h6 class="card-subtitle mb-2 text-muted">par ${userSessionObject.name}</h6>`;
+                                  else
+                                    boxOfQuizzs += `
+                                    <h6 class="card-subtitle mb-2 text-muted">par ${userUrlObject.name}</h6>`;
                                   let descriptionTexte=element.description;
                                   if(descriptionTexte.length > 40){
                                     descriptionTexte = descriptionTexte.substring(0, 40);
@@ -181,9 +194,12 @@ class ProfilLibrary {
                                   boxOfQuizzs += `
                                   <p class="card-text" style ="height:4rem">${descriptionTexte}</p>
                                   <div class="d-grid gap-2">
-                                      <button class="btn btn-success" type="button">Jouer</button>
-                                      <button class="btn btn-danger delete" data-element-id="${element.id_quizz}"  type="button">Supprimer</button>
-                                  </div>
+                                      <button class="btn btn-primary" type="button">Jouer</button>`;
+                                      if(userUrlObject==null || (!userUrlObject.is_admin && userSessionObject.is_admin)){
+                                        boxOfQuizzs += `<button class="btn btn-danger delete" data-element-id="${element.id_quizz}"  type="button">Supprimer</button>`;
+                                      }
+                                  boxOfQuizzs +=
+                                  `</div>
                               </div>
                           </div>
                       
