@@ -17,16 +17,17 @@ let bar = new ProgressBar.Line();
 let questions;
 let answers;
 let difficulty;
+let html_difficulty;
 let myPage = `<div id="page" class="container-fluid">
         <div id="bar-progress" class="row">
         </div>
         <div id="cooldown" class="row justify-content-center h2 text-danger">
         </div>
 
-        <div id="diff-question-pos" class="container-md  pt-5">
+        <div id="diff-question-pos" class="container-md  pt-3">
             <div class="row header-question align-items-center text-center">
                 <div class="col-sm-3" id="difficulty">
-                    easy
+                   
                 </div>
                 <div class="col-sm-6">
                     <p class="h2" id="theQuestion"></p>
@@ -121,7 +122,7 @@ function html_answer(){
             <div class="cards__single">
             
                  <div class="cards__front">
-                    <div class="answer p-5 mt-4 shadow p-3 container bg-dark text-white" style="width: 70%;">
+                    <div class="answer p-5 mt-4 shadow p-3 container bg-dark text-white" style="width: 70%; height: 8vh;">
                         ${element.answer}
                     </div>
                 </div>  
@@ -247,7 +248,7 @@ async function questionSuivante(index){
 function restartCooldown(){
     bar.set(1); //restart progress bar
     bar.animate(0); //restart progress bar
-    setDifficulty(difficulty);
+    getDifficulty(difficulty);
     myInterval=setInterval(timer,1000);
 }
 
@@ -260,7 +261,7 @@ function insertionAnswerBack(){
         if(element.correct)color="bg-success";
         else color="bg-danger";
         let divBack = `
-                     <div class="answer p-5 mt-4 shadow p-3 container ${color} text-white" style="width: 70%;">
+                     <div class="answer p-5 mt-4 shadow p-3 container ${color} text-white" style="width: 70%; height: 8vh;">
                         ${element.answer}
                     </div>
         `;
@@ -303,27 +304,22 @@ function flipAnswer(){
 }
 function getDifficulty(id){
     if(id===1){
+        decompte=30;
+        html_difficulty="Easy";
         return easy;
     }
     if(id===2){
+        decompte=20;
+        html_difficulty="Medium";
         return medium;
     }
-    else{
+    if(id===3){
+        decompte=10;
+        html_difficulty="Hard";
         return hard;
     }
 }
 
-function setDifficulty(id){
-    if(id===1){
-        decompte=30;
-    }
-    if(id===2){
-        decompte=20;
-    }
-    if(id===3){
-        decompte=10;
-    }
-}
 
 async function GamePage(params) {
     console.log(params);
@@ -332,9 +328,12 @@ async function GamePage(params) {
         return;
     }
     myMain.innerHTML = myPage;
-    //57
+
     difficulty=params[1];
-    setDifficulty(difficulty);
+    getDifficulty(difficulty);
+    let difficult=document.getElementById("difficulty");
+    difficult.innerText=html_difficulty;
+
     console.log(params);
     await getQuestions(params[0]);
     console.log(questions);
