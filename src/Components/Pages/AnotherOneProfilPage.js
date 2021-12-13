@@ -57,6 +57,28 @@ const AnotherOneProfilPage = async () => {
         AnotherOneProfilPage();
       });
     }
+    main.querySelectorAll(".titlesQuizzBox").forEach((titleDisplayed) => {
+      titleDisplayed.addEventListener("click", (e) => {
+      
+        let elementId = e.target.dataset.elementId;
+        let elementNameQuizz = e.target.dataset.elementNameQuizz;
+        let elementLongNameQuizz = e.target.dataset.elementLongNameQuizz;
+        let hiddenState = document.getElementById("quizz" + elementId);
+        //display whole title
+        if (hiddenState.innerHTML == 0) {
+          let height = parseInt(elementLongNameQuizz.length / 20 + 1);
+          titleDisplayed.style = `height:${height}rm`;
+          titleDisplayed.innerHTML = elementLongNameQuizz;
+          hiddenState.innerHTML = 1;
+        }
+        //display a part of title
+        else {
+          titleDisplayed.style = "height:2rem";
+          titleDisplayed.innerHTML = elementNameQuizz;
+          hiddenState.innerHTML = 0;
+        }
+      });
+    });
   }
 };
 

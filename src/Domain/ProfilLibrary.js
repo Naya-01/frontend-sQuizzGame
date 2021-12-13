@@ -12,9 +12,13 @@ class ProfilLibrary {
         <div class="text-center">
             <h1>Mon profil</h1>
         </div>`;
-        if(user.is_admin) page += `<img src="${adminImage}" class="rounded mx-auto d-block" alt="admin picture" height="400"></img>`;
-        else page += `<img src="${userImage}" class="rounded mx-auto d-block" alt="user picture" height="300">`;
+        if(user.is_admin) page += `<img src="${adminImage}" class="rounded mx-auto d-block" alt="admin picture" height="350"></img>`;
+        else page += `<img src="${userImage}" class="rounded mx-auto d-block" alt="user picture" height="250">`;
         page += `
+        <div class="text-center">
+          <div><span><strong>Pseudo :</strong> ${user.name}</span></div>
+          <div><span><strong>Email :</strong> ${user.email}</span></div>
+        </div>
         <div class="row">
             <div class="col-md-6">
             <div class="text-center">
@@ -67,7 +71,11 @@ class ProfilLibrary {
               <h1>${users.name2}</h1>
           </div>`;
           if(users.is_admin2) page += `<img src="${adminImage}" class="rounded mx-auto d-block" alt="admin picture" height="350"></img>`;
-          else page += `<img src="${userImage}" class="rounded mx-auto d-block" alt="user picture" height="300">`;
+          else page += `<img src="${userImage}" class="rounded mx-auto d-block" alt="user picture" height="250">`;
+          if(users.is_admin1) page+=`
+            <div class="text-center m-4">
+              <div><span><strong>Email :</strong> ${users.email2}</span></div>
+            </div>`;
           page += `
           <div class="row m-2">
               <div class="col-md-4">
@@ -178,8 +186,16 @@ class ProfilLibrary {
                       <div class="col-lg-4 col-md-5">
                           
                           <div class="card m-3" style="width: 18rem;">
-                              <div class="card-body">
-                                  <h5 class="card-title">${element.name}</h5>`;
+                              <div class="card-body">`;
+                                  let titreQuizz=element.name;
+                                  if(titreQuizz.length > 20){
+                                    titreQuizz = titreQuizz.substring(0, 20);
+                                    titreQuizz += " ...";
+                                  }
+                                  boxOfQuizzs += `
+                                    <h5 class="card-title titlesQuizzBox underline" style ="height:2rem" data-element-id="${element.id_quizz}" data-element-long-name-quizz="${element.name}" data-element-name-quizz="${titreQuizz}">${titreQuizz}</h5>
+                                    <span id="quizz${element.id_quizz}" hidden>0</span>`;
+                                    
                                   if(userUrlObject==null)
                                     boxOfQuizzs += `
                                     <h6 class="card-subtitle mb-2 text-muted">par ${userSessionObject.name}</h6>`;

@@ -86,7 +86,7 @@
 .underline {
     text-decoration: underline;
 }
-.emailsUsersBox{
+.emailsUsersBox, .titlesQuizzBox{
     cursor: pointer;
 }
 
