@@ -9,7 +9,7 @@ let myPage = `<div class="container">
         <h1 class="text-center text-break" id="titre-quizz"></h1>
         <div class="row">
             <div class="col text-start"><a class="fs-3 btn btn-light text-dark rounded rounded-pill
-             border border-dark border-2 border creator-size">Créer par : <span class="text-break" id="quizz-creator">Mehdi</span></a></div>
+             border border-dark border-2 border creator-size" id="quizz-creator"><span class="text-break" >Mehdi</span></a></div>
             <div class="col text-end">
                 <button type="submit" name="button_like" class="fs-1 bg-transparent btn btn-lg shadow-none text-dark text-decoration-none" value="63">
                     <img src="${thumb}" width="60" alt="vote" class="img-fluid thumb"><span id="like-quizz"></span>
@@ -132,7 +132,7 @@ async function QuizzPage(id) {
     description.innerText = quizz.description;
 
     let creatorName = document.getElementById("quizz-creator");
-    creatorName.innerText = quizz.username;
+    creatorName.innerText ="Créer par : "+quizz.username;
 
    let personnalsBestScores = await fetch("/api/participations/personnalsBestScores?id_quizz="+id+"&id_user="+user.id_user);
     personnalsBestScores = await personnalsBestScores.json();
