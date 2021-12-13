@@ -7,6 +7,7 @@ import {PanelAdminPage} from "../Pages/PanelAdminPage"
 import {GamePage} from "../Pages/GamePage"
 import {QuizzPage} from "../Pages/QuizzPage";
 import {AnotherOneProfilPage} from "../Pages/AnotherOneProfilPage";
+import {getSessionObject, removeSessionObject} from "../../utils/session";
 
 // Configure your routes here
 const routes = {
@@ -29,6 +30,11 @@ const Router = () => {
 
     if (page) {
       e.preventDefault();
+      if(window.myInterval){
+        clearInterval(window.myInterval);
+      }
+      let current_quizz = getSessionObject("current_quizz");
+      if(current_quizz===undefined)removeSessionObject("current_quizz");
       window.history.pushState({}, page, window.location.origin + page);
       const componentToRender = routes[page];
       if (componentToRender) {

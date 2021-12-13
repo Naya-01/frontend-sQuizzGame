@@ -98,10 +98,6 @@ function timer() {
         const cool = document.getElementById('cooldown');
         decompte -= 1;
         console.log(cool === null);
-        // if(cool===null){
-        //     clearInterval(timer);
-        //     return;
-        // }
         cool.innerText = decompte;
     }
     window.myInterval = setInterval(timer, 1000);
@@ -218,7 +214,7 @@ async function questionSuivante(index) {
     if (index > questions.length - 1) {
         console.log("plus de questions !!"); /// on va redigirer vers la page de fin de jeu ici
         flipAnswer();
-        await endGame();
+        endGame();
         return;
     }
     let Quest = document.getElementById('theQuestion');
