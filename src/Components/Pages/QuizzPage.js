@@ -2,7 +2,7 @@ import thumb from "../../img/thumb.png";
 import {getSessionObject} from "../../utils/session";
 import {setSessionObject} from "../../utils/session";
 import {removeSessionObject} from "../../utils/session";
-import {RedirectWithParams} from "../Router/Router";
+import {Redirect, RedirectWithParams} from "../Router/Router";
 
 
 let myPage = `<div class="container">
@@ -86,7 +86,6 @@ function getDifficulty(id){
 }
 
 async function QuizzPage(id) {
-
     if(id){
         const object = {
             id_quizz: id
@@ -94,6 +93,7 @@ async function QuizzPage(id) {
         setSessionObject("current_quizz",object);
     }else{
         let current_quizz = getSessionObject("current_quizz");
+        if(current_quizz===undefined)Redirect("/");
         id = current_quizz.id_quizz;
     }
 
