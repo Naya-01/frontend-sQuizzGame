@@ -30,7 +30,9 @@ const Router = () => {
 
     if (page) {
       e.preventDefault();
-
+      if(window.myInterval){
+        clearInterval(window.myInterval);
+      }
       let current_quizz = getSessionObject("current_quizz");
       if(current_quizz===undefined)removeSessionObject("current_quizz");
       window.history.pushState({}, page, window.location.origin + page);
