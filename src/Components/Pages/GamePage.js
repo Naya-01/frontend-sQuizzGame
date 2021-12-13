@@ -12,10 +12,11 @@ let position=0;
 let list_answer = [];
 let answer_user=[];
 let myInterval;
-let decompte=30;
+let decompte;
 let bar = new ProgressBar.Line();
 let questions;
 let answers;
+let difficulty;
 let myPage = `<div id="page" class="container-fluid">
         <div id="bar-progress" class="row">
         </div>
@@ -81,7 +82,7 @@ function insertProgressBar(){
     bar = new ProgressBar.Line(divBar, {
         strokeWidth: 4,
         easing: 'linear',
-        duration: easy,
+        duration: getDifficulty(difficulty),
         color: '#FFEA82',
         svgStyle: {width: '100%', height: '25px'},
     });
@@ -146,7 +147,7 @@ function showQuestionWithMyAnswer(){
     let id = this.id;
     let index = id-1;
     let reponse;
-    if(answer_user[index]===undefined) reponse='Aucune réponse selectionner';
+    if(answer_user[index]==="vide") reponse='Aucune réponse sélectionnée';
     else reponse=answer_user[index].answer;
     Swal.fire({
         title: ` Question : ${questions[index].question}`,
@@ -234,6 +235,7 @@ async function questionSuivante(index){
         e.preventDefault();
         clearInterval(myInterval);
         restartCooldown();
+        if(answer_user[position]===undefined) answer_user[position]="vide";
         await questionSuivante(++position);
     })
 
@@ -245,7 +247,7 @@ async function questionSuivante(index){
 function restartCooldown(){
     bar.set(1); //restart progress bar
     bar.animate(0); //restart progress bar
-    decompte=30;
+    setDifficulty(difficulty);
     myInterval=setInterval(timer,1000);
 }
 
@@ -290,7 +292,7 @@ function saveAnswerUser(){
 //we stop the cooldown here and the progress bar
 // we add the the true result behind the choices because the user can see the answers with F12 with the function "insertionAnswerBack"
 function flipAnswer(){
-    // if(answer_user[position]===undefined) answer_user[position]=null;
+    if(answer_user[position]===undefined) answer_user[position]="vide";
     clearInterval(myInterval);
     bar.stop();
     insertionAnswerBack();
@@ -299,16 +301,45 @@ function flipAnswer(){
         theAnswer.classList.add("flip");
     }
 }
+function getDifficulty(id){
+    if(id===1){
+        return easy;
+    }
+    if(id===2){
+        return medium;
+    }
+    else{
+        return hard;
+    }
+}
 
+function setDifficulty(id){
+    if(id===1){
+        decompte=30;
+    }
+    if(id===2){
+        decompte=20;
+    }
+    if(id===3){
+        decompte=10;
+    }
+}
 
 async function GamePage(params) {
+    console.log(params);
+    if(params===undefined){
+        Redirect("/");
+        return;
+    }
     myMain.innerHTML = myPage;
-    insertProgressBar();
-    timer();
     //57
+    difficulty=params[1];
+    setDifficulty(difficulty);
     console.log(params);
     await getQuestions(params[0]);
     console.log(questions);
+    insertProgressBar();
+    timer();
     await questionSuivante(position);
 
 
