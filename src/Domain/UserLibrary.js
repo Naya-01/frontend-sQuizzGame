@@ -33,7 +33,7 @@ class UserLibrary {
 `;
       let users;
       if(!filter) users = await this.getUsers();
-      else users = await this.getUsersWithFilter(filter);
+      else users = await this.getUsersWithFilter(filter,userSession);
       page += await this.displayUsers(users,userSession);
 
     
@@ -46,9 +46,15 @@ class UserLibrary {
     }
   }
 
-  async getUsersWithFilter(filter) {
+  async getUsersWithFilter(filter,user) {
     try {
-      
+      const options = {
+        method: "GET", 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: user.token,
+        },
+      };
       const reponse = await fetch("/api/users/filter/"+filter);
 
       if (!reponse.ok) {
@@ -167,7 +173,7 @@ class UserLibrary {
 
   async getUsers() {
     try {
-      const reponse = await fetch("/api/users//");
+      const reponse = await fetch("/api/users/");
 
       if (!reponse.ok) {
         throw new Error(
@@ -312,7 +318,8 @@ class UserLibrary {
       
       let boxOfUsers = `<div class="row justify-content-md-center">`;
       let fin = users.length;
-      if (fin > 0) {
+      if(fin==1 && users[0].id_user===userSession.id_user) return "Aucun résultat pour cette recherche";
+      else if (fin > 0) {
         users.forEach((element) => {
           if(element.id_user!==userSession.id_user){
             boxOfUsers += `
@@ -358,7 +365,8 @@ class UserLibrary {
               
               </div>
             `;
-          }    
+          }
+              
         });
         boxOfUsers += `</div>`;
         return boxOfUsers;

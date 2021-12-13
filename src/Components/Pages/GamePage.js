@@ -1,23 +1,19 @@
 import ProgressBar from "progressbar.js";
 import {Redirect} from "../Router/Router";
-const Swal = require('sweetalert2');
-const Swal2 = require('sweetalert2');
-"use strict";
+import {getSessionObject} from "../../utils/session";
 
-const myMain = document.querySelector("main");
-let easy=30000;
-let medium=20000;
-let hard=10000;
-let position=0;
-let list_answer = [];
-let answer_user=[];
-let myInterval;
+const Swal = require('sweetalert2');
+"use strict";
 let decompte;
 let bar = new ProgressBar.Line();
+let position = 0;
+let list_answer;
+let answer_user;
 let questions;
 let answers;
 let difficulty;
 let html_difficulty;
+
 let myPage = `<div id="page" class="container-fluid">
         <div id="bar-progress" class="row">
         </div>
@@ -45,7 +41,7 @@ let myPage = `<div id="page" class="container-fluid">
 
     </div>`;
 
-async function getQuestions(_id_quizz){
+async function getQuestions(_id_quizz) {
     try {
         const response = await fetch("/api/questions?quizz=" + _id_quizz);
 
@@ -60,7 +56,7 @@ async function getQuestions(_id_quizz){
     }
 }
 
-async function getAnswers(_id_question){
+async function getAnswers(_id_question) {
     try {
         const response = await fetch("/api/answers/allAnswers/" + _id_question);
 
@@ -77,7 +73,7 @@ async function getAnswers(_id_question){
     }
 }
 
-function insertProgressBar(){
+function insertProgressBar() {
     //Bar
     let divBar = document.getElementById('bar-progress');
     bar = new ProgressBar.Line(divBar, {
@@ -92,32 +88,32 @@ function insertProgressBar(){
     bar.animate(0);
 }
 
-function timer(){
+function timer() {
     //countdown
-    timer = function (){
-        if(decompte===0){
+    timer = function () {
+        if (decompte === 0) {
             clearInterval(timer);
             flipAnswer();
             return;
         }
         const cool = document.getElementById('cooldown');
-        decompte-=1;
-        cool.innerText=decompte;
+        decompte -= 1;
+        cool.innerText = decompte;
     }
-    myInterval=setInterval(timer,1000);
+    window.myInterval = setInterval(timer, 1000);
 }
 
 
 //we make the answer html
-function html_answer(){
-    const divAnswer= document.getElementById('answers');
-    let html_answer="";
-    list_answer=[]; // reset de la liste
+function html_answer() {
+    const divAnswer = document.getElementById('answers');
+    let html_answer = "";
+    list_answer = []; // reset de la liste
     for (const element of answers) {
-        list_answer[list_answer.length]=element;
+        list_answer[list_answer.length] = element;
         let color;
-        if(element.correct) color="bg-success";
-        else color="bg-danger";
+        if (element.correct) color = "bg-success";
+        else color = "bg-danger";
         html_answer += `
             <div class="cards__single">
             
@@ -132,7 +128,7 @@ function html_answer(){
                   
         `;
     }
-    html_answer +=`
+    html_answer += `
                 <div class="row">
                 <div class="progress mt-5">
                     <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
@@ -144,12 +140,12 @@ function html_answer(){
     divAnswer.innerHTML = html_answer;
 }
 
-function showQuestionWithMyAnswer(){
+function showQuestionWithMyAnswer() {
     let id = this.id;
-    let index = id-1;
+    let index = id - 1;
     let reponse;
-    if(answer_user[index]==="vide") reponse='Aucune réponse sélectionnée';
-    else reponse=answer_user[index].answer;
+    if (answer_user[index] === "vide") reponse = 'Aucune réponse sélectionnée';
+    else reponse = answer_user[index].answer;
     Swal.fire({
         title: ` Question : ${questions[index].question}`,
         html: `Votre réponse : ${reponse}`,
@@ -158,38 +154,40 @@ function showQuestionWithMyAnswer(){
         color: '#090808',
         scrollbarPadding: false,
         backdrop: `  rgba(80,80,80,0.7) `,
-        allowOutsideClick : false,
+        allowOutsideClick: false,
         allowEscapeKey: false,
         confirmButtonText: 'Retour au recap de vos questions',
-        preConfirm: (login)=> {
+        preConfirm: (login) => {
             endGame();
         }
     })
 }
 
-function html_endGame(){
-    let modalPage="";
+function html_endGame() {
+    let modalPage = "";
     let color;
-    let compteur=1;
-    for(let i=0;i<8/3;i++){
-        modalPage +=`
+    let compteur = 1;
+    for (let i = 0; i < 8 / 3; i++) {
+        modalPage += `
         <div class="row" >
     `;
-        for(let j=0;j<3;j++){
-            let indice = j+(i*3);
-            if(questions[indice] === undefined) break;
-            if(answer_user[indice]!==undefined && answer_user[indice].correct)color="btn-success";
-            else color="btn-danger";
+        for (let j = 0; j < 3; j++) {
+            let indice = j + (i * 3);
+            if (questions[indice] === undefined) break;
+            if (answer_user[indice] !== undefined && answer_user[indice].correct) color = "btn-success";
+            else color = "btn-danger";
             modalPage += `<div class="col">
             <button class="btn ${color} mt-3 btn-recap" id="${compteur}">Question ${compteur}</button>
         </div>`;
             compteur++;
         }
-        modalPage +=`</div>`;
+        modalPage += `</div>`;
     }
     return modalPage;
 }
-function endGame(){
+
+function endGame() {
+    saveDatabase();
     Swal.fire({
         title: 'Récapitulatif des réponses',
         html: html_endGame(),
@@ -198,45 +196,110 @@ function endGame(){
         color: '#bf1139',
         scrollbarPadding: false,
         backdrop: `  rgba(80,80,80,0.7) `,
-        allowOutsideClick : false,
+        allowOutsideClick: false,
         allowEscapeKey: false,
         confirmButtonText: 'Retour à la page d\'accueil',
-        preConfirm: (login)=> {
+        preConfirm: (login) => {
             Redirect("/");
         }
     })
     let btnRecap = document.querySelectorAll(".btn-recap");
-    btnRecap.forEach((recap)=>recap.addEventListener("click",showQuestionWithMyAnswer));
+    btnRecap.forEach((recap) => recap.addEventListener("click", showQuestionWithMyAnswer));
     let sal = document.getElementById('swal2-html-container');
-    sal.style.overflow="visible";
+    sal.style.overflow = "visible";
 }
+
+async function getScore(){
+    let score = 0;
+    for (let i = 0; i<answer_user.length-1;i++){
+        if(answer_user[i].correct){
+            if(difficulty===1){
+                score+=100*decompte*parseInt(difficulty);
+            }
+            if(difficulty===2){
+                score+=100*decompte*parseInt(difficulty);
+            }
+            if(difficulty===3){
+                score+=100*decompte*parseInt(difficulty);
+            }
+        }
+    }
+    return score;
+}
+
+async function saveDatabase(){
+    let participation;
+    try {
+        let options = {
+            method: "POST",
+            body: JSON.stringify({
+                "id_quizz": questions[0].id_quizz,
+                "id_user": getSessionObject("user").id_user,
+                "score": await getScore(),
+                "difficulty": parseInt(difficulty)
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        participation = await fetch("/api/participations/", options);
+        if (!participation.ok) {
+            throw new Error("fetch error : " + reponse.status + " : " + reponse.statusText);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+    participation = await participation.json();
+    for (let i = 0; i < answer_user.length-1;i++){
+        try {
+            let options = {
+                method: "POST",
+                body: JSON.stringify({
+                    "id_participation": participation.id_participation,
+                    "id_answer": answer_user[i].id_answer,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            };
+            let retour = await fetch("/api/participations/answers/", options);
+            if (!retour.ok) {
+                throw new Error("fetch error : " + reponse.status + " : " + reponse.statusText);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+}
+
+
+
 // we change the question and the answer
-async function questionSuivante(index){
+async function questionSuivante(index) {
     //recupération de mes questions depuis 1 quizz
-    if(index>questions.length-1){
-        console.log("plus de questions !!"); /// on va redigirer vers la page de fin de jeu ici
+    if (index > questions.length - 1) {
         flipAnswer();
-        await endGame();
+        endGame();
         return;
     }
     let Quest = document.getElementById('theQuestion');
-    Quest.innerText=questions[index].question;
+    Quest.innerText = questions[index].question;
 
     //nb question
     const nbQuestion = document.getElementById('nbQuestion');
-    nbQuestion.innerText=(index+1)+"/"+questions.length;
+    nbQuestion.innerText = (index + 1) + "/" + questions.length;
 
     //recuperation des reponses du quizz
     answers = await getAnswers(questions[index].id_question);
-    console.log(answers);
     //mise des reponses dans html
     html_answer();
     let btnNext = document.getElementById('nextQuestion');
     btnNext.addEventListener("click", async e => {
         e.preventDefault();
-        clearInterval(myInterval);
+        clearInterval(window.myInterval);
         restartCooldown();
-        if(answer_user[position]===undefined) answer_user[position]="vide";
+        if (answer_user[position] === undefined) answer_user[position] = "vide";
         await questionSuivante(++position);
     })
 
@@ -245,21 +308,21 @@ async function questionSuivante(index){
 }//fin question suivant
 
 //restart the cooldown when the user click on the next question button
-function restartCooldown(){
+function restartCooldown() {
     bar.set(1); //restart progress bar
     bar.animate(0); //restart progress bar
     getDifficulty(difficulty);
-    myInterval=setInterval(timer,1000);
+    window.myInterval = setInterval(timer, 1000);
 }
 
-function insertionAnswerBack(){
-    for(let i=0; i<=3;i++){
-        let string = `answer_`+(i+1);
+function insertionAnswerBack() {
+    for (let i = 0; i <= 3; i++) {
+        let string = `answer_` + (i + 1);
         let getDivBack = document.getElementById(string);
         let color;
         let element = list_answer[i];
-        if(element.correct)color="bg-success";
-        else color="bg-danger";
+        if (element.correct) color = "bg-success";
+        else color = "bg-danger";
         let divBack = `
                      <div class="answer p-5 mt-4 shadow p-3 container ${color} text-white" style="width: 70%; height: 8vh;">
                         ${element.answer}
@@ -271,81 +334,79 @@ function insertionAnswerBack(){
 
 //save answer user in the list answer_user
 // this.children[1].id: it's to receive the id of the answer select
-function saveAnswerUser(){
-    if(answer_user[position]){ // cant change his answer !!
+function saveAnswerUser() {
+    if (answer_user[position]) { // cant change his answer !!
         flipAnswer();
         return;
     }
 
     let id = this.children[1].id;
 
-    for(let i=1;i<=list_answer.length;i++){
-        let id_tmp="answer_"+i;
-        if(id===id_tmp){
-            answer_user[position]=list_answer[i-1];
+    for (let i = 1; i <= list_answer.length; i++) {
+        let id_tmp = "answer_" + i;
+        if (id === id_tmp) {
+            answer_user[position] = list_answer[i - 1];
         }
     }
-    console.log(this.children[1].id);
-    console.log(position);
-    console.log(answer_user);
     flipAnswer();
 }
+
 //we stop the cooldown here and the progress bar
 // we add the the true result behind the choices because the user can see the answers with F12 with the function "insertionAnswerBack"
-function flipAnswer(){
-    if(answer_user[position]===undefined) answer_user[position]="vide";
-    clearInterval(myInterval);
+function flipAnswer() {
+    if (answer_user[position] === undefined) answer_user[position] = "vide";
+    clearInterval(window.myInterval);
     bar.stop();
     insertionAnswerBack();
     let answers = document.querySelectorAll(".cards__single");
-    for(const theAnswer of answers){
+    for (const theAnswer of answers) {
         theAnswer.classList.add("flip");
     }
 }
-function getDifficulty(id){
-    if(id===1){
-        decompte=30;
-        html_difficulty="Easy";
-        return easy;
+
+function getDifficulty(id) {
+    if (id === 1) {
+        decompte = 30;
+        html_difficulty = "Easy";
+        return 30000;
     }
-    if(id===2){
-        decompte=20;
-        html_difficulty="Medium";
-        return medium;
+    if (id === 2) {
+        decompte = 20;
+        html_difficulty = "Medium";
+        return 20000;
     }
-    if(id===3){
-        decompte=10;
-        html_difficulty="Hard";
-        return hard;
+    if (id === 3) {
+        decompte = 10;
+        html_difficulty = "Hard";
+        return 10000;
     }
 }
 
 
 async function GamePage(params) {
-    console.log(params);
-    if(params===undefined){
+    // if user tries to access directly with /Game with no parameters
+    if (params === undefined) {
         Redirect("/");
         return;
     }
+    const myMain = document.querySelector("main");
     myMain.innerHTML = myPage;
 
-    difficulty=params[1];
+    list_answer = [];
+    answer_user = [];
+    questions=null;
+    answers=null;
+    difficulty = params[1];
     getDifficulty(difficulty);
-    let difficult=document.getElementById("difficulty");
-    difficult.innerText=html_difficulty;
+    position = 0;
+    let difficult = document.getElementById("difficulty");
+    difficult.innerText = html_difficulty;
 
-    console.log(params);
+
     await getQuestions(params[0]);
-    console.log(questions);
     insertProgressBar();
     timer();
     await questionSuivante(position);
-
-
-
-
-
-
 
 
 }

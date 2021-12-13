@@ -2,16 +2,17 @@ import thumb from "../../img/thumb.png";
 import {getSessionObject} from "../../utils/session";
 import {setSessionObject} from "../../utils/session";
 import {removeSessionObject} from "../../utils/session";
-import {RedirectWithParams} from "../Router/Router";
+import {Redirect, RedirectWithParams, RedirectWithParamsInUrl} from "../Router/Router";
+import Swal from "sweetalert2";
 
 
 let myPage = `<div class="container">
         <h1 class="text-center text-break" id="titre-quizz"></h1>
         <div class="row">
             <div class="col text-start"><a class="fs-3 btn btn-light text-dark rounded rounded-pill
-             border border-dark border-2 border creator-size">Créer par : <span class="text-break" id="quizz-creator">Mehdi</span></a></div>
+             border border-dark border-2 border creator-size" id="quizz-creator"><span class="text-break" >Mehdi</span></a></div>
             <div class="col text-end">
-                <button type="submit" name="button_like" class="fs-1 bg-transparent btn btn-lg shadow-none text-dark text-decoration-none" value="63">
+                <button type="submit" name="button_like" id="btn-like" class="fs-1 bg-transparent btn btn-lg shadow-none text-dark text-decoration-none" value="63">
                     <img src="${thumb}" width="60" alt="vote" class="img-fluid thumb"><span id="like-quizz"></span>
                 </button>
             </div>
@@ -86,7 +87,6 @@ function getDifficulty(id){
 }
 
 async function QuizzPage(id) {
-
     if(id){
         const object = {
             id_quizz: id
@@ -94,17 +94,98 @@ async function QuizzPage(id) {
         setSessionObject("current_quizz",object);
     }else{
         let current_quizz = getSessionObject("current_quizz");
+        if(current_quizz===undefined)Redirect("/");
         id = current_quizz.id_quizz;
     }
 
-    console.log(id);
     const myMain = document.querySelector("main");
     myMain.innerHTML = myPage;
 
-    let user = getSessionObject("user");
+
 
     let quizz =  await fetch("/api/quizz/" + id);
     quizz = await quizz.json();
+
+    let user = getSessionObject("user");
+
+    let userRedirect = document.getElementById("quizz-creator");
+    userRedirect.addEventListener("click",e =>{
+        // verifier si l'user en stockage === l'user qui créer
+        if(quizz.id_creator !== user.id_user){
+            RedirectWithParamsInUrl("/Profil","?idUser="+quizz.id_creator);
+        }else{
+            Redirect("/Profil/MyProfil");
+        }
+
+    })
+
+    let btnLike = document.getElementById("btn-like");
+    btnLike.addEventListener("click",async e => {
+        let isLiked = await fetch("/api/quizz/isLiked?id_quizz="+id+"&id_user="+user.id_user);
+        isLiked = await isLiked.json();
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        if(isLiked.isLiked){
+            try {
+                let options = {
+                    method: "DELETE",
+                    body: JSON.stringify({
+                        id_quizz: id,
+                        id_user: user.id_user,
+                    }),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                };
+                let reponse = await fetch("/api/quizz/unlike/", options);
+                if (!reponse.ok) {
+                    throw new Error();
+                }
+            } catch (err) {
+                console.log(err);
+            }
+            Toast.fire({
+                icon: 'error',
+                title: 'Vous avez unlike.'
+            })
+            like.innerText = parseInt(like.innerText)-1;
+        }else{
+            try {
+                let options = {
+                    method: "POST",
+                    body: JSON.stringify({
+                        id_quizz: id,
+                        id_user: user.id_user,
+                    }),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                };
+                let reponse = await fetch("/api/quizz/likes/", options);
+                if (!reponse.ok) {
+                    throw new Error();
+                }
+            } catch (err) {
+                console.log(err);
+            }
+            Toast.fire({
+                icon: 'success',
+                title: 'Vous avez like.'
+            })
+            like.innerText = parseInt(like.innerText)+1;
+        }
+    });
 
     let likes = await fetch("/api/quizz/likes/" + id)
     likes = await likes.json();
@@ -119,11 +200,10 @@ async function QuizzPage(id) {
     description.innerText = quizz.description;
 
     let creatorName = document.getElementById("quizz-creator");
-    creatorName.innerText = quizz.username;
+    creatorName.innerText ="Créer par : "+quizz.username;
 
    let personnalsBestScores = await fetch("/api/participations/personnalsBestScores?id_quizz="+id+"&id_user="+user.id_user);
     personnalsBestScores = await personnalsBestScores.json();
-    console.log(personnalsBestScores);
 
     if(personnalsBestScores.length===0){
         let bestScores = document.getElementById("personnal-best-scores");
