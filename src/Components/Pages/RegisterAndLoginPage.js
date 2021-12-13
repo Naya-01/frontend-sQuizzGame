@@ -28,13 +28,13 @@ let formRegisterLogin = `
                       <input type="password" class="form-control form-control-lg"
                              placeholder="Password" id="password-login"/>
                     </div>
-                    <div class="row">
-                      <button class="btn mt-4 btn-outline-light" type="submit" id="go-register">Pas encore inscrit ?
+                    <div class="row mb-4">
+                      <button class="mt-3 btn btn-outline-light btn-lg px-5 " type="submit" id="btn-login">
+                        Se connecter
                       </button>
                     </div>
-                    <div class="row mb-4">
-                      <button class="mt-4 btn btn-outline-light btn-lg px-5 " type="submit" id="btn-login">
-                        Se connecter
+                    <div class="row">
+                      <button class="btn mt-2 btn-outline-light" type="submit" id="go-register">Pas encore inscrit ?
                       </button>
                     </div>
                   </div>
@@ -59,13 +59,13 @@ let formRegisterLogin = `
                              placeholder="Password" id="password-register"/>
                     </div>
                     <div class="row">
-                      <button class="btn mt-3 btn-outline-light" type="submit" id="go-login">
-                        Déja inscrit ?
-                      </button>
-                    </div>
-                    <div class="row">
                       <button class="mt-4 btn btn-outline-light btn-lg px-5" type="submit" id="btn-register">
                         S'inscrire
+                      </button>
+                    </div>
+                     <div class="row">
+                      <button class="btn mt-3 btn-outline-light" type="submit" id="go-login">
+                        Déjà inscrit ?
                       </button>
                     </div>
                   </div>
