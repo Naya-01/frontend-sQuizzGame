@@ -2,6 +2,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 // Custom styles
 import './stylesheets/main.css';
+import {Navbar as NavbarBootstrap} from "bootstrap";
+
 
 import { Router } from './Components/Router/Router';
 import Navbar from './Components/Navbar/Navbar';
