@@ -1,5 +1,6 @@
 import ProgressBar from "progressbar.js";
 import {Redirect} from "../Router/Router";
+import {getSessionObject} from "../../utils/session";
 
 const Swal = require('sweetalert2');
 "use strict";
@@ -97,7 +98,6 @@ function timer() {
         }
         const cool = document.getElementById('cooldown');
         decompte -= 1;
-        console.log(cool === null);
         cool.innerText = decompte;
     }
     window.myInterval = setInterval(timer, 1000);
@@ -187,6 +187,7 @@ function html_endGame() {
 }
 
 function endGame() {
+    saveDatabase();
     Swal.fire({
         title: 'Récapitulatif des réponses',
         html: html_endGame(),
@@ -208,11 +209,76 @@ function endGame() {
     sal.style.overflow = "visible";
 }
 
+async function getScore(){
+    let score = 0;
+    for (let i = 0; i<answer_user.length-1;i++){
+        if(answer_user[i].correct){
+            if(difficulty===1){
+                score+=100*decompte*parseInt(difficulty);
+            }
+            if(difficulty===2){
+                score+=100*decompte*parseInt(difficulty);
+            }
+            if(difficulty===3){
+                score+=100*decompte*parseInt(difficulty);
+            }
+        }
+    }
+    return score;
+}
+
+async function saveDatabase(){
+    let participation;
+    try {
+        let options = {
+            method: "POST",
+            body: JSON.stringify({
+                "id_quizz": questions[0].id_quizz,
+                "id_user": getSessionObject("user").id_user,
+                "score": await getScore(),
+                "difficulty": parseInt(difficulty)
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        participation = await fetch("/api/participations/", options);
+        if (!participation.ok) {
+            throw new Error("fetch error : " + reponse.status + " : " + reponse.statusText);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+    participation = await participation.json();
+    for (let i = 0; i < answer_user.length-1;i++){
+        try {
+            let options = {
+                method: "POST",
+                body: JSON.stringify({
+                    "id_participation": participation.id_participation,
+                    "id_answer": answer_user[i].id_answer,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            };
+            let retour = await fetch("/api/participations/answers/", options);
+            if (!retour.ok) {
+                throw new Error("fetch error : " + reponse.status + " : " + reponse.statusText);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+}
+
+
+
 // we change the question and the answer
 async function questionSuivante(index) {
     //recupération de mes questions depuis 1 quizz
     if (index > questions.length - 1) {
-        console.log("plus de questions !!"); /// on va redigirer vers la page de fin de jeu ici
         flipAnswer();
         endGame();
         return;
@@ -226,7 +292,6 @@ async function questionSuivante(index) {
 
     //recuperation des reponses du quizz
     answers = await getAnswers(questions[index].id_question);
-    console.log(answers);
     //mise des reponses dans html
     html_answer();
     let btnNext = document.getElementById('nextQuestion');
@@ -283,9 +348,6 @@ function saveAnswerUser() {
             answer_user[position] = list_answer[i - 1];
         }
     }
-    console.log(this.children[1].id);
-    console.log(position);
-    console.log(answer_user);
     flipAnswer();
 }
 
@@ -342,7 +404,6 @@ async function GamePage(params) {
 
 
     await getQuestions(params[0]);
-    console.log(questions);
     insertProgressBar();
     timer();
     await questionSuivante(position);

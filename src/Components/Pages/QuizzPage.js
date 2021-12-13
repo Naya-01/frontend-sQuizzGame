@@ -98,7 +98,6 @@ async function QuizzPage(id) {
         id = current_quizz.id_quizz;
     }
 
-    console.log(id);
     const myMain = document.querySelector("main");
     myMain.innerHTML = myPage;
 
@@ -205,7 +204,6 @@ async function QuizzPage(id) {
 
    let personnalsBestScores = await fetch("/api/participations/personnalsBestScores?id_quizz="+id+"&id_user="+user.id_user);
     personnalsBestScores = await personnalsBestScores.json();
-    console.log(personnalsBestScores);
 
     if(personnalsBestScores.length===0){
         let bestScores = document.getElementById("personnal-best-scores");
