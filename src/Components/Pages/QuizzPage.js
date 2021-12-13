@@ -122,6 +122,9 @@ async function QuizzPage(id) {
 
     let btnLike = document.getElementById("btn-like");
     btnLike.addEventListener("click",async e => {
+        let isLiked = await fetch("/api/quizz/isLiked?id_quizz="+id+"&id_user="+user.id_user);
+        isLiked = await isLiked.json();
+
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -133,34 +136,53 @@ async function QuizzPage(id) {
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
         })
-        let error = false;
-        try {
-            let options = {
-                method: "POST",
-                body: JSON.stringify({
-                    id_quizz: id,
-                    id_user: user.id_user,
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            };
-            let reponse = await fetch("/api/quizz/likes/", options);
-            if (!reponse.ok) {
-                throw new Error("fetch error : " + reponse.status + " : " + reponse.statusText);
+
+        if(isLiked.isLiked){
+            try {
+                let options = {
+                    method: "DELETE",
+                    body: JSON.stringify({
+                        id_quizz: id,
+                        id_user: user.id_user,
+                    }),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                };
+                let reponse = await fetch("/api/quizz/unlike/", options);
+                if (!reponse.ok) {
+                    throw new Error();
+                }
+            } catch (err) {
+                console.log(err);
             }
-        } catch (err) {
-            error = true;
-        }
-        if(error){
             Toast.fire({
                 icon: 'error',
-                title: 'Vous avez déjà like.'
+                title: 'Vous avez unlike.'
             })
+            like.innerText = parseInt(like.innerText)-1;
         }else{
+            try {
+                let options = {
+                    method: "POST",
+                    body: JSON.stringify({
+                        id_quizz: id,
+                        id_user: user.id_user,
+                    }),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                };
+                let reponse = await fetch("/api/quizz/likes/", options);
+                if (!reponse.ok) {
+                    throw new Error();
+                }
+            } catch (err) {
+                console.log(err);
+            }
             Toast.fire({
                 icon: 'success',
-                title: 'Merci pour le like.'
+                title: 'Vous avez like.'
             })
             like.innerText = parseInt(like.innerText)+1;
         }
