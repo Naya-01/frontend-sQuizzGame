@@ -2,7 +2,7 @@ import thumb from "../../img/thumb.png";
 import {getSessionObject} from "../../utils/session";
 import {setSessionObject} from "../../utils/session";
 import {removeSessionObject} from "../../utils/session";
-import {Redirect, RedirectWithParams} from "../Router/Router";
+import {Redirect, RedirectWithParams, RedirectWithParamsInUrl} from "../Router/Router";
 
 
 let myPage = `<div class="container">
@@ -101,10 +101,23 @@ async function QuizzPage(id) {
     const myMain = document.querySelector("main");
     myMain.innerHTML = myPage;
 
-    let user = getSessionObject("user");
+
 
     let quizz =  await fetch("/api/quizz/" + id);
     quizz = await quizz.json();
+
+    let user = getSessionObject("user");
+
+    let userRedirect = document.getElementById("quizz-creator");
+    userRedirect.addEventListener("click",e =>{
+        // verifier si l'user en stockage === l'user qui créer
+        if(quizz.id_creator !== user.id_user){
+            RedirectWithParamsInUrl("/Profil","?idUser="+quizz.id_creator);
+        }else{
+            Redirect("/Profil/MyProfil");
+        }
+
+    })
 
     let likes = await fetch("/api/quizz/likes/" + id)
     likes = await likes.json();
