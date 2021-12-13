@@ -186,8 +186,16 @@ class ProfilLibrary {
                       <div class="col-lg-4 col-md-5">
                           
                           <div class="card m-3" style="width: 18rem;">
-                              <div class="card-body">
-                                  <h5 class="card-title">${element.name}</h5>`;
+                              <div class="card-body">`;
+                                  let titreQuizz=element.name;
+                                  if(titreQuizz.length > 20){
+                                    titreQuizz = titreQuizz.substring(0, 20);
+                                    titreQuizz += " ...";
+                                  }
+                                  boxOfQuizzs += `
+                                    <h5 class="card-title titlesQuizzBox underline" style ="height:2rem" data-element-id="${element.id_quizz}" data-element-long-name-quizz="${element.name}" data-element-name-quizz="${titreQuizz}">${titreQuizz}</h5>
+                                    <span id="quizz${element.id_quizz}" hidden>0</span>`;
+                                    
                                   if(userUrlObject==null)
                                     boxOfQuizzs += `
                                     <h6 class="card-subtitle mb-2 text-muted">par ${userSessionObject.name}</h6>`;
