@@ -16,10 +16,24 @@ const AnotherOneProfilPage = async () => {
   let url_string = window.location;
   let url = new URL(url_string);
   let idUserUrl = url.searchParams.get("idUser");
-  if (userSession.id_user == idUserUrl) {
+  if (!idUserUrl)
+    main.innerHTML = `
+      <div class="in-middle">
+        <h1 >Profil introuvable</h1>
+      </div>`;
+  else if (isNaN(idUserUrl) || idUserUrl < 0) {
+    main.innerHTML = `
+      <div class="in-middle">
+        <h1 >Profil introuvable</h1>
+      </div>`;
+  }
+  else if (userSession.id_user == idUserUrl) {
     Redirect("/Profil/MyProfil");
-  } else {
-    const page = await profilLibrary.getAnotherOneProfilPage(userSession,idUserUrl);
+  }  else {
+    const page = await profilLibrary.getAnotherOneProfilPage(
+      userSession,
+      idUserUrl
+    );
     main.innerHTML = page;
     const subscribeButton = document.getElementById("subscribe");
     const unsubscribeButton = document.getElementById("unsubscribe");
