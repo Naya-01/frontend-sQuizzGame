@@ -1,21 +1,9 @@
 import ProgressBar from "progressbar.js";
 import {Redirect} from "../Router/Router";
 const Swal = require('sweetalert2');
-const Swal2 = require('sweetalert2');
 "use strict";
 
-const myMain = document.querySelector("main");
-let easy=30000;
-let medium=20000;
-let hard=10000;
-let position=0;
-let list_answer = [];
 let answer_user=[];
-let myInterval;
-let decompte;
-let bar = new ProgressBar.Line();
-let questions;
-let answers;
 let difficulty;
 let html_difficulty;
 let myPage = `<div id="page" class="container-fluid">
@@ -54,7 +42,7 @@ async function getQuestions(_id_quizz){
                 "fetch error : " + response.status + " : " + response.statusText
             );
         }
-        questions = await response.json();
+        window.questions = await response.json();
     } catch (err) {
         console.error("getQuizz::error: ", err);
     }
@@ -80,7 +68,7 @@ async function getAnswers(_id_question){
 function insertProgressBar(){
     //Bar
     let divBar = document.getElementById('bar-progress');
-    bar = new ProgressBar.Line(divBar, {
+    window.bar = new ProgressBar.Line(divBar, {
         strokeWidth: 4,
         easing: 'linear',
         duration: getDifficulty(difficulty),
@@ -88,23 +76,28 @@ function insertProgressBar(){
         svgStyle: {width: '100%', height: '25px'},
     });
     let pc = 1;
-    bar.set(pc);  // Number from 0.0 to 1.0
-    bar.animate(0);
+    window.bar.set(pc);  // Number from 0.0 to 1.0
+    window.bar.animate(0);
 }
 
 function timer(){
     //countdown
     timer = function (){
-        if(decompte===0){
+        if(window.decompte===0){
             clearInterval(timer);
             flipAnswer();
             return;
         }
         const cool = document.getElementById('cooldown');
-        decompte-=1;
-        cool.innerText=decompte;
+        window.decompte-=1;
+        console.log(cool===null);
+        // if(cool===null){
+        //     clearInterval(timer);
+        //     return;
+        // }
+        cool.innerText=window.decompte;
     }
-    myInterval=setInterval(timer,1000);
+    window.myInterval=setInterval(timer,1000);
 }
 
 
@@ -112,9 +105,9 @@ function timer(){
 function html_answer(){
     const divAnswer= document.getElementById('answers');
     let html_answer="";
-    list_answer=[]; // reset de la liste
-    for (const element of answers) {
-        list_answer[list_answer.length]=element;
+    window.list_answer=[]; // reset de la liste
+    for (const element of window.answers) {
+        window.list_answer[window.list_answer.length]=element;
         let color;
         if(element.correct) color="bg-success";
         else color="bg-danger";
@@ -126,7 +119,7 @@ function html_answer(){
                         ${element.answer}
                     </div>
                 </div>  
-                 <div class="cards__back" id="answer_${list_answer.length}">
+                 <div class="cards__back" id="answer_${window.list_answer.length}">
                  </div>  
             </div>
                   
@@ -151,9 +144,9 @@ function showQuestionWithMyAnswer(){
     if(answer_user[index]==="vide") reponse='Aucune réponse sélectionnée';
     else reponse=answer_user[index].answer;
     Swal.fire({
-        title: ` Question : ${questions[index].question}`,
+        title: ` Question : ${window.questions[index].question}`,
         html: `Votre réponse : ${reponse}`,
-        width: 500,
+        width: 700,
         padding: '3em',
         color: '#090808',
         scrollbarPadding: false,
@@ -177,7 +170,7 @@ function html_endGame(){
     `;
         for(let j=0;j<3;j++){
             let indice = j+(i*3);
-            if(questions[indice] === undefined) break;
+            if(window.questions[indice] === undefined) break;
             if(answer_user[indice]!==undefined && answer_user[indice].correct)color="btn-success";
             else color="btn-danger";
             modalPage += `<div class="col">
@@ -213,28 +206,28 @@ function endGame(){
 // we change the question and the answer
 async function questionSuivante(index){
     //recupération de mes questions depuis 1 quizz
-    if(index>questions.length-1){
+    if(index>window.questions.length-1){
         console.log("plus de questions !!"); /// on va redigirer vers la page de fin de jeu ici
         flipAnswer();
         await endGame();
         return;
     }
     let Quest = document.getElementById('theQuestion');
-    Quest.innerText=questions[index].question;
+    Quest.innerText=window.questions[index].question;
 
     //nb question
     const nbQuestion = document.getElementById('nbQuestion');
-    nbQuestion.innerText=(index+1)+"/"+questions.length;
+    nbQuestion.innerText=(index+1)+"/"+window.questions.length;
 
     //recuperation des reponses du quizz
-    answers = await getAnswers(questions[index].id_question);
-    console.log(answers);
+    window.answers = await getAnswers(window.questions[index].id_question);
+    console.log(window.answers);
     //mise des reponses dans html
     html_answer();
     let btnNext = document.getElementById('nextQuestion');
     btnNext.addEventListener("click", async e => {
         e.preventDefault();
-        clearInterval(myInterval);
+        clearInterval(window.myInterval);
         restartCooldown();
         if(answer_user[position]===undefined) answer_user[position]="vide";
         await questionSuivante(++position);
@@ -246,10 +239,10 @@ async function questionSuivante(index){
 
 //restart the cooldown when the user click on the next question button
 function restartCooldown(){
-    bar.set(1); //restart progress bar
-    bar.animate(0); //restart progress bar
+    window.bar.set(1); //restart progress bar
+    window.bar.animate(0); //restart progress bar
     getDifficulty(difficulty);
-    myInterval=setInterval(timer,1000);
+    window.myInterval=setInterval(timer,1000);
 }
 
 function insertionAnswerBack(){
@@ -257,7 +250,7 @@ function insertionAnswerBack(){
         let string = `answer_`+(i+1);
         let getDivBack = document.getElementById(string);
         let color;
-        let element = list_answer[i];
+        let element = window.list_answer[i];
         if(element.correct)color="bg-success";
         else color="bg-danger";
         let divBack = `
@@ -279,10 +272,10 @@ function saveAnswerUser(){
 
     let id = this.children[1].id;
 
-    for(let i=1;i<=list_answer.length;i++){
+    for(let i=1;i<=window.list_answer.length;i++){
         let id_tmp="answer_"+i;
         if(id===id_tmp){
-            answer_user[position]=list_answer[i-1];
+            answer_user[position]=window.list_answer[i-1];
         }
     }
     console.log(this.children[1].id);
@@ -294,49 +287,50 @@ function saveAnswerUser(){
 // we add the the true result behind the choices because the user can see the answers with F12 with the function "insertionAnswerBack"
 function flipAnswer(){
     if(answer_user[position]===undefined) answer_user[position]="vide";
-    clearInterval(myInterval);
-    bar.stop();
+    clearInterval(window.myInterval);
+    window.bar.stop();
     insertionAnswerBack();
-    let answers = document.querySelectorAll(".cards__single");
-    for(const theAnswer of answers){
+    let answers_card = document.querySelectorAll(".cards__single");
+    for(const theAnswer of answers_card){
         theAnswer.classList.add("flip");
     }
 }
 function getDifficulty(id){
     if(id===1){
-        decompte=30;
+        window.decompte=30;
         html_difficulty="Easy";
-        return easy;
+        return 30000;
     }
     if(id===2){
-        decompte=20;
+        window.decompte=20;
         html_difficulty="Medium";
-        return medium;
+        return 20000;
     }
     if(id===3){
-        decompte=10;
+        window.decompte=10;
         html_difficulty="Hard";
-        return hard;
+        return 10000;
     }
 }
 
 
 async function GamePage(params) {
-    console.log(params);
+    // if user tries to access directly with /Game with no parameters
     if(params===undefined){
         Redirect("/");
         return;
     }
+    const myMain = document.querySelector("main");
     myMain.innerHTML = myPage;
-
     difficulty=params[1];
     getDifficulty(difficulty);
+    window.position=0;
     let difficult=document.getElementById("difficulty");
     difficult.innerText=html_difficulty;
 
-    console.log(params);
+
     await getQuestions(params[0]);
-    console.log(questions);
+    console.log(window.questions);
     insertProgressBar();
     timer();
     await questionSuivante(position);
