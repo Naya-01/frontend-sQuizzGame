@@ -1,6 +1,6 @@
 import ProfilLibrary from "../../Domain/ProfilLibrary";
 import { getSessionObject } from "../../utils/session";
-import { Redirect } from "../Router/Router";
+import { Redirect,RedirectWithParams } from "../Router/Router";
 
 const profilLibrary = new ProfilLibrary();
 
@@ -17,8 +17,16 @@ const ProfilPage = async () => {
   main.querySelectorAll(".delete").forEach((button) => {
     button.addEventListener("click", async (e) => {
       let elementId = e.target.dataset.elementId;
-      await profilLibrary.deleteQuizzFromProfil(elementId);
+      await profilLibrary.deleteQuizzFromProfil(elementId,userSession);
       ProfilPage();
+    });
+  });
+
+  main.querySelectorAll(".play").forEach((button) => {
+    button.addEventListener("click", async (e) => {
+      let elementId = e.target.dataset.elementId;
+      e.preventDefault();
+      RedirectWithParams("/Quizz",elementId);
     });
   });
 
