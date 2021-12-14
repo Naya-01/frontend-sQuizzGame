@@ -3,13 +3,11 @@ import { RedirectWithParams } from "../Router/Router";
 const escape = require("escape-html");
 let main;
 let div_page;
+window.div_home_page = document.createElement("div");
 
-//TODO : avoir plusieurs pages au lieu d'un scroll infini
 const HomePage = async () => {
   
-  main = document.querySelector("main");
-  //TODO : supprimer le fais que en spammant ça duplique
-  
+  main = document.querySelector("main")
   main.innerHTML = "";  // on reinitialise le main
 
   // Ajout du titre de la page
@@ -24,15 +22,23 @@ const HomePage = async () => {
   boutonRecherche();
 
   //Création du container qui va contenir quasi toute la page
-  div_page = document.createElement("div");
-  div_page.className = "container-fluid";
-  div_page.id = "HomePageId";
-  main.appendChild(div_page);
+  window.div_home_page = document.createElement("div");
+  window.div_home_page.className = "container-fluid";
+  window.div_home_page.id = "HomePageId";
+  main.appendChild(window.div_home_page);
 
   // Sous-Titre Tendances
   creerSousTitre("Tendances");
   try{
-    let reponse = await fetch("/api/quizz/mostliked");
+    const options = {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getSessionObject("user").token
+      },
+    };
+
+    let reponse = await fetch("/api/quizz/mostliked",options);
     if (!reponse.ok) {
       throw new Error(
         "fetch error : " + reponse.status + " : " + reponse.statusText
@@ -53,14 +59,20 @@ const HomePage = async () => {
     console.error("getTendances::error: ", err);
   }
   
-
-
   // Sous-Titre Abonnements
   creerSousTitre("Abonnements");
 
   let id_user = getSessionObject("user").id_user;
   try{
-    let reponse = await fetch("/api/quizz/abonnements/"+id_user);
+    const options = {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getSessionObject("user").token
+      },
+    };
+
+    let reponse = await fetch("/api/quizz/abonnements/"+id_user, options);
     if (!reponse.ok) {
       throw new Error(
         "fetch error : " + reponse.status + " : " + reponse.statusText
@@ -88,7 +100,14 @@ const HomePage = async () => {
   // Sous-Titre Explorer
   creerSousTitre("Explorer");
   try{
-    let reponse = await fetch("/api/quizz/explorer");
+    const options = {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getSessionObject("user").token
+      },
+    };
+    let reponse = await fetch("/api/quizz/explorer", options);
     if (!reponse.ok) {
       throw new Error(
         "fetch error : " + reponse.status + " : " + reponse.statusText
@@ -108,7 +127,8 @@ async function creerSousTitre(nom_sous_titre){
   let sous_titre = document.createElement("h4");
   sous_titre.innerHTML = nom_sous_titre;
   div_sous_titre.appendChild(sous_titre);
-  div_page.appendChild(div_sous_titre);
+  //div_page.appendChild(div_sous_titre);
+  window.div_home_page.appendChild(div_sous_titre);
 }
 
 async function afficherQuizz(all_quizz){
@@ -116,7 +136,8 @@ async function afficherQuizz(all_quizz){
    for(let j = 0; j < all_quizz.length/3; j++){
     let container_3Q = document.createElement("div");
     container_3Q.className = "container my-5"
-    div_page.appendChild(container_3Q);
+    //div_page.appendChild(container_3Q);
+    window.div_home_page.appendChild(container_3Q);
     let row_3Q = document.createElement("div");
     row_3Q.className = "row";
     container_3Q.appendChild(row_3Q);
@@ -219,10 +240,18 @@ async function boutonRecherche(){
 async function rechercherQuizz(){
   //Si l'utilisateur entre un champs vide, il reste sur la HomePage
   if(document.getElementById("searchBar").value.replace(/\s+/g, '') === '') return;
-  div_page.innerHTML = "";
+  //div_page.innerHTML = "";
+  window.div_home_page.innerHTML = "";
   let critere = escape(document.getElementById("searchBar").value);
   try{
-    let reponse = await fetch("/api/quizz/recherche/"+critere);
+    const options = {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getSessionObject("user").token
+      },
+    };
+    let reponse = await fetch("/api/quizz/recherche/"+critere, options);
     if (!reponse.ok) {
       throw new Error(
         "fetch error : " + reponse.status + " : " + reponse.statusText
@@ -230,7 +259,8 @@ async function rechercherQuizz(){
     }
     let all_quizz_recherche = await reponse.json();
     let message_resultat = document.createElement("h4");
-    div_page.appendChild(message_resultat);
+    //div_page.appendChild(message_resultat);
+    window.div_home_page.appendChild(message_resultat);
     if(all_quizz_recherche.length === 0){
       message_resultat.innerHTML = "Pas de résultat pour la recherche : "+critere;
     }

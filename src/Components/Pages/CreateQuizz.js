@@ -202,6 +202,7 @@ async function soumettreQuizz(e){
       }), 
       headers: {
         "Content-Type": "application/json",
+        Authorization: getSessionObject("user").token
       },
     };
     if(erreur != 0 ) return;
