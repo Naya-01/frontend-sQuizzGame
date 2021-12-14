@@ -43,7 +43,14 @@ let myPage = `<div id="page" class="container-fluid">
 
 async function getQuestions(_id_quizz) {
     try {
-        const response = await fetch("/api/questions?quizz=" + _id_quizz);
+        const options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: getSessionObject("user").token
+            },
+        };
+        const response = await fetch("/api/questions?quizz=" + _id_quizz,options);
 
         if (!response.ok) {
             throw new Error(
@@ -52,13 +59,20 @@ async function getQuestions(_id_quizz) {
         }
         questions = await response.json();
     } catch (err) {
-        console.error("getQuizz::error: ", err);
+        console.error("getQuestions::error: ", err);
     }
 }
 
 async function getAnswers(_id_question) {
     try {
-        const response = await fetch("/api/answers/allAnswers/" + _id_question);
+        const options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: getSessionObject("user").token
+            },
+        };
+        const response = await fetch("/api/answers/allAnswers/" + _id_question,options);
 
         if (!response.ok) {
             throw new Error(
@@ -239,6 +253,7 @@ async function saveDatabase(){
             }),
             headers: {
                 "Content-Type": "application/json",
+                Authorization: getSessionObject("user").token,
             },
         };
         participation = await fetch("/api/participations/", options);
@@ -259,6 +274,7 @@ async function saveDatabase(){
                 }),
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: getSessionObject("user").token,
                 },
             };
             let retour = await fetch("/api/participations/answers/", options);
