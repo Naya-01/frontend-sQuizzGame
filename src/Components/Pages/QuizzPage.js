@@ -120,7 +120,6 @@ async function QuizzPage(id) {
         console.error(err);
     }
     quizz = await quizz.json();
-    console.log(quizz)
 
     let user = getSessionObject("user");
 
@@ -255,7 +254,24 @@ async function QuizzPage(id) {
     let creatorName = document.getElementById("quizz-creator");
     creatorName.innerText ="Créer par : "+quizz.username;
 
-   let personnalsBestScores = await fetch("/api/participations/personnalsBestScores?id_quizz="+id+"&id_user="+user.id_user);
+    let personnalsBestScores;
+    try{
+        const options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: getSessionObject("user").token
+            },
+        };
+        personnalsBestScores = await fetch("/api/participations/personnalsBestScores?id_quizz="+id+"&id_user="+user.id_user,options);
+        if (!personnalsBestScores.ok) {
+            throw new Error(
+                "fetch error : " + personnalsBestScores.status + " : " + personnalsBestScores.statusText
+            );
+        }
+    } catch (err) {
+        console.error(err);
+    }
     personnalsBestScores = await personnalsBestScores.json();
 
     if(personnalsBestScores.length===0){
@@ -335,7 +351,24 @@ async function QuizzPage(id) {
         }
     })
 
-    let allBestScores = await fetch("/api/participations/bestScores/" + id);
+    let allBestScores;
+    try{
+        const options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: getSessionObject("user").token
+            },
+        };
+        allBestScores = await fetch("/api/participations/bestScores/" + id,options);
+        if (!allBestScores.ok) {
+            throw new Error(
+                "fetch error : " + allBestScores.status + " : " + allBestScores.statusText
+            );
+        }
+    } catch (err) {
+        console.error(err);
+    }
     allBestScores = await allBestScores.json();
 
     if(allBestScores.length===0){
