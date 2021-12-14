@@ -1,5 +1,6 @@
 import { getSessionObject } from "../../utils/session";
 import { RedirectWithParams } from "../Router/Router";
+const escape = require("escape-html");
 let main;
 let div_page;
 
@@ -8,8 +9,7 @@ const HomePage = async () => {
   
   main = document.querySelector("main");
   //TODO : supprimer le fais que en spammant ça duplique
-  let ancienne_div_page = document.getElementById("HomePageId");
-  if(ancienne_div_page != null) ancienne_div_page.innerHTML = "";
+  
   main.innerHTML = "";  // on reinitialise le main
 
   // Ajout du titre de la page
@@ -204,16 +204,23 @@ async function boutonRecherche(){
                           </table>
                         </div>`;
 
+  // Quand on presse enter on lance la recherche
+  let searchBar = main.querySelector("#searchBar");
+  searchBar.addEventListener("keypress", async (e) => {
+    if(e.key === "Enter") await rechercherQuizz();
+  });
+
   let search = main.querySelector("#searchButton");
   search.addEventListener("click", async (e) => {
     e.preventDefault();
-    rechercherQuizz();
+    await rechercherQuizz();
   });
 }
 async function rechercherQuizz(){
-  console.log("ici : "+document.getElementById("searchBar").value);
+  //Si l'utilisateur entre un champs vide, il reste sur la HomePage
+  if(document.getElementById("searchBar").value.replace(/\s+/g, '') === '') return;
   div_page.innerHTML = "";
-  let critere = document.getElementById("searchBar").value;
+  let critere = escape(document.getElementById("searchBar").value);
   try{
     let reponse = await fetch("/api/quizz/recherche/"+critere);
     if (!reponse.ok) {
@@ -222,7 +229,16 @@ async function rechercherQuizz(){
       );
     }
     let all_quizz_recherche = await reponse.json();
-    afficherQuizz(all_quizz_recherche);
+    let message_resultat = document.createElement("h4");
+    div_page.appendChild(message_resultat);
+    if(all_quizz_recherche.length === 0){
+      message_resultat.innerHTML = "Pas de résultat pour la recherche : "+critere;
+    }
+    else{
+      message_resultat.innerHTML = "Résultat pour la recherche : "+critere;
+      afficherQuizz(all_quizz_recherche);
+    }
+    
   }catch (err) {
     console.error("getRecherche::error: ", err);
   }
