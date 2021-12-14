@@ -46,7 +46,7 @@ class UserLibrary {
     }
   }
 
-  async getUsersWithFilter(filter,user) {
+  async getUsersWithFilter(filter,user) { // utilisé plus haut
     try {
       const options = {
         method: "GET", 
@@ -69,7 +69,7 @@ class UserLibrary {
     }
   }
 
-  async getUser(id) {
+  async getUser(id) {// profilLibrary et panelAdmin
     try {
       const reponse = await fetch("/api/users/" + id);
 
@@ -90,7 +90,7 @@ class UserLibrary {
    * @paraminteger id_follower 
    * @returns 1 if id_follower is following id_user
    */
-  async isFollowing(id_user,id_follower) {
+  async isFollowing(id_user,id_follower) { // utilisé profilLibrary
     try {
       const reponse = await fetch(`/api/users/isFollowing/ids?id1=${id_user}&id2=${id_follower}`);
 
@@ -106,7 +106,7 @@ class UserLibrary {
     }
   }
 
-  async subscribe(users) {
+  async subscribe(users) { // utilisé dans another one
     try {
       if(!users) return false;
       const options = {
@@ -127,11 +127,11 @@ class UserLibrary {
       const usersToReturn = await reponse.json();
       return usersToReturn;
     } catch (err) {
-      console.error("getUser::error: ", err);
+      console.error("subscribe::error: ", err);
     }
   }
 
-  async unsubscribe(id_user,id_follower) {
+  async unsubscribe(id_user,id_follower) { // utilisé dans another one profil page
     try {
       const options = {
         method: "DELETE", 
@@ -154,7 +154,7 @@ class UserLibrary {
     }
   }
 
-  async getTwoUsersById(id1,id2) {
+  async getTwoUsersById(id1,id2) {// utilisé ProfilLibrary
     try {
       const reponse = await fetch(`/api/users/getTwoUsers/ids?id1=${id1}&id2=${id2}`);
 
@@ -166,12 +166,12 @@ class UserLibrary {
       const users = await reponse.json();
       return users;
     } catch (err) {
-      console.error("getUser::error: ", err);
+      console.error("getTwoUsersById::error: ", err);
     }
   }
   
 
-  async getUsers() {
+  async getUsers() { //utilisé plus haut
     try {
       const reponse = await fetch("/api/users/");
 
@@ -187,7 +187,7 @@ class UserLibrary {
     }
   }
 
-  async getSubscribers(id_user) {
+  async getSubscribers(id_user) { // PAS UTILISE
     try {
       const reponse = await fetch("/api/users/subscribers/"+id_user);
 
@@ -203,7 +203,7 @@ class UserLibrary {
     }
   }
 
-  async getSubscriptions(id_user) {
+  async getSubscriptions(id_user) {// PAS UTILISE
     try {
       const reponse = await fetch("/api/users/subscriptions/"+id_user);
 
@@ -219,7 +219,7 @@ class UserLibrary {
     }
   }
 
-  async banUser(user_object) {
+  async banUser(user_object) { // utilisé panel admin page
     try {
 
       const options = {
@@ -244,7 +244,7 @@ class UserLibrary {
     }
   }
 
-  async upgradeUser(user_object,userSession) {
+  async upgradeUser(user_object,userSession) { // utilisé panel admin
     try {
 
       const options = {
@@ -266,11 +266,11 @@ class UserLibrary {
       const user = await reponse.json();
       return user;
     } catch (err) {
-      console.error("banUser::error: ", err);
+      console.error("upgradeUser::error: ", err);
     }
   }
 
-  async isAdmin(id_user) {
+  async isAdmin(id_user) { //pas utilisé
     try {
 
       const reponse = await fetch("/api/users/isAdmin/"+id_user);
@@ -289,7 +289,7 @@ class UserLibrary {
 
   
 
-  async unbanUser(user_object) {
+  async unbanUser(user_object) {//utilisé dans panel admin
     try {
 
       const options = {
@@ -381,7 +381,7 @@ class UserLibrary {
   }
 
 
-  async getUserByEmail(email){
+  async getUserByEmail(email){ // pas utilisé
     try {
       const reponse = await fetch("/api/users/email/" + email);
 
@@ -393,7 +393,7 @@ class UserLibrary {
       const user = await reponse.json();
       return user;
     } catch (err) {
-      console.error("getUser::error: ", err);
+      console.error("getUserByEmail::error: ", err);
     }
   }
 }
