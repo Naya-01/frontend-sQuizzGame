@@ -243,7 +243,7 @@ async function saveDatabase(){
         };
         participation = await fetch("/api/participations/", options);
         if (!participation.ok) {
-            throw new Error("fetch error : " + reponse.status + " : " + reponse.statusText);
+            throw new Error("fetch error : " + participation.status + " : " + participation.statusText);
         }
     } catch (err) {
         console.log(err);
@@ -263,7 +263,7 @@ async function saveDatabase(){
             };
             let retour = await fetch("/api/participations/answers/", options);
             if (!retour.ok) {
-                throw new Error("fetch error : " + reponse.status + " : " + reponse.statusText);
+                throw new Error("fetch error : " + retour.status + " : " + retour.statusText);
             }
         } catch (err) {
             console.log(err);
