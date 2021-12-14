@@ -162,7 +162,7 @@ function RegisterAndLoginPage() {
                     "Content-Type": "application/json",
                 },
             };
-            const response = await fetch("/users/login", options);
+            const response = await fetch("/api/users/login", options);
             if (!response.ok) {
                 throw new Error(
                     "fetch error : " + response.status + " : " + response.statusText
