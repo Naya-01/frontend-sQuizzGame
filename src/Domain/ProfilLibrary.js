@@ -229,6 +229,7 @@ class ProfilLibrary {
                                   boxOfQuizzs += `
                                   <p class="card-text" style ="height:4rem">${descriptionTexte}</p>
                                   <div class="d-grid gap-2">
+                                      <span id="delete${element.id_quizz}"></span>
                                       <button class="btn btn-primary play" data-element-id="${element.id_quizz} "type="button">Jouer</button>`;
                                       if(userUrlObject==null || (!userUrlObject.is_admin && userSessionObject.is_admin)){
                                         boxOfQuizzs += `<button class="btn btn-danger delete" data-element-id="${element.id_quizz}"  type="button">Supprimer</button>`;
