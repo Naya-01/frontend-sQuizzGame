@@ -17,7 +17,7 @@ const ProfilPage = async () => {
   main.querySelectorAll(".delete").forEach((button) => {
     button.addEventListener("click", async (e) => {
       let elementId = e.target.dataset.elementId;
-      await profilLibrary.deleteQuizzFromProfil(elementId,userSession);
+      await profilLibrary.deleteQuizzFromProfil(elementId);
       ProfilPage();
     });
   });

@@ -1,6 +1,7 @@
 import adminImage from "../img/admin.png";
 import userImage from "../img/user.png";
 import UserLibrary from "./UserLibrary";
+import { getSessionObject } from "../utils/session";
 const userLibrary = new UserLibrary();
 
 class ProfilLibrary {
@@ -169,13 +170,13 @@ class ProfilLibrary {
     }
   }
 
-  async deleteQuizzFromProfil(id_quizz, userSession) {
+  async deleteQuizzFromProfil(id_quizz) {
     try {
       const options = {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: userSession.token,
+          Authorization: getSessionObject("user").token,
         },
       };
 
