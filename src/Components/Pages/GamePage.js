@@ -187,7 +187,6 @@ function html_endGame() {
 }
 
 function endGame() {
-    saveDatabase();
     Swal.fire({
         title: 'Récapitulatif des réponses',
         html: html_endGame(),
@@ -280,6 +279,7 @@ async function questionSuivante(index) {
     //recupération de mes questions depuis 1 quizz
     if (index > questions.length - 1) {
         flipAnswer();
+        await saveDatabase();
         endGame();
         return;
     }
