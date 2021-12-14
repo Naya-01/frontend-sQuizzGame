@@ -379,5 +379,22 @@ class UserLibrary {
       console.error("displayUsers::error: ", err);
     }
   }
+
+
+  async getUserByEmail(email){
+    try {
+      const reponse = await fetch("/api/users/email" + email);
+
+      if (!reponse.ok) {
+        throw new Error(
+            "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const user = await reponse.json();
+      return user;
+    } catch (err) {
+      console.error("getUser::error: ", err);
+    }
+  }
 }
 export default UserLibrary;
