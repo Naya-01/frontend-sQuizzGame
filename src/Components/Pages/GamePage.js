@@ -149,7 +149,7 @@ function showQuestionWithMyAnswer() {
     Swal.fire({
         title: ` Question : ${questions[index].question}`,
         html: `Votre réponse : ${reponse}`,
-        width: 500,
+        width: 700,
         padding: '3em',
         color: '#090808',
         scrollbarPadding: false,
@@ -187,7 +187,6 @@ function html_endGame() {
 }
 
 function endGame() {
-    saveDatabase();
     Swal.fire({
         title: 'Récapitulatif des réponses',
         html: html_endGame(),
@@ -244,7 +243,7 @@ async function saveDatabase(){
         };
         participation = await fetch("/api/participations/", options);
         if (!participation.ok) {
-            throw new Error("fetch error : " + reponse.status + " : " + reponse.statusText);
+            throw new Error("fetch error : " + participation.status + " : " + participation.statusText);
         }
     } catch (err) {
         console.log(err);
@@ -264,7 +263,7 @@ async function saveDatabase(){
             };
             let retour = await fetch("/api/participations/answers/", options);
             if (!retour.ok) {
-                throw new Error("fetch error : " + reponse.status + " : " + reponse.statusText);
+                throw new Error("fetch error : " + retour.status + " : " + retour.statusText);
             }
         } catch (err) {
             console.log(err);
@@ -281,6 +280,7 @@ async function questionSuivante(index) {
     if (index > questions.length - 1) {
         flipAnswer();
         endGame();
+        await saveDatabase();
         return;
     }
     let Quest = document.getElementById('theQuestion');
