@@ -30,7 +30,7 @@ let myPage = `<div class="container">
 
 <div class="row">
         <!--  Meilleurs Scores   -->
-        <div class="col" id="best-scores">
+        <div class="col-lg-4 col-md-12 col-sm-12" id="best-scores">
             <div class="row m-auto">
                 <span class="fs-3 btn btn-light text-dark
                     border border-dark border-2 border">Meilleurs scores</span>
@@ -39,7 +39,7 @@ let myPage = `<div class="container">
         
         <!-- Millieu -->
 
-        <div class="col">
+        <div class="col-lg-4 col-md-12 col-sm-12">
             <div class="row m-auto" id="notifRow">
                 
             </div>
@@ -71,7 +71,7 @@ let myPage = `<div class="container">
         
 
         <!-- Scores Personnels-->
-        <div class="col" id="personnal-best-scores">
+        <div class="col-lg-4 col-md-12 col-sm-12" id="personnal-best-scores">
             <div class="row m-auto">
                 <span class="fs-3 btn btn-light text-dark
                     border border-dark border-2 border">Mes meilleurs scores</span>
