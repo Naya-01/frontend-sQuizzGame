@@ -149,7 +149,7 @@ function showQuestionWithMyAnswer() {
     Swal.fire({
         title: ` Question : ${questions[index].question}`,
         html: `Votre réponse : ${reponse}`,
-        width: 500,
+        width: 700,
         padding: '3em',
         color: '#090808',
         scrollbarPadding: false,
@@ -279,8 +279,8 @@ async function questionSuivante(index) {
     //recupération de mes questions depuis 1 quizz
     if (index > questions.length - 1) {
         flipAnswer();
-        await saveDatabase();
         endGame();
+        await saveDatabase();
         return;
     }
     let Quest = document.getElementById('theQuestion');
