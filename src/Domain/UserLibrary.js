@@ -383,7 +383,7 @@ class UserLibrary {
 
   async getUserByEmail(email){
     try {
-      const reponse = await fetch("/api/users/email" + email);
+      const reponse = await fetch("/api/users/email/" + email);
 
       if (!reponse.ok) {
         throw new Error(
