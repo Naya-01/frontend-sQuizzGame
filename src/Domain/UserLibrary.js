@@ -244,7 +244,7 @@ class UserLibrary {
     }
   }
 
-  async upgradeUser(user_object) {
+  async upgradeUser(user_object,userSession) {
     try {
 
       const options = {
@@ -252,6 +252,7 @@ class UserLibrary {
         body: JSON.stringify(user_object),
         headers: {
           "Content-Type": "application/json",
+          Authorization: userSession.token,
         },
       };
 

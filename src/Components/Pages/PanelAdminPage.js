@@ -4,8 +4,10 @@ import { Redirect,RedirectWithParamsInUrl } from "../Router/Router";
 const userLibrary = new UserLibrary();
 const main = document.querySelector("main");
 
+let userSession;
+
 const PanelAdminPage = async (filter) => {
-  let userSession = getSessionObject("user");
+  userSession = getSessionObject("user");
   if (!userSession) {
     Redirect("/RegisterAndLoginPage");
   }
@@ -134,7 +136,7 @@ const addEventListeners = async (filter) =>{
         const userToUpgrade = {
           id_user: parseInt(elementId),
         };
-        await userLibrary.upgradeUser(userToUpgrade);
+        await userLibrary.upgradeUser(userToUpgrade, userSession);
         PanelAdminPage(filter);
       });
       //refresh the page (press no)
