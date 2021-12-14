@@ -249,7 +249,7 @@ class ProfilLibrary {
             }
             return boxOfQuizzs;
         }catch(err){
-            console.error("getUser::error: ", err);
+            console.error("displayQuizzs::error: ", err);
         }
   }
 }

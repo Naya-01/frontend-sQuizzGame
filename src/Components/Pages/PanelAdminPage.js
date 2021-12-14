@@ -136,7 +136,7 @@ const addEventListeners = async (filter) =>{
         const userToUpgrade = {
           id_user: parseInt(elementId),
         };
-        await userLibrary.upgradeUser(userToUpgrade, userSession);
+        await userLibrary.upgradeUser(userToUpgrade);
         PanelAdminPage(filter);
       });
       //refresh the page (press no)

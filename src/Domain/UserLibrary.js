@@ -1,3 +1,4 @@
+import { getSessionObject } from "../utils/session";
 class UserLibrary {
   async getPanelAdminPage(filter,userSession) {
     try {
@@ -33,7 +34,7 @@ class UserLibrary {
 `;
       let users;
       if(!filter) users = await this.getUsers();
-      else users = await this.getUsersWithFilter(filter,userSession);
+      else users = await this.getUsersWithFilter(filter);
       page += await this.displayUsers(users,userSession);
 
     
@@ -46,16 +47,16 @@ class UserLibrary {
     }
   }
 
-  async getUsersWithFilter(filter,user) { // utilisé plus haut
+  async getUsersWithFilter(filter) { // utilisé plus haut
     try {
       const options = {
         method: "GET", 
         headers: {
           "Content-Type": "application/json",
-          Authorization: user.token,
+          Authorization: getSessionObject("user").token,
         },
       };
-      const reponse = await fetch("/api/users/filter/"+filter);
+      const reponse = await fetch("/api/users/filter/"+filter,options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -71,7 +72,14 @@ class UserLibrary {
 
   async getUser(id) {// profilLibrary et panelAdmin
     try {
-      const reponse = await fetch("/api/users/" + id);
+      const options = {
+        method: "GET", 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch("/api/users/" + id,options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -92,7 +100,14 @@ class UserLibrary {
    */
   async isFollowing(id_user,id_follower) { // utilisé profilLibrary
     try {
-      const reponse = await fetch(`/api/users/isFollowing/ids?id1=${id_user}&id2=${id_follower}`);
+      const options = {
+        method: "GET", 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch(`/api/users/isFollowing/ids?id1=${id_user}&id2=${id_follower}`,options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -114,6 +129,7 @@ class UserLibrary {
         body: JSON.stringify(users),
         headers: {
           "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
         },
       };
 
@@ -137,6 +153,7 @@ class UserLibrary {
         method: "DELETE", 
         headers: {
           "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
         },
       };
       const reponse = await fetch(`/api/users/delete/subscription?id_user=${id_user}&id_follower=${id_follower}`,options);
@@ -156,7 +173,14 @@ class UserLibrary {
 
   async getTwoUsersById(id1,id2) {// utilisé ProfilLibrary
     try {
-      const reponse = await fetch(`/api/users/getTwoUsers/ids?id1=${id1}&id2=${id2}`);
+      const options = {
+        method: "GET", 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch(`/api/users/getTwoUsers/ids?id1=${id1}&id2=${id2}`,options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -173,7 +197,15 @@ class UserLibrary {
 
   async getUsers() { //utilisé plus haut
     try {
-      const reponse = await fetch("/api/users/");
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+
+      const reponse = await fetch("/api/users/",options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -227,6 +259,7 @@ class UserLibrary {
         body: JSON.stringify(user_object),
         headers: {
           "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
         },
       };
 
@@ -244,7 +277,7 @@ class UserLibrary {
     }
   }
 
-  async upgradeUser(user_object,userSession) { // utilisé panel admin
+  async upgradeUser(user_object) { // utilisé panel admin
     try {
 
       const options = {
@@ -252,7 +285,7 @@ class UserLibrary {
         body: JSON.stringify(user_object),
         headers: {
           "Content-Type": "application/json",
-          Authorization: userSession.token,
+          Authorization: getSessionObject("user").token,
         },
       };
 
@@ -297,6 +330,7 @@ class UserLibrary {
         body: JSON.stringify(user_object),
         headers: {
           "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
         },
       };
 
