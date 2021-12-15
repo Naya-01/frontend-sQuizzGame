@@ -214,12 +214,6 @@ function RegisterAndLoginPage() {
                 title: 'Cet utilisateur n\'existe pas'
             });
             return;
-        }else {
-            Toast.fire({
-                icon: 'error',
-                title: 'Mot de passe incorrect'
-            });
-            return;
         }
 
         try {
