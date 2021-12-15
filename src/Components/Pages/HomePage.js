@@ -1,5 +1,5 @@
 import { getSessionObject } from "../../utils/session";
-import { RedirectWithParams } from "../Router/Router";
+import { RedirectWithParams,RedirectWithParamsInUrl } from "../Router/Router";
 const escape = require("escape-html");
 
 
@@ -175,9 +175,14 @@ async function afficherQuizz(all_quizz, div_page){
         
         // Créateur du quizz
         let creator = all_quizz[indice].user_name;
-        let subtitle = document.createElement("h6");
+        let subtitle = document.createElement("a");
         subtitle.className = "card-subtitle mb-2 text-muted";
         subtitle.innerHTML = "par "+creator;
+        subtitle.addEventListener("click", async (e) => {
+          e.preventDefault();
+          let elementId = all_quizz[indice].id_user;
+          RedirectWithParamsInUrl("/Profil","?idUser="+elementId);
+        });
         div.appendChild(subtitle);
             
         // Description du quizz
