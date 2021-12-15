@@ -1,6 +1,7 @@
 import adminImage from "../img/admin.png";
 import userImage from "../img/user.png";
 import UserLibrary from "./UserLibrary";
+import { getSessionObject } from "../utils/session";
 const userLibrary = new UserLibrary();
 
 class ProfilLibrary {
@@ -42,7 +43,7 @@ class ProfilLibrary {
         </div>`;
 
         
-      const quizzs = await this.getQuizzFromUser(user.id_user);
+      const quizzs = await this.getQuizzFromUser(userSession,null);
 
       let boxOfQuizz = await this.displayQuizzs(quizzs,null,user);
       page += boxOfQuizz;
@@ -112,7 +113,7 @@ class ProfilLibrary {
           </div>`;
 
         
-      const quizzs = await this.getQuizzFromUser(users.id_user2);
+      const quizzs = await this.getQuizzFromUser(userSession, users.id_user2);
       const userUrlObject={
         id_user: users.id_user2,
         name: users.name2,
@@ -138,9 +139,23 @@ class ProfilLibrary {
     }
   }
 
-  async getQuizzFromUser(user_id) {
+  async getQuizzFromUser(userSession,id_user_url) {
     try {
-      const response = await fetch("/api/quizz/forUser/" + user_id);
+      let options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: userSession.token,
+        },
+      };
+      let response;
+      if(id_user_url===null){
+        response = await fetch("/api/quizz/forUser/" + userSession.id_user,options);
+      }
+      else{
+         response = await fetch("/api/quizz/forUser/" + id_user_url,options);
+      }
+      
 
       if (!response.ok) {
         throw new Error(
@@ -159,7 +174,11 @@ class ProfilLibrary {
     try {
       const options = {
         method: "DELETE",
-        };
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
 
         const response = await fetch("/api/quizz/"+id_quizz, options);
 
@@ -210,7 +229,8 @@ class ProfilLibrary {
                                   boxOfQuizzs += `
                                   <p class="card-text" style ="height:4rem">${descriptionTexte}</p>
                                   <div class="d-grid gap-2">
-                                      <button class="btn btn-primary" type="button">Jouer</button>`;
+                                      <span id="delete${element.id_quizz}"></span>
+                                      <button class="btn btn-primary play" data-element-id="${element.id_quizz} "type="button">Jouer</button>`;
                                       if(userUrlObject==null || (!userUrlObject.is_admin && userSessionObject.is_admin)){
                                         boxOfQuizzs += `<button class="btn btn-danger delete" data-element-id="${element.id_quizz}"  type="button">Supprimer</button>`;
                                       }
@@ -229,7 +249,7 @@ class ProfilLibrary {
             }
             return boxOfQuizzs;
         }catch(err){
-            console.error("getUser::error: ", err);
+            console.error("displayQuizzs::error: ", err);
         }
   }
 }

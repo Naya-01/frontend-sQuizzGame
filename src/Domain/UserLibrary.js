@@ -1,3 +1,4 @@
+import { getSessionObject } from "../utils/session";
 class UserLibrary {
   async getPanelAdminPage(filter,userSession) {
     try {
@@ -33,7 +34,7 @@ class UserLibrary {
 `;
       let users;
       if(!filter) users = await this.getUsers();
-      else users = await this.getUsersWithFilter(filter,userSession);
+      else users = await this.getUsersWithFilter(filter);
       page += await this.displayUsers(users,userSession);
 
     
@@ -46,16 +47,16 @@ class UserLibrary {
     }
   }
 
-  async getUsersWithFilter(filter,user) {
+  async getUsersWithFilter(filter) { // utilisé plus haut
     try {
       const options = {
         method: "GET", 
         headers: {
           "Content-Type": "application/json",
-          Authorization: user.token,
+          Authorization: getSessionObject("user").token,
         },
       };
-      const reponse = await fetch("/api/users/filter/"+filter);
+      const reponse = await fetch("/api/users/filter/"+filter,options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -69,9 +70,16 @@ class UserLibrary {
     }
   }
 
-  async getUser(id) {
+  async getUser(id) {// profilLibrary et panelAdmin
     try {
-      const reponse = await fetch("/api/users/" + id);
+      const options = {
+        method: "GET", 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch("/api/users/" + id,options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -90,9 +98,16 @@ class UserLibrary {
    * @paraminteger id_follower 
    * @returns 1 if id_follower is following id_user
    */
-  async isFollowing(id_user,id_follower) {
+  async isFollowing(id_user,id_follower) { // utilisé profilLibrary
     try {
-      const reponse = await fetch(`/api/users/isFollowing/ids?id1=${id_user}&id2=${id_follower}`);
+      const options = {
+        method: "GET", 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch(`/api/users/isFollowing/ids?id1=${id_user}&id2=${id_follower}`,options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -106,7 +121,7 @@ class UserLibrary {
     }
   }
 
-  async subscribe(users) {
+  async subscribe(users) { // utilisé dans another one
     try {
       if(!users) return false;
       const options = {
@@ -114,6 +129,7 @@ class UserLibrary {
         body: JSON.stringify(users),
         headers: {
           "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
         },
       };
 
@@ -127,16 +143,17 @@ class UserLibrary {
       const usersToReturn = await reponse.json();
       return usersToReturn;
     } catch (err) {
-      console.error("getUser::error: ", err);
+      console.error("subscribe::error: ", err);
     }
   }
 
-  async unsubscribe(id_user,id_follower) {
+  async unsubscribe(id_user,id_follower) { // utilisé dans another one profil page
     try {
       const options = {
         method: "DELETE", 
         headers: {
           "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
         },
       };
       const reponse = await fetch(`/api/users/delete/subscription?id_user=${id_user}&id_follower=${id_follower}`,options);
@@ -154,9 +171,16 @@ class UserLibrary {
     }
   }
 
-  async getTwoUsersById(id1,id2) {
+  async getTwoUsersById(id1,id2) {// utilisé ProfilLibrary
     try {
-      const reponse = await fetch(`/api/users/getTwoUsers/ids?id1=${id1}&id2=${id2}`);
+      const options = {
+        method: "GET", 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch(`/api/users/getTwoUsers/ids?id1=${id1}&id2=${id2}`,options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -166,14 +190,22 @@ class UserLibrary {
       const users = await reponse.json();
       return users;
     } catch (err) {
-      console.error("getUser::error: ", err);
+      console.error("getTwoUsersById::error: ", err);
     }
   }
   
 
-  async getUsers() {
+  async getUsers() { //utilisé plus haut
     try {
-      const reponse = await fetch("/api/users/");
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+
+      const reponse = await fetch("/api/users/",options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -187,7 +219,7 @@ class UserLibrary {
     }
   }
 
-  async getSubscribers(id_user) {
+  async getSubscribers(id_user) { // PAS UTILISE
     try {
       const reponse = await fetch("/api/users/subscribers/"+id_user);
 
@@ -203,7 +235,7 @@ class UserLibrary {
     }
   }
 
-  async getSubscriptions(id_user) {
+  async getSubscriptions(id_user) {// PAS UTILISE
     try {
       const reponse = await fetch("/api/users/subscriptions/"+id_user);
 
@@ -219,7 +251,7 @@ class UserLibrary {
     }
   }
 
-  async banUser(user_object) {
+  async banUser(user_object) { // utilisé panel admin page
     try {
 
       const options = {
@@ -227,6 +259,7 @@ class UserLibrary {
         body: JSON.stringify(user_object),
         headers: {
           "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
         },
       };
 
@@ -244,7 +277,7 @@ class UserLibrary {
     }
   }
 
-  async upgradeUser(user_object,userSession) {
+  async upgradeUser(user_object) { // utilisé panel admin
     try {
 
       const options = {
@@ -252,7 +285,7 @@ class UserLibrary {
         body: JSON.stringify(user_object),
         headers: {
           "Content-Type": "application/json",
-          Authorization: userSession.token,
+          Authorization: getSessionObject("user").token,
         },
       };
 
@@ -266,11 +299,11 @@ class UserLibrary {
       const user = await reponse.json();
       return user;
     } catch (err) {
-      console.error("banUser::error: ", err);
+      console.error("upgradeUser::error: ", err);
     }
   }
 
-  async isAdmin(id_user) {
+  async isAdmin(id_user) { //pas utilisé
     try {
 
       const reponse = await fetch("/api/users/isAdmin/"+id_user);
@@ -289,7 +322,7 @@ class UserLibrary {
 
   
 
-  async unbanUser(user_object) {
+  async unbanUser(user_object) {//utilisé dans panel admin
     try {
 
       const options = {
@@ -297,6 +330,7 @@ class UserLibrary {
         body: JSON.stringify(user_object),
         headers: {
           "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
         },
       };
 
@@ -377,6 +411,23 @@ class UserLibrary {
       }
     } catch (err) {
       console.error("displayUsers::error: ", err);
+    }
+  }
+
+
+  async getUserByEmail(email){ // pas utilisé
+    try {
+      const reponse = await fetch("/api/users/email/" + email);
+
+      if (!reponse.ok) {
+        throw new Error(
+            "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const user = await reponse.json();
+      return user;
+    } catch (err) {
+      console.error("getUserByEmail::error: ", err);
     }
   }
 }

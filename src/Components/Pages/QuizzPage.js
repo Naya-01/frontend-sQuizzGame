@@ -30,7 +30,7 @@ let myPage = `<div class="container">
 
 <div class="row">
         <!--  Meilleurs Scores   -->
-        <div class="col" id="best-scores">
+        <div class="col-lg-4 col-md-12 col-sm-12" id="best-scores">
             <div class="row m-auto">
                 <span class="fs-3 btn btn-light text-dark
                     border border-dark border-2 border">Meilleurs scores</span>
@@ -39,7 +39,7 @@ let myPage = `<div class="container">
         
         <!-- Millieu -->
 
-        <div class="col">
+        <div class="col-lg-4 col-md-12 col-sm-12">
             <div class="row m-auto" id="notifRow">
                 
             </div>
@@ -71,7 +71,7 @@ let myPage = `<div class="container">
         
 
         <!-- Scores Personnels-->
-        <div class="col" id="personnal-best-scores">
+        <div class="col-lg-4 col-md-12 col-sm-12" id="personnal-best-scores">
             <div class="row m-auto">
                 <span class="fs-3 btn btn-light text-dark
                     border border-dark border-2 border">Mes meilleurs scores</span>
@@ -101,9 +101,24 @@ async function QuizzPage(id) {
     const myMain = document.querySelector("main");
     myMain.innerHTML = myPage;
 
-
-
-    let quizz =  await fetch("/api/quizz/" + id);
+    let quizz;
+    try{
+        const options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: getSessionObject("user").token
+            },
+        };
+        quizz = await fetch("/api/quizz/"+id,options);
+        if (!quizz.ok) {
+            throw new Error(
+                "fetch error : " + quizz.status + " : " + quizz.statusText
+            );
+        }
+    } catch (err) {
+        console.error(err);
+    }
     quizz = await quizz.json();
 
     let user = getSessionObject("user");
@@ -121,7 +136,24 @@ async function QuizzPage(id) {
 
     let btnLike = document.getElementById("btn-like");
     btnLike.addEventListener("click",async e => {
-        let isLiked = await fetch("/api/quizz/isLiked?id_quizz="+id+"&id_user="+user.id_user);
+        let isLiked;
+        try{
+            const options = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: getSessionObject("user").token
+                },
+            };
+            isLiked = await fetch("/api/quizz/isLiked?id_quizz="+id+"&id_user="+user.id_user,options);
+            if (!isLiked.ok) {
+                throw new Error(
+                    "fetch error : " + isLiked.status + " : " + isLiked.statusText
+                );
+            }
+        } catch (err) {
+            console.error(err);
+        }
         isLiked = await isLiked.json();
 
         const Toast = Swal.mixin({
@@ -146,18 +178,19 @@ async function QuizzPage(id) {
                     }),
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: getSessionObject("user").token
                     },
                 };
                 let reponse = await fetch("/api/quizz/unlike/", options);
                 if (!reponse.ok) {
-                    throw new Error();
+                    throw new Error("fetch error : " + reponse.status + " : " + reponse.statusText);
                 }
             } catch (err) {
                 console.log(err);
             }
             Toast.fire({
                 icon: 'error',
-                title: 'Vous avez unlike.'
+                title: 'Vous avez dislike.'
             })
             like.innerText = parseInt(like.innerText)-1;
         }else{
@@ -170,11 +203,12 @@ async function QuizzPage(id) {
                     }),
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: getSessionObject("user").token
                     },
                 };
                 let reponse = await fetch("/api/quizz/likes/", options);
                 if (!reponse.ok) {
-                    throw new Error();
+                    throw new Error("fetch error : " + reponse.status + " : " + reponse.statusText);
                 }
             } catch (err) {
                 console.log(err);
@@ -187,7 +221,25 @@ async function QuizzPage(id) {
         }
     });
 
-    let likes = await fetch("/api/quizz/likes/" + id)
+
+    let likes;
+    try{
+        const options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: getSessionObject("user").token
+            },
+        };
+        likes = await fetch("/api/quizz/likes/" + id,options);
+        if (!likes.ok) {
+            throw new Error(
+                "fetch error : " + likes.status + " : " + likes.statusText
+            );
+        }
+    } catch (err) {
+        console.error(err);
+    }
     likes = await likes.json();
 
     let like = document.getElementById("like-quizz");
@@ -202,7 +254,24 @@ async function QuizzPage(id) {
     let creatorName = document.getElementById("quizz-creator");
     creatorName.innerText ="Créer par : "+quizz.username;
 
-   let personnalsBestScores = await fetch("/api/participations/personnalsBestScores?id_quizz="+id+"&id_user="+user.id_user);
+    let personnalsBestScores;
+    try{
+        const options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: getSessionObject("user").token
+            },
+        };
+        personnalsBestScores = await fetch("/api/participations/personnalsBestScores?id_quizz="+id+"&id_user="+user.id_user,options);
+        if (!personnalsBestScores.ok) {
+            throw new Error(
+                "fetch error : " + personnalsBestScores.status + " : " + personnalsBestScores.statusText
+            );
+        }
+    } catch (err) {
+        console.error(err);
+    }
     personnalsBestScores = await personnalsBestScores.json();
 
     if(personnalsBestScores.length===0){
@@ -282,7 +351,24 @@ async function QuizzPage(id) {
         }
     })
 
-    let allBestScores = await fetch("/api/participations/bestScores/" + id);
+    let allBestScores;
+    try{
+        const options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: getSessionObject("user").token
+            },
+        };
+        allBestScores = await fetch("/api/participations/bestScores/" + id,options);
+        if (!allBestScores.ok) {
+            throw new Error(
+                "fetch error : " + allBestScores.status + " : " + allBestScores.statusText
+            );
+        }
+    } catch (err) {
+        console.error(err);
+    }
     allBestScores = await allBestScores.json();
 
     if(allBestScores.length===0){

@@ -1,6 +1,6 @@
 import ProfilLibrary from "../../Domain/ProfilLibrary";
 import { getSessionObject } from "../../utils/session";
-import { Redirect } from "../Router/Router";
+import { Redirect,RedirectWithParams } from "../Router/Router";
 
 const profilLibrary = new ProfilLibrary();
 
@@ -16,9 +16,59 @@ const ProfilPage = async () => {
 
   main.querySelectorAll(".delete").forEach((button) => {
     button.addEventListener("click", async (e) => {
+
+      //getters
       let elementId = e.target.dataset.elementId;
-      await profilLibrary.deleteQuizzFromProfil(elementId);
-      ProfilPage();
+      let requestIfDelete = document.getElementById("delete" + elementId);
+
+      //get all the buttons
+      let parent = button.parentElement;
+      let childrenParentButton = parent.children;
+      let tabChidrenButtons = [];
+      for (let i = 0; i < childrenParentButton.length; i++) {
+        let classElement = childrenParentButton[i].tagName;
+        if (classElement === "BUTTON")
+          tabChidrenButtons.push(childrenParentButton[i]);
+      }
+      //removing buttons and display question
+      requestIfDelete.innerHTML = `Etes vous sûr de vouloir supprimer?`;
+      parent.removeChild(tabChidrenButtons[0]);
+      parent.removeChild(tabChidrenButtons[1]);
+      //create button yes
+      let buttonYes = document.createElement("button");
+      buttonYes.innerHTML = "Oui";
+      buttonYes.className = "btn btn-success";
+      buttonYes.setAttribute("data-id", elementId);
+      buttonYes.type = "button";
+      parent.appendChild(buttonYes);
+      //create button no
+      let buttonNo = document.createElement("button");
+      buttonNo.innerHTML = "Non";
+      buttonNo.className = "btn btn-danger";
+      buttonNo.setAttribute("data-id", elementId);
+      buttonNo.type = "button";
+      parent.appendChild(buttonNo);
+
+      //listener to unban someone (press yes)
+      buttonYes.addEventListener("click", async (e) => {
+        await profilLibrary.deleteQuizzFromProfil(elementId);
+        ProfilPage();
+      });
+      //refresh the page (press no)
+      buttonNo.addEventListener("click", (e) => {
+        ProfilPage();
+      });
+
+
+      
+    });
+  });
+
+  main.querySelectorAll(".play").forEach((button) => {
+    button.addEventListener("click", async (e) => {
+      let elementId = e.target.dataset.elementId;
+      e.preventDefault();
+      RedirectWithParams("/Quizz",elementId);
     });
   });
 
