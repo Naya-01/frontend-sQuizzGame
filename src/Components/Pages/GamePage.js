@@ -94,7 +94,12 @@ function insertProgressBar() {
         strokeWidth: 4,
         easing: 'linear',
         duration: getDifficulty(difficulty),
-        color: '#FFEA82',
+        color: '#ED6A5A',
+        from: {color: '#ED6A5A'},
+        to: {color: '#FFEA82'},
+        step: (state, bar) => {
+            bar.path.setAttribute('stroke', state.color);
+        },
         svgStyle: {width: '100%', height: '25px'},
     });
     let pc = 1;
@@ -143,11 +148,9 @@ function html_answer() {
         `;
     }
     html_answer += `
-                <div class="row">
                 <div class="progress mt-5">
                     <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
                 </div>
-            </div>
 
             <button class="btn btn-primary mt-5" type="submit" id="nextQuestion">Question suivante</button>
     `;
@@ -300,7 +303,7 @@ async function questionSuivante(index) {
         return;
     }
     let Quest = document.getElementById('theQuestion');
-    Quest.innerText = questions[index].question;
+    Quest.innerHTML = questions[index].question;
 
     //nb question
     const nbQuestion = document.getElementById('nbQuestion');
