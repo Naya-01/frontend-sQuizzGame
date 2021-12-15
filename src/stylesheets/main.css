@@ -306,6 +306,9 @@
 #HomePageId .btnJouer {
     width:100%;
 }
+#HomePageId .card-subtitle{
+    cursor: pointer;
+}
 @keyframes fadeInAnimation { 
     0% { 
             opacity: 0; 
@@ -344,4 +347,10 @@
 
  #CreateQuizzId *[id^="errorQ"]{
     color: red;
+ }
+
+/* Navbar */
+ #logoSG{
+     height: 80px;
+     cursor: pointer;
  }
