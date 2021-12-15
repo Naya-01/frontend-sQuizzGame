@@ -1,5 +1,6 @@
 import { getSessionObject } from "../../utils/session";
 import { Redirect } from "../Router/Router";
+import logo_squizz_game from "../../img/SquizzGameTransparent.png";
 import UserLibrary from "../../Domain/UserLibrary";
 const userLibrary = new UserLibrary();
 
@@ -9,39 +10,29 @@ const Navbar = async () => {
 
     // Get the user object from the localStorage
     let userSession = getSessionObject("user");
-    if (!userSession) { //TODO : mettre !user quand ça sera implémenté
+    if (!userSession) {
         navbarWrapper.innerHTML = "";
         Redirect("/RegisterAndLoginPage");
     }
     else{
         let user = await userLibrary.getUser(userSession.id_user);
 
-        navbar = `<nav class="navbar navbar-expand-lg navbar-light bg-success">
-        <div class="container-fluid">
-        <a class="navbar-brand" href="#" data-page="/">sQuizz Game</a>
-        <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-        >
+        navbar = `<nav class="navbar navbar-expand-sm navbar-dark bg-secondary">
+        <img src="${logo_squizz_game}" alt="logo squizz game" id="logoSG" data-page="/">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar6">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    
+        <div class="navbar-collapse collapse" id="navbar6">
+            <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#" data-page="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#" data-page="/CreateQuizz">Créer un quizz</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#" data-page="/Profil/MyProfil">Mon profil</a>
-                </li>
-                `;
+                        <a class="nav-link active" href="#" data-page="/CreateQuizz">Créer un quizz</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-page="/Profil/MyProfil">Mon profil</a>
+                    </li>
+                    `;
+
                 if (user.is_admin) {
                     navbar += `
                     <li class="nav-item">
@@ -53,7 +44,6 @@ const Navbar = async () => {
                     <a class="nav-link active" href="#" data-page="/logout">Se deconnecter</a>
                 </li>
             </ul>
-        </div>
         </div>
         </nav>`;
         navbarWrapper.innerHTML = navbar;
