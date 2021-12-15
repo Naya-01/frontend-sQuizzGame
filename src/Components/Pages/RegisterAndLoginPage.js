@@ -1,6 +1,9 @@
 import {setSessionObject, getSessionObject} from "../../utils/session";
 import {Redirect} from "../Router/Router";
 import Navbar from "../Navbar/Navbar";
+import Swal from "sweetalert2";
+import UserLibrary from "../../Domain/UserLibrary";
+const user = new UserLibrary();
 
 let formRegisterLogin = `
 <div id="page">
@@ -106,6 +109,18 @@ function RegisterAndLoginPage() {
     btnAccount.addEventListener("click", flipForm);
 
 
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+
     function flipForm() {
         flipCard.classList.toggle("flip");
     }
@@ -115,6 +130,37 @@ function RegisterAndLoginPage() {
         const name = document.getElementById('name-register');
         const email = document.getElementById('email-register');
         const password = document.getElementById('password-register');
+
+
+
+        if(name.value.length===0 || email.value.length===0 || password.value.length===0){
+            Toast.fire({
+                icon: 'error',
+                title: 'Veuillez remplir tous les champs'
+            });
+            return;
+        }
+
+        let userFound = await user.userExist(email.value);
+        if(userFound){
+            Toast.fire({
+                icon: 'error',
+                title: 'cette email est déjà utilisé'
+            });
+            return;
+        } else if(name.value.length>20 ||name.value.length<3){
+            Toast.fire({
+                icon: 'error',
+                title: 'La longueur de votre nom doit etre compris entre 3 et 20 caractères'
+            });
+            return;
+        } else if(password.value.length>60 || password.value.length<8){
+            Toast.fire({
+                icon: 'error',
+                title: 'la longueur de votre mot de passe doit etre compris entre 8 et 60 caractères'
+            });
+            return;
+        }
 
         try {
             const options = {

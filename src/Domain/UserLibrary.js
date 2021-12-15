@@ -415,7 +415,7 @@ class UserLibrary {
   }
 
 
-  async getUserByEmail(email){ // pas utilisé
+  async getUserByEmail(email){ // je l'utilise enflure de stefan
     try {
       const reponse = await fetch("/api/users/email/" + email);
 
@@ -428,6 +428,22 @@ class UserLibrary {
       return user;
     } catch (err) {
       console.error("getUserByEmail::error: ", err);
+    }
+  }
+
+  async userExist(email){
+    try {
+      const reponse = await fetch("/api/users/userExist/" + email);
+
+      if (!reponse.ok) {
+        throw new Error(
+            "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const user = await reponse.json();
+      return user;
+    } catch (err) {
+      console.error("userExist::error: ", err);
     }
   }
 }
