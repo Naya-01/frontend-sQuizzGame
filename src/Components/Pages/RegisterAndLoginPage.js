@@ -113,7 +113,7 @@ function RegisterAndLoginPage() {
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 3000,
+        timer: 4000,
         timerProgressBar: true,
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -145,7 +145,7 @@ function RegisterAndLoginPage() {
         if(userFound){
             Toast.fire({
                 icon: 'error',
-                title: 'cette email est déjà utilisé'
+                title: 'Cette email est déjà utilisé'
             });
             return;
         } else if(name.value.length>20 ||name.value.length<3){
@@ -197,6 +197,31 @@ function RegisterAndLoginPage() {
         e.preventDefault();
         const email = document.getElementById('email-login');
         const password = document.getElementById('password-login');
+
+        if(email.value.length===0 || password.value.length===0){
+            Toast.fire({
+                icon: 'error',
+                title: 'Veuillez remplir tous les champs'
+            });
+            return;
+        }
+
+        let userFound = await user.userExist(email.value);
+
+        if(!userFound){
+            Toast.fire({
+                icon: 'error',
+                title: 'Cet utilisateur n\'existe pas'
+            });
+            return;
+        }else {
+            Toast.fire({
+                icon: 'error',
+                title: 'Mot de passe incorrect'
+            });
+            return;
+        }
+
         try {
             const options = {
                 method: "POST",
