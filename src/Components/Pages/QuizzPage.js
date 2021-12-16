@@ -86,6 +86,14 @@ function getDifficulty(id){
     else return "Difficile";
 }
 
+function unescapeHtml(text) {
+    return text.replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'");
+}
+
 async function QuizzPage(id) {
     if(id){
         const object = {
@@ -246,7 +254,7 @@ async function QuizzPage(id) {
     like.innerText = likes[0].nblikes;
 
     let titre = document.getElementById("titre-quizz");
-    titre.innerText = quizz.name;
+    titre.innerHTML = `<h1 className="text-center text-break" id="titre-quizz">${unescapeHtml(quizz.name)}</h1>`;
 
     let description = document.getElementById("quizz-description");
     description.innerText = quizz.description;
