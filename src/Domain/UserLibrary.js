@@ -446,5 +446,29 @@ class UserLibrary {
       console.error("userExist::error: ", err);
     }
   }
+
+  async passwordMatch(email,password){
+    try {
+      const options = {
+        method: "POST",
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const response = await fetch("/api/users/matchPass", options);
+      if (!response.ok) {
+        throw new Error(
+            "fetch error : " + response.status + " : " + response.statusText
+        );
+      }
+      return await response.json();
+    } catch (err) {
+      console.error("passwordMatch::error: ", err);
+    }
+  }
 }
 export default UserLibrary;
