@@ -87,10 +87,11 @@ let formRegisterLogin = `
 `;
 
 function RegisterAndLoginPage() {
-    // let user = getSessionObject("user");
-    // if (user) {
-    //         Redirect("/");
-    // }
+    let userSession = getSessionObject("user");
+    if (userSession) {
+            Redirect("/");
+            return;
+    }
     const main = document.querySelector("main");
     main.innerHTML = formRegisterLogin;
 
