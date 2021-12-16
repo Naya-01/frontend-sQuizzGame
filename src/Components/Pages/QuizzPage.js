@@ -3,6 +3,7 @@ import {getSessionObject} from "../../utils/session";
 import {setSessionObject} from "../../utils/session";
 import {removeSessionObject} from "../../utils/session";
 import {Redirect, RedirectWithParams, RedirectWithParamsInUrl} from "../Router/Router";
+import {unescapeHtml} from "../../utils/unescapeHtml";
 import Swal from "sweetalert2";
 
 
@@ -84,14 +85,6 @@ function getDifficulty(id){
     if(id===1)return "Facile";
     if(id===2)return "Moyen";
     else return "Difficile";
-}
-
-function unescapeHtml(text) {
-    return text.replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"')
-        .replace(/&#039;/g, "'");
 }
 
 async function QuizzPage(id) {
@@ -254,10 +247,12 @@ async function QuizzPage(id) {
     like.innerText = likes[0].nblikes;
 
     let titre = document.getElementById("titre-quizz");
+    console.log(quizz.name);
+    console.log(quizz);
     titre.innerHTML = `<h1 className="text-center text-break" id="titre-quizz">${unescapeHtml(quizz.name)}</h1>`;
 
     let description = document.getElementById("quizz-description");
-    description.innerText = quizz.description;
+    description.innerText = unescapeHtml(quizz.description);
 
     let creatorName = document.getElementById("quizz-creator");
     creatorName.innerText ="Créer par : "+quizz.username;
