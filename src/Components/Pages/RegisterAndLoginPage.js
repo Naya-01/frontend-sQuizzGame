@@ -216,6 +216,15 @@ function RegisterAndLoginPage() {
             return;
         }
 
+        let match = await user.passwordMatch(email.value,password.value);
+        if(!match){
+            Toast.fire({
+                icon: 'error',
+                title: 'Mauvais mot de passe pour cet utilisateur'
+            });
+            return;
+        }
+
         try {
             const options = {
                 method: "POST",
