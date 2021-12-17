@@ -237,7 +237,7 @@ class ProfilLibrary {
         },
       };
       let response;
-      if(id_user_url===null){
+      if(!id_user_url){
         response = await fetch("/api/quizz/forUser/" + userSession.id_user,options);
       }
       else{

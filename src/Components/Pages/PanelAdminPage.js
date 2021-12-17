@@ -1,6 +1,6 @@
 import UserLibrary from "../../Domain/UserLibrary";
-import { getSessionObject } from "../../utils/session";
 import { Redirect,RedirectWithParamsInUrl } from "../Router/Router";
+import Swal from 'sweetalert2';
 const userLibrary = new UserLibrary();
 const main = document.querySelector("main");
 
@@ -83,7 +83,23 @@ const addEventListeners = async () =>{
         };
         await userLibrary.banUser(userToBan);
 
-        PanelAdminPage();
+        await PanelAdminPage();
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 5000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+        
+        Toast.fire({
+          icon: 'success',
+          title: 'L\'utilisateur a été banni avec succès.'
+        })
       });
       //refresh the page (click no)
       buttonNo.addEventListener("click", (e) => {
@@ -140,7 +156,23 @@ const addEventListeners = async () =>{
           id_user: parseInt(elementId),
         };
         await userLibrary.upgradeUser(userToUpgrade);
-        PanelAdminPage();
+        await PanelAdminPage();
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 5000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+        
+        Toast.fire({
+          icon: 'success',
+          title: 'L\'utilisateur a été promu avec succès.'
+        })
       });
       //refresh the page (click no)
       buttonNo.addEventListener("click", (e) => {
@@ -188,7 +220,23 @@ const addEventListeners = async () =>{
           id_user: parseInt(elementId),
         };
         await userLibrary.unbanUser(userToUnban);
-        PanelAdminPage();
+        await PanelAdminPage();
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 5000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+        
+        Toast.fire({
+          icon: 'success',
+          title: 'L\'utilisateur a été débanni avec succès.'
+        })
       });
       //refresh the page (click no)
       buttonNo.addEventListener("click", (e) => {

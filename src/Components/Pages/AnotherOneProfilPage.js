@@ -1,6 +1,7 @@
 import ProfilLibrary from "../../Domain/ProfilLibrary";
 import UserLibrary from "../../Domain/UserLibrary";
 import { Redirect, RedirectWithParams} from "../Router/Router";
+import Swal from 'sweetalert2';
 
 const profilLibrary = new ProfilLibrary();
 const userLibrary = new UserLibrary();
@@ -135,7 +136,23 @@ const AnotherOneProfilPage = async () => {
         //listener to unban someone (click yes)
         buttonYes.addEventListener("click", async (e) => {
           await profilLibrary.deleteQuizzFromProfil(elementId);
-          AnotherOneProfilPage();
+          await AnotherOneProfilPage();
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          })
+          
+          Toast.fire({
+            icon: 'success',
+            title: 'Le quizz a été supprimé avec succès.'
+          })
         });
         //refresh the page (click no)
         buttonNo.addEventListener("click", (e) => {
