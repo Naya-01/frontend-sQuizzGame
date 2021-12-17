@@ -19,7 +19,6 @@ const PanelAdminPage = async (filter) => {
   else filter=filterUrl;
 
   let user = await userLibrary.getUserOfSession();
-  console.log(user);
   if (!user.is_admin) Redirect("/");
   else {
     

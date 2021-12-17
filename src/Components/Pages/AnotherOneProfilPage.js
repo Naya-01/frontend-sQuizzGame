@@ -30,8 +30,9 @@ const AnotherOneProfilPage = async () => {
   else if (userSession.id_user == idUserUrl) {
     Redirect("/Profil/MyProfil");
   }  else {
+    let objetUser = await userLibrary.getUserOfSession();
     const page = await profilLibrary.getAnotherOneProfilPage(
-      userSession,
+      objetUser,
       idUserUrl
     );
     main.innerHTML = page;
