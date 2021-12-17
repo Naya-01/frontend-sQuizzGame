@@ -143,10 +143,19 @@ function RegisterAndLoginPage() {
         }
 
         let userFound = await user.userExist(email.value);
+        console.log(userFound);
         if(userFound){
             Toast.fire({
                 icon: 'error',
                 title: 'Cette email est déjà utilisé'
+            });
+            console.log(email.value);
+            return;
+        } else if(!validerEmail(email.value)){
+            Toast.fire({
+                icon: 'error',
+                title: 'Format de l\'email non valide. ' +
+                    'Format : example@gmail.com '
             });
             return;
         } else if(name.value.length>20 ||name.value.length<3){
@@ -262,6 +271,12 @@ function RegisterAndLoginPage() {
         } catch (error) {
             console.error("RegisterAndLoginPage::error: ", error);
         }
+
+    }
+
+    function validerEmail(_email){
+        let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        return !!_email.match(regex);
 
     }
 }
