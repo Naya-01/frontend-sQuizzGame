@@ -454,7 +454,7 @@ class UserLibrary {
     }
   }
 
-  async isBanned(email){
+  async isBanned(email){ // USED IN LOGIN/REGISTER PAGE
     try {
       const reponse = await fetch("/api/users/isBanned/email/" + email);
 
