@@ -87,6 +87,28 @@ function getDifficulty(id){
     else return "Difficile";
 }
 
+async function getLikes(id) {
+    let currentLikes;
+    try {
+        const options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: getSessionObject("user").token
+            },
+        };
+        currentLikes = await fetch("/api/quizz/likes/" + id, options);
+        if (!currentLikes.ok) {
+            throw new Error(
+                "fetch error : " + currentLikes.status + " : " + currentLikes.statusText
+            );
+        }
+    } catch (err) {
+        console.error(err);
+    }
+    return await currentLikes.json();
+}
+
 async function QuizzPage(id) {
     if(id){
         const object = {
@@ -193,7 +215,9 @@ async function QuizzPage(id) {
                 icon: 'error',
                 title: 'Vous avez dislike.'
             })
-            like.innerText = parseInt(like.innerText)-1;
+            let likes = await getLikes(id);
+            let like = document.getElementById("like-quizz");
+            like.innerText = likes[0].nblikes;
         }else{
             try {
                 let options = {
@@ -218,31 +242,13 @@ async function QuizzPage(id) {
                 icon: 'success',
                 title: 'Vous avez like.'
             })
-            like.innerText = parseInt(like.innerText)+1;
+            let likes = await getLikes(id);
+            let like = document.getElementById("like-quizz");
+            like.innerText = likes[0].nblikes;
         }
     });
 
-
-    let likes;
-    try{
-        const options = {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: getSessionObject("user").token
-            },
-        };
-        likes = await fetch("/api/quizz/likes/" + id,options);
-        if (!likes.ok) {
-            throw new Error(
-                "fetch error : " + likes.status + " : " + likes.statusText
-            );
-        }
-    } catch (err) {
-        console.error(err);
-    }
-    likes = await likes.json();
-
+    let likes = await getLikes(id);
     let like = document.getElementById("like-quizz");
     like.innerText = likes[0].nblikes;
 
