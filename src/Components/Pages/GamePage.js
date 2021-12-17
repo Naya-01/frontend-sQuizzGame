@@ -138,7 +138,7 @@ function html_answer() {
             <div class="cards__single">
             
                  <div class="cards__front">
-                    <div class="answer p-5 mt-4 shadow p-3 container bg-dark text-white" style="width: 70%; height: 8vh;">
+                    <div class="answer text-center padding-card mt-4 shadow container bg-dark text-white" style="width: 70%; height: 8vh;">
                         ${element.answer}
                     </div>
                 </div>  
@@ -344,7 +344,7 @@ function insertionAnswerBack() {
         if (element.correct) color = "bg-success";
         else color = "bg-danger";
         let divBack = `
-                     <div class="answer p-5 mt-4 shadow p-3 container ${color} text-white" style="width: 70%; height: 8vh;">
+                     <div class="answer padding-card mt-4 shadow container ${color} text-white" style="width: 70%; height: 8vh;">
                         ${element.answer}
                     </div>
         `;
