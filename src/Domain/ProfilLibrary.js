@@ -5,6 +5,10 @@ import { getSessionObject } from "../utils/session";
 const userLibrary = new UserLibrary();
 
 class ProfilLibrary {
+  /**
+   * 
+   * @returns page html profil page of user session  
+   */
   async getMyProfilPage() {
     try {
       let user = await userLibrary.getUserOfSessionWithSubs();
@@ -13,7 +17,9 @@ class ProfilLibrary {
         <div class="text-center">
             <h1>Mon profil</h1>
         </div>`;
+        // if the user in url is admin, display the admin image
         if(user.is_admin) page += `<img src="${adminImage}" class="rounded mx-auto d-block" alt="admin picture" height="350"></img>`;
+        //else, display the member image
         else page += `<img src="${userImage}" class="rounded mx-auto d-block" alt="user picture" height="250">`;
         page += `
         <div class="text-center">
@@ -54,10 +60,20 @@ class ProfilLibrary {
     }
   }
 
+  /**
+   * 
+   * @param {Object} userSession 
+   * @param {number} idUserUrl 
+   * @returns page html profil page of another one user
+   */
   async getAnotherOneProfilPage(userSession,idUserUrl) {
     try {
       let users = await userLibrary.getTwoUsersById(parseInt(userSession.id_user),parseInt(idUserUrl));
+      //user1 = user session
+      //user2 = user in the url, with 2 more columns (subscriptions and subscribers)
       let page;
+      //if the id user in url doesn't exist or, the user session is not admin
+      //and the user in url is banned, display page don't found
       if(users===undefined || (!users.is_admin1 && users.banned2)){
         page = `
             <div class="in-middle">
@@ -66,13 +82,17 @@ class ProfilLibrary {
          `;
           return page;
       }
+      
       page = `
           <div class="container">
           <div class="text-center">
               <h1>${users.name2}</h1>
           </div>`;
+          // if the user in url is admin, display the admin image
           if(users.is_admin2) page += `<img src="${adminImage}" class="rounded mx-auto d-block" alt="admin picture" height="350"></img>`;
+          //else, display the member image
           else page += `<img src="${userImage}" class="rounded mx-auto d-block" alt="user picture" height="250">`;
+          //if the user session is admin, display the email of the user in url
           if(users.is_admin1) page+=`
             <div class="text-center m-4">
               <div><span><strong>Email :</strong> ${users.email2}</span></div>
@@ -87,10 +107,13 @@ class ProfilLibrary {
               </div>
               <div class="col-md-4">
                 <div class="text-center">`;
+                //check if user session if following the user in url
                 let bool = await userLibrary.isFollowing(users.id_user2,users.id_user1);
+                //if yes, display unsubscribe button
                 if(bool==1){
                   page += `<button type="button" class="btn btn-outline-dark" id="unsubscribe" name="unsubscribe" data-element-id-user="${users.id_user2}" data-element-id-follower="${users.id_user1}">Se désabonner</button>`;
                 }
+                //else, display subscribe button
                 else{
                   page += `<button type="button" class="btn btn-outline-dark" id="subscribe" data-element-id-user="${users.id_user2}" data-element-id-follower="${users.id_user1}">S'abonner</button>`;
                 }
@@ -139,6 +162,12 @@ class ProfilLibrary {
     }
   }
 
+  /**
+   * 
+   * @param {Object} userSession 
+   * @param {number} id_user_url 
+   * @returns quizzs of the user in url, otherwhise, of the user session
+   */
   async getQuizzFromUser(userSession,id_user_url) {
     try {
       let options = {
@@ -170,6 +199,11 @@ class ProfilLibrary {
     }
   }
 
+  /**
+   * 
+   * @param {number} id_quizz 
+   * @returns true if deleted
+   */
   async deleteQuizzFromProfil(id_quizz) {
     try {
       const options = {
@@ -187,76 +221,93 @@ class ProfilLibrary {
             "fetch error : " + response.status + " : " + response.statusText
         );
         }
-        const isDeleted = await response.json(); // json() returns a promise => we wait for the data
+        const isDeleted = await response.json(); 
         return isDeleted;
     } catch (err) {
       console.error("deleteQuizzFromProfil::error: ", err);
     }
   }
 
-    async displayQuizzs(quizzs,userUrlObject,userSessionObject) {
-        try{
-            let boxOfQuizzs = '<div class="row justify-content-md-center">';
-            let fin = quizzs.length;
-            if (fin > 0) {
-                quizzs.forEach((element) => {
-              
-                  boxOfQuizzs += `
-                      <div class="col-lg-4 col-md-5">
-                          
-                          <div class="card m-3" style="width: 18rem;">
-                              <div class="card-body">`;
-                                  let titreQuizz=element.name;
-                                  if(titreQuizz.length > 20){
-                                    titreQuizz = titreQuizz.substring(0, 20);
-                                    titreQuizz += " ...";
-                                  }
-                                  boxOfQuizzs += `
-                                    <h5 class="card-title titlesQuizzBox underline" style ="height:2rem" data-element-id="${element.id_quizz}" data-element-long-name-quizz="${element.name}" data-element-name-quizz="${titreQuizz}">${titreQuizz}</h5>
-                                    <span id="quizz${element.id_quizz}" hidden>0</span>`;
-                                    
-                                  if(userUrlObject==null)
-                                    boxOfQuizzs += `
-                                    <h6 class="card-subtitle mb-2 text-muted">par ${userSessionObject.name}</h6>`;
-                                  else
-                                    boxOfQuizzs += `
-                                    <h6 class="card-subtitle mb-2 text-muted">par ${userUrlObject.name}</h6>`;
-                                  let descriptionTexte=element.description;
-                                  if(descriptionTexte.length > 40){
-                                    descriptionTexte = descriptionTexte.substring(0, 40);
-                                    descriptionTexte += " ...";
-                                  }
-                                  boxOfQuizzs += `
-                                  <p class="card-text" style ="height:4rem">${descriptionTexte}</p>
-                                  <div class="d-grid gap-2">
-                                      <span id="delete${element.id_quizz}"></span>`;
-                                      
-                                      if(userUrlObject!=null && userUrlObject.banned){
-                                        boxOfQuizzs += `<button class="btn btn-secondary play" disabled data-element-id="${element.id_quizz} "type="button">Jouer</button>`;
-                                      }
-                                      else{
-                                        boxOfQuizzs += `<button class="btn btn-primary play" data-element-id="${element.id_quizz} "type="button">Jouer</button>`;
-                                      }
-                                      if(userUrlObject==null || (!userUrlObject.is_admin && userSessionObject.is_admin)){
-                                        boxOfQuizzs += `<button class="btn btn-danger delete" data-element-id="${element.id_quizz}"  type="button">Supprimer</button>`;
-                                      }
-                                  boxOfQuizzs +=
-                                  `</div>
-                              </div>
-                          </div>
-                      
-                      </div>
-                  `;
-                    
-                });
-                boxOfQuizzs += `
+  /**
+   * 
+   * @param {Object} quizzs 
+   * @param {Object} userUrlObject 
+   * @param {Object} userSessionObject 
+   * @returns box of quizzs in with all quizzs of user session or a user whose id is in the url
+   */
+  async displayQuizzs(quizzs,userUrlObject,userSessionObject) {
+  try{
+      let boxOfQuizzs = '<div class="row justify-content-md-center">';
+      let fin = quizzs.length;
+      if (fin > 0) {
+        quizzs.forEach((element) => {
+        
+          boxOfQuizzs += `
+              <div class="col-lg-4 col-md-5">
+                
+                <div class="card m-3" style="width: 18rem;">
+                    <div class="card-body">`;
+                        //if the length of the quizz title is greater than 20 then we shorten it
+                        let titreQuizz=element.name;
+                        if(titreQuizz.length > 20){
+                          titreQuizz = titreQuizz.substring(0, 20);
+                          titreQuizz += " ...";
+                        }
+                        //display quizz title
+                        boxOfQuizzs += `
+                          <h5 class="card-title titlesQuizzBox underline" style ="height:2rem" data-element-id="${element.id_quizz}" data-element-long-name-quizz="${element.name}" data-element-name-quizz="${titreQuizz}">${titreQuizz}</h5>
+                          <span id="quizz${element.id_quizz}" hidden>0</span>`;
+                        //if there is no user id in the url, the name of the user in
+                        //session is displayed
+                        if(userUrlObject==null)
+                          boxOfQuizzs += `
+                          <h6 class="card-subtitle mb-2 text-muted">par ${userSessionObject.name}</h6>`;
+                        //if there is a user id in the url, the name of that user is displayed
+                        else
+                          boxOfQuizzs += `
+                          <h6 class="card-subtitle mb-2 text-muted">par ${userUrlObject.name}</h6>`;
+                        //if the length of the quizz description is greater than 40 then we shorten it
+                        let descriptionTexte=element.description;
+                        if(descriptionTexte.length > 40){
+                          descriptionTexte = descriptionTexte.substring(0, 40);
+                          descriptionTexte += " ...";
+                        }
+                        //display quizz description
+                        boxOfQuizzs += `
+                        <p class="card-text" style ="height:4rem">${descriptionTexte}</p>
+                        <div class="d-grid gap-2">
+                            <span id="delete${element.id_quizz}"></span>`;
+                            //if there is a user id in the url and he is banned, we display 
+                            //the play button as disabled 
+                            if(userUrlObject!=null && userUrlObject.banned){
+                              boxOfQuizzs += `<button class="btn btn-secondary play" disabled data-element-id="${element.id_quizz} "type="button">Jouer</button>`;
+                            }
+                            //else, display play button as usable
+                            else{
+                              boxOfQuizzs += `<button class="btn btn-primary play" data-element-id="${element.id_quizz} "type="button">Jouer</button>`;
+                            }
+                            //if there is no user id in the url or if, the user in url 
+                            //is not admin and the user session is admin, we display a delete quizz button
+                            if(userUrlObject==null || (!userUrlObject.is_admin && userSessionObject.is_admin)){
+                              boxOfQuizzs += `<button class="btn btn-danger delete" data-element-id="${element.id_quizz}"  type="button">Supprimer</button>`;
+                            }
+                        boxOfQuizzs +=
+                        `</div>
                     </div>
-                    `;
-            }
-            return boxOfQuizzs;
-        }catch(err){
-            console.error("displayQuizzs::error: ", err);
-        }
+                </div>
+              
+              </div>
+          `;
+            
+        });
+        boxOfQuizzs += `
+            </div>
+            `;
+      }
+      return boxOfQuizzs;
+    }catch(err){
+        console.error("displayQuizzs::error: ", err);
+    }
   }
 }
 
