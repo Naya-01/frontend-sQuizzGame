@@ -35,9 +35,15 @@
 }
 
 .score{
-    width: 270px;
+    width: 225px;
 }
 
+
+@media screen and (min-width: 1250px){
+    .score{
+        width: 273px;
+    }
+}
 
 
 

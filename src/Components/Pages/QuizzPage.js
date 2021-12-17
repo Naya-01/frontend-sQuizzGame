@@ -33,7 +33,7 @@ let myPage = `<div class="container">
         <!--  Meilleurs Scores   -->
         <div class="col-lg-4 col-md-12 col-sm-12" id="best-scores">
             <div class="row m-auto">
-                <span class="fs-3 btn btn-light text-dark
+                <span class="fs-3 p-2 text-center text-dark
                     border border-dark border-2 border">Meilleurs scores</span>
             </div>
         </div>
@@ -74,7 +74,7 @@ let myPage = `<div class="container">
         <!-- Scores Personnels-->
         <div class="col-lg-4 col-md-12 col-sm-12" id="personnal-best-scores">
             <div class="row m-auto">
-                <span class="fs-3 btn btn-light text-dark
+                <span class="fs-3 p-2 text-center text-dark
                     border border-dark border-2 border">Mes meilleurs scores</span>
             </div>
         </div>
