@@ -92,6 +92,30 @@ class UserLibrary {
       console.error("getUser::error: ", err);
     }
   }
+
+  async getUserOfSession() {
+    try {
+      const options = {
+        method: "GET", 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch("/api/users/getUserSession/",options);
+
+      if (!reponse.ok) {
+        throw new Error(
+          "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const user = await reponse.json();
+      return user;
+    } catch (err) {
+      console.error("getUser::error: ", err);
+    }
+  }
+
   /**
    * 
    * @param integer id_user 
