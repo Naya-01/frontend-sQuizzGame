@@ -4,16 +4,22 @@ import { Redirect,RedirectWithParams } from "../Router/Router";
 
 const profilLibrary = new ProfilLibrary();
 
+/**
+ * makes the my profil page
+ */
 const ProfilPage = async () => {
   const main = document.querySelector("main");
   let userSession = getSessionObject("user");
+  //if not user in session, redirect to register and login page
   if (!userSession) {
     Redirect("/RegisterAndLoginPage");
   }
 
+  //display my profil page
   const page = await profilLibrary.getMyProfilPage();
   main.innerHTML = page;
 
+  //if click the delete button of a quizz
   main.querySelectorAll(".delete").forEach((button) => {
     button.addEventListener("click", async (e) => {
 
@@ -49,12 +55,12 @@ const ProfilPage = async () => {
       buttonNo.type = "button";
       parent.appendChild(buttonNo);
 
-      //listener to unban someone (press yes)
+      //listener to unban someone (click yes)
       buttonYes.addEventListener("click", async (e) => {
         await profilLibrary.deleteQuizzFromProfil(elementId);
         ProfilPage();
       });
-      //refresh the page (press no)
+      //refresh the page (click no)
       buttonNo.addEventListener("click", (e) => {
         ProfilPage();
       });
@@ -63,7 +69,7 @@ const ProfilPage = async () => {
       
     });
   });
-
+  //if click the play button of a quizz
   main.querySelectorAll(".play").forEach((button) => {
     button.addEventListener("click", async (e) => {
       let elementId = e.target.dataset.elementId;
@@ -72,7 +78,7 @@ const ProfilPage = async () => {
     });
   });
 
-
+  //if click on the title of a quiz
   main.querySelectorAll(".titlesQuizzBox").forEach((titleDisplayed) => {
     titleDisplayed.addEventListener("click", (e) => {
     
