@@ -253,8 +253,6 @@ async function QuizzPage(id) {
     like.innerText = likes[0].nblikes;
 
     let titre = document.getElementById("titre-quizz");
-    console.log(quizz.name);
-    console.log(quizz);
     titre.innerHTML = `<h1 className="text-center text-break" id="titre-quizz">${unescapeHtml(quizz.name)}</h1>`;
 
     let description = document.getElementById("quizz-description");
