@@ -221,10 +221,20 @@ function RegisterAndLoginPage() {
         if(!match){
             Toast.fire({
                 icon: 'error',
-                title: 'Mauvais mot de passe pour cet utilisateur'
+                title: 'Mot de passe incorrect'
             });
             return;
         }
+
+        let isBan = await user.isBanned(email.value);
+        if(isBan){
+            Toast.fire({
+                icon: 'error',
+                title: 'Utilisateur banni '
+            });
+            return;
+        }
+
 
         try {
             const options = {
