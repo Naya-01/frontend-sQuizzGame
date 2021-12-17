@@ -1,6 +1,5 @@
 import ProfilLibrary from "../../Domain/ProfilLibrary";
-import { getSessionObject } from "../../utils/session";
-import { Redirect,RedirectWithParams } from "../Router/Router";
+import { RedirectWithParams } from "../Router/Router";
 
 const profilLibrary = new ProfilLibrary();
 
@@ -9,11 +8,6 @@ const profilLibrary = new ProfilLibrary();
  */
 const ProfilPage = async () => {
   const main = document.querySelector("main");
-  let userSession = getSessionObject("user");
-  //if not user in session, redirect to register and login page
-  if (!userSession) {
-    Redirect("/RegisterAndLoginPage");
-  }
 
   //display my profil page
   const page = await profilLibrary.getMyProfilPage();
