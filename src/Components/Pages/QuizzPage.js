@@ -3,7 +3,6 @@ import {getSessionObject} from "../../utils/session";
 import {setSessionObject} from "../../utils/session";
 import {removeSessionObject} from "../../utils/session";
 import {Redirect, RedirectWithParams, RedirectWithParamsInUrl} from "../Router/Router";
-import {unescapeHtml} from "../../utils/unescapeHtml";
 import Swal from "sweetalert2";
 
 
@@ -253,10 +252,10 @@ async function QuizzPage(id) {
     like.innerText = likes[0].nblikes;
 
     let titre = document.getElementById("titre-quizz");
-    titre.innerHTML = `<h1 className="text-center text-break" id="titre-quizz">${unescapeHtml(quizz.name)}</h1>`;
+    titre.innerHTML = quizz.name;
 
     let description = document.getElementById("quizz-description");
-    description.innerText = unescapeHtml(quizz.description);
+    description.innerText = quizz.description;
 
     let creatorName = document.getElementById("quizz-creator");
     creatorName.innerText ="Créer par : "+quizz.username;
