@@ -309,6 +309,10 @@
 #HomePageId .card-subtitle{
     cursor: pointer;
 }
+#HomePageId #refresh_btn{
+    width: 20px;
+    cursor: pointer;
+ }
 @keyframes fadeInAnimation { 
     0% { 
             opacity: 0; 
