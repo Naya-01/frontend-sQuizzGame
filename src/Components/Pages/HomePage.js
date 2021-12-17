@@ -1,7 +1,6 @@
 import { getSessionObject } from "../../utils/session";
 import { RedirectWithParams,RedirectWithParamsInUrl } from "../Router/Router";
 const escape = require("escape-html");
-import {unescapeHtml} from "../../utils/unescapeHtml";
 import refreshIcon from "../../img/refresh.png";
 
 const HomePage = async () => {
@@ -17,8 +16,6 @@ const HomePage = async () => {
   title_page.innerHTML = "sQuizzGame";
   container_title_page.appendChild(title_page);
   main.appendChild(container_title_page);
-
-  
 
   //Création du container qui va contenir quasi toute la page
   div_page = document.createElement("div");
@@ -153,7 +150,7 @@ async function fetchExplorer(div_page){
     console.error("getExplorer::error: ", err);
   }
 }
-async function afficherQuizz(all_quizz, div_page, isExplorer=false){
+function afficherQuizz(all_quizz, div_page, isExplorer=false){
    // Créer une row
    for(let j = 0; j < all_quizz.length/3; j++){
     let container_3Q = document.createElement("div");
@@ -182,7 +179,7 @@ async function afficherQuizz(all_quizz, div_page, isExplorer=false){
         // Nom du quizz
         let title = document.createElement("h5");
         title.className = 'card-title';
-        let title_texte = unescapeHtml(all_quizz[indice].name);
+        let title_texte = all_quizz[indice].name;
         // Tronquage du titre du quizz si il est trop long
         if(title_texte.length > 25){
           title_texte = title_texte.substring(0, 25);
@@ -193,7 +190,7 @@ async function afficherQuizz(all_quizz, div_page, isExplorer=false){
         div.appendChild(title);
         
         // Créateur du quizz
-        let creator = unescapeHtml(all_quizz[indice].user_name);
+        let creator = all_quizz[indice].user_name;
         let subtitle = document.createElement("a");
         subtitle.className = "card-subtitle mb-2 text-muted";
         subtitle.innerHTML = "par "+creator;
@@ -207,7 +204,7 @@ async function afficherQuizz(all_quizz, div_page, isExplorer=false){
         // Description du quizz
         let description = document.createElement("p");
         description.className = "card-text";
-        let description_texte = unescapeHtml(all_quizz[indice].description);
+        let description_texte = all_quizz[indice].description;
 
         // Tronquage de la description si elle est trop longue
         if(description_texte.length > 60){
@@ -231,8 +228,7 @@ async function afficherQuizz(all_quizz, div_page, isExplorer=false){
   }  
 }
 
-async function redirectionQuizzPage(e){
-  e.preventDefault();
+function redirectionQuizzPage(){
   RedirectWithParams("/Quizz",this.id);
 }
 

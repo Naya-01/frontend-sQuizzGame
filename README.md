@@ -29,6 +29,3 @@ footer.appendChild(footerPhoto);
 - Plus d'information sur la gestion des assets via Webpack : https://webpack.js.org/guides/asset-management/ 
 ## Conclusion
 - L'utilisation de ce boilerplate permet d'avoir un serveur de développement hyper performant, de développer avec beaucoup de confort, de faciliter la structure d'un projet, de gérer les dépendances, de transformer les assets de manière centralisée, ...
-
-# Resources
-- favicon : https://upload.wikimedia.org/wikipedia/commons/3/3e/AIGA_information.svg, AIGA (American Institute of Graphic Arts)

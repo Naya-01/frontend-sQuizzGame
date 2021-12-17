@@ -1,10 +1,9 @@
 import closeIcon from "../../img/croix.png";
 import { Redirect } from "../Router/Router";
 import { getSessionObject } from "../../utils/session";
+import Swal from 'sweetalert2'
 
-const Swal = require('sweetalert2');
 
-const escape = require("escape-html");
 
 let nbQuestions;
 let main ;
@@ -36,7 +35,8 @@ const CreateQuizz = async () => {
 
   // Ajout du titre du quizz
   let containerTitleQuizz = document.createElement("div");
-  containerTitleQuizz.className = "container rounded-lg m-5 p-2";
+  containerTitleQuizz.className = "container-fluid rounded-lg mb-3 p-3";
+  
   let divTitleQuizz = document.createElement("div");
   divTitleQuizz.className = "row";
   let titleQuizz = document.createElement("input");
@@ -61,7 +61,7 @@ const CreateQuizz = async () => {
 
   // Ajout description du quizz
   let containerDescQuizz = document.createElement("div");
-  containerDescQuizz.className = "container rounded-lg m-5 p-2";
+  containerDescQuizz.className = "container-fluid rounded-lg mb-3 p-3";
   let divDescQuizz = document.createElement("div");
   divDescQuizz.className = "row ";
   let descQuizz = document.createElement("textarea");
@@ -109,21 +109,21 @@ const CreateQuizz = async () => {
 async function soumettreQuizz(e){
   e.preventDefault();
   let erreur = 0;
-  let titleQuizz = escape(document.getElementById("titleQuizz").value);
+  let titleQuizz = document.getElementById("titleQuizz").value;
   if(titleQuizz.length > 150){
     document.getElementById("errorTitle").innerHTML = "Le titre est trop long";
     erreur++;
   }
-  let descQuizz = escape(document.getElementById("descQuizz").value);
+  let descQuizz = document.getElementById("descQuizz").value;
   let allQuestions = [];
   //Récupération des questions
   for(let i=0; i < nbQuestions; i++){
     let message = "enonceQ"+(i+1);
-    let enonceQuestionN = escape(document.getElementById(message).value);// + (i+1));
-    let answerA = escape(document.getElementById("reponseA" + (i+1)).value);
-    let answerB = escape(document.getElementById("reponseB" + (i+1)).value);
-    let answerC = escape(document.getElementById("reponseC" + (i+1)).value);
-    let answerD = escape(document.getElementById("reponseD" + (i+1)).value);
+    let enonceQuestionN = document.getElementById(message).value;// + (i+1));
+    let answerA = document.getElementById("reponseA" + (i+1)).value;
+    let answerB = document.getElementById("reponseB" + (i+1)).value;
+    let answerC = document.getElementById("reponseC" + (i+1)).value;
+    let answerD =document.getElementById("reponseD" + (i+1)).value;
 
     let idError = "errorQ"+(i+1);
     document.getElementById(idError).innerHTML = ""; // on reinitialise

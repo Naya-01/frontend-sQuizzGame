@@ -2,6 +2,7 @@ import adminImage from "../img/admin.png";
 import userImage from "../img/user.png";
 import UserLibrary from "./UserLibrary";
 import { getSessionObject } from "../utils/session";
+import Swal from "sweetalert2";
 const userLibrary = new UserLibrary();
 
 class ProfilLibrary {
@@ -29,13 +30,13 @@ class ProfilLibrary {
         <div class="row">
             <div class="col-md-6">
             <div class="text-center">
-                <h4>Abonnés</h4>
+                <h4 id="abonnes">Abonnés</h4>
                 <h5>${user.subscribers}</h5>
             </div>
             </div>
             <div class="col-md-6">
             <div class="text-center">
-                <h4>Abonnements</h4>
+                <h4 id="abonnements">Abonnements</h4>
                 <h5>${user.subscriptions}</h5>
             </div>
             </div>
@@ -61,7 +62,65 @@ class ProfilLibrary {
   }
 
   /**
-   * 
+   * display the subscribers or subscriptions
+   * @param {Event} e
+   */
+  async clickOnSubscribersOrSubscriptions(e){
+    let options = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getSessionObject("user").token,
+      },
+    };
+
+    // we check if the is not an id user in the url
+    let url_string = window.location;
+    let url = new URL(url_string);
+    let idUserUrl = url.searchParams.get("idUser");
+    let id_user;
+    if(!idUserUrl){
+      id_user = await userLibrary.getUserOfSession().id_user;
+    }
+    else{
+      id_user = parseInt(idUserUrl);
+    }
+
+    let followers;
+    let title;
+    // we get the subscribers or subscriptions
+    if(this.id === "abonnes"){
+      title="Abonnés";
+      followers = await fetch("/api/users/all_followers/"+id_user, options);
+    }
+    else{
+      title="Abonnements";
+      followers = await fetch("/api/users/all_subscriptions/"+id_user, options);
+    }
+    followers = await followers.json();
+    let followers_html = '';
+    // We put the subscribers or subscriptions in paragraphs
+    followers.forEach(function(element){
+      followers_html += '<p><a href="/Profil?idUser='+element.id_user+'">'+element.name+'</a></p>';
+    });
+    // a message is displayed if the list is empty
+    if(!followers_html) followers_html += '<p>Aucun pour le moment...</p>';
+    // We display the pop-up with the list of subscribers or subscriptions
+    Swal.fire({
+      title: title,
+      html: followers_html,
+      padding: '3em',
+      color: 'black',
+      scrollbarPadding: true,
+      backdrop: `  rgba(80,80,80,0.7) `,
+      allowOutsideClick: true,
+      allowEscapeKey: true,
+      width: "80%",
+      confirmButtonText: 'Retour',
+    })
+  }
+
+   /** 
    * @param {Object} userSession 
    * @param {number} idUserUrl 
    * @returns page html profil page of another one user
@@ -101,7 +160,7 @@ class ProfilLibrary {
           <div class="row m-2">
               <div class="col-md-4">
                 <div class="text-center">
-                    <h4>Abonnés</h4>
+                    <h4 id="abonnes">Abonnés</h4>
                     <h5>${users.subscribers}</h5>
                 </div>
               </div>
@@ -122,7 +181,7 @@ class ProfilLibrary {
               </div>
               <div class="col-md-4">
                 <div class="text-center">
-                    <h4>Abonnements</h4>
+                    <h4 id="abonnements">Abonnements</h4>
                     <h5>${users.subscriptions}</h5>
                 </div>
               </div>

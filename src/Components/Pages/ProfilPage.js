@@ -13,6 +13,12 @@ const ProfilPage = async () => {
   const page = await profilLibrary.getMyProfilPage();
   main.innerHTML = page;
 
+  
+  //if click the subscribers button
+  document.getElementById("abonnes").addEventListener("click", profilLibrary.clickOnSubscribersOrSubscriptions);
+  //if click the subscriptions button
+  document.getElementById("abonnements").addEventListener("click", profilLibrary.clickOnSubscribersOrSubscriptions);
+  
   //if click the delete button of a quizz, ask first if the person is sure
   main.querySelectorAll(".delete").forEach((button) => {
     button.addEventListener("click", async (e) => {
@@ -49,7 +55,7 @@ const ProfilPage = async () => {
       buttonNo.type = "button";
       parent.appendChild(buttonNo);
 
-      //listener to unban someone (click yes)
+      //listener to delete a quizz (click yes)
       buttonYes.addEventListener("click", async (e) => {
         await profilLibrary.deleteQuizzFromProfil(elementId);
         ProfilPage();
@@ -72,7 +78,7 @@ const ProfilPage = async () => {
     });
   });
 
-  //if click on the title of a quiz
+  //if click on the title of a quizz
   main.querySelectorAll(".titlesQuizzBox").forEach((titleDisplayed) => {
     titleDisplayed.addEventListener("click", (e) => {
     
