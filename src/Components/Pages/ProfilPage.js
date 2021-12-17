@@ -13,7 +13,7 @@ const ProfilPage = async () => {
   const page = await profilLibrary.getMyProfilPage();
   main.innerHTML = page;
 
-  //if click the delete button of a quizz
+  //if click the delete button of a quizz, ask first if the person is sure
   main.querySelectorAll(".delete").forEach((button) => {
     button.addEventListener("click", async (e) => {
 
@@ -63,7 +63,7 @@ const ProfilPage = async () => {
       
     });
   });
-  //if click the play button of a quizz
+  //if click the play button of a quizz, redirect to the page of that quizz game
   main.querySelectorAll(".play").forEach((button) => {
     button.addEventListener("click", async (e) => {
       let elementId = e.target.dataset.elementId;

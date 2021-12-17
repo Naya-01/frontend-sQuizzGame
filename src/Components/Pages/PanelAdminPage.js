@@ -4,13 +4,11 @@ import { Redirect,RedirectWithParamsInUrl } from "../Router/Router";
 const userLibrary = new UserLibrary();
 const main = document.querySelector("main");
 
-let userSession;
-
-const PanelAdminPage = async (filter) => {
-  userSession = getSessionObject("user");
-  if (!userSession) {
-    Redirect("/RegisterAndLoginPage");
-  }
+/**
+ * makes the panel admin page
+ */
+const PanelAdminPage = async () => {
+  let filter;
   let url_string = window.location;
   let url = new URL(url_string);
   let filterUrl = url.searchParams.get("filter");
@@ -18,27 +16,32 @@ const PanelAdminPage = async (filter) => {
   if (!filterUrl) filter="";
   else filter=filterUrl;
 
+  //if user session is not admin, redirect to home page
   let user = await userLibrary.getUserOfSession();
   if (!user.is_admin) Redirect("/");
+  
   else {
-    
-    if(filter===undefined) filter="";
+    //display panel admin
     let page = await userLibrary.getPanelAdminPage(filter,user);
     main.innerHTML = page;
 
-    await addEventListeners(filter);
+    await addEventListeners();
   }
 };
 
-const listenerPressEnterSearchBar = async (e) =>{
-  if(e.key==="Enter"){
-    let inputSearchBox = document.querySelector("#searchBar");
-    RedirectWithParamsInUrl("/PanelAdmin","?filter="+inputSearchBox.value);
-  } 
-}
-
-
-const addEventListeners = async (filter) =>{
+/**
+ * function having the main add event listener
+ * @param {String} filter 
+ */
+const addEventListeners = async () =>{
+  //if user press Enter in search bar, display users having the filter in their name or email
+  const listenerPressEnterSearchBar = async (e) =>{
+    if(e.key==="Enter"){
+      let inputSearchBox = document.querySelector("#searchBar");
+      RedirectWithParamsInUrl("/PanelAdmin","?filter="+inputSearchBox.value);
+    } 
+  }
+  //if click the ban button of a user, ask first if the person is sure
   main.querySelectorAll(".ban").forEach(async (button) => {
     button.addEventListener("click", async (e) => {
       //getters
@@ -73,22 +76,22 @@ const addEventListeners = async (filter) =>{
       buttonNo.type = "button";
       parent.appendChild(buttonNo);
 
-      //listener to unban someone (press yes)
+      //listener to ban someone (click yes), ban the user
       buttonYes.addEventListener("click", async (e) => {
         const userToBan = {
           id_user: parseInt(elementId),
         };
         await userLibrary.banUser(userToBan);
 
-        PanelAdminPage(filter);
+        PanelAdminPage();
       });
-      //refresh the page (press no)
+      //refresh the page (click no)
       buttonNo.addEventListener("click", (e) => {
-        PanelAdminPage(filter);
+        PanelAdminPage();
       });
     });
   });
-
+  //if click on the username of a user, redirect to his profil
   main.querySelectorAll(".linkUsername").forEach(async (button) => {
     button.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -96,7 +99,7 @@ const addEventListeners = async (filter) =>{
       RedirectWithParamsInUrl("/Profil","?idUser="+elementId);
     });
   });
-
+  //if click the upgrade button of a user, ask first if the person is sure
   main.querySelectorAll(".upgrade").forEach(async (button) => {
     button.addEventListener("click", async (e) => {
       let elementId = e.target.dataset.elementId;
@@ -131,21 +134,21 @@ const addEventListeners = async (filter) =>{
       buttonNo.type = "button";
       parent.appendChild(buttonNo);
 
-      //listener to unban someone (press yes)
+      //listener to upgrade someone (click yes), upgrade the user
       buttonYes.addEventListener("click", async (e) => {
         const userToUpgrade = {
           id_user: parseInt(elementId),
         };
         await userLibrary.upgradeUser(userToUpgrade);
-        PanelAdminPage(filter);
+        PanelAdminPage();
       });
-      //refresh the page (press no)
+      //refresh the page (click no)
       buttonNo.addEventListener("click", (e) => {
-        PanelAdminPage(filter);
+        PanelAdminPage();
       });
     });
   });
-
+  //if click the unban button of a user, ask first if the person is sure
   main.querySelectorAll(".unban").forEach(async (button) => {
     button.addEventListener("click", async (e) => {
       //getters
@@ -179,31 +182,34 @@ const addEventListeners = async (filter) =>{
       buttonNo.type = "button";
       parent.appendChild(buttonNo);
 
-      //listener to unban someone (press yes)
+      //listener to unban someone (click yes), unban the user
       buttonYes.addEventListener("click", async (e) => {
         const userToUnban = {
           id_user: parseInt(elementId),
         };
         await userLibrary.unbanUser(userToUnban);
-        PanelAdminPage(filter);
+        PanelAdminPage();
       });
-      //refresh the page (press no)
+      //refresh the page (click no)
       buttonNo.addEventListener("click", (e) => {
-        PanelAdminPage(filter);
+        PanelAdminPage();
       });
     });
   });
 
-
+  //if click the search button of the search bar, redirect 
   let searchButton = document.querySelector("#searchButton");
   let inputSearchBox = document.querySelector("#searchBar");
   searchButton.addEventListener("click", async (e) => {
+    //refresh the page with filter in the url and display the users matching the filter
     e.preventDefault();
     RedirectWithParamsInUrl("/PanelAdmin","?filter="+inputSearchBox.value);
   });
+
+  //event listener pressing Enter key on search bar
   inputSearchBox.addEventListener('keydown', listenerPressEnterSearchBar);
 
-
+  //if click on the email of a user
   main.querySelectorAll(".emailsUsersBox").forEach((emailDisplayed) => {
     emailDisplayed.addEventListener("click", (e) => {
       let elementId = e.target.dataset.elementId;

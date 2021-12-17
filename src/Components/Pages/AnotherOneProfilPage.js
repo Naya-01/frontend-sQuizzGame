@@ -72,7 +72,7 @@ const AnotherOneProfilPage = async () => {
       });
     }
 
-    //if click on the title of a quiz
+    //if click on the title of a quizz
     main.querySelectorAll(".titlesQuizzBox").forEach((titleDisplayed) => {
       titleDisplayed.addEventListener("click", (e) => {
       
@@ -96,7 +96,7 @@ const AnotherOneProfilPage = async () => {
       });
     });
 
-    //if click the delete button of a quizz
+    //if click the delete button of a quizz, ask first if the person is sure
     main.querySelectorAll(".delete").forEach((button) => {
       button.addEventListener("click", async (e) => {
   
@@ -144,7 +144,7 @@ const AnotherOneProfilPage = async () => {
       });
     });
 
-    //if click the play button of a quizz
+    //if click the play button of a quizz, redirect to the page of that quizz game
     main.querySelectorAll(".play").forEach((button) => {
       button.addEventListener("click", async (e) => {
         let elementId = e.target.dataset.elementId;
