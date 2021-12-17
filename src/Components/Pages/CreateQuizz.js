@@ -1,10 +1,9 @@
 import closeIcon from "../../img/croix.png";
 import { Redirect } from "../Router/Router";
 import { getSessionObject } from "../../utils/session";
+import Swal from 'sweetalert2'
 
-const Swal = require('sweetalert2');
 
-const escape = require("escape-html");
 
 let nbQuestions;
 let main ;
@@ -36,7 +35,8 @@ const CreateQuizz = async () => {
 
   // Ajout du titre du quizz
   let containerTitleQuizz = document.createElement("div");
-  containerTitleQuizz.className = "container rounded-lg m-5 p-2";
+  containerTitleQuizz.className = "container-fluid rounded-lg mb-3 p-3";
+  
   let divTitleQuizz = document.createElement("div");
   divTitleQuizz.className = "row";
   let titleQuizz = document.createElement("input");
@@ -61,7 +61,7 @@ const CreateQuizz = async () => {
 
   // Ajout description du quizz
   let containerDescQuizz = document.createElement("div");
-  containerDescQuizz.className = "container rounded-lg m-5 p-2";
+  containerDescQuizz.className = "container-fluid rounded-lg mb-3 p-3";
   let divDescQuizz = document.createElement("div");
   divDescQuizz.className = "row ";
   let descQuizz = document.createElement("textarea");
