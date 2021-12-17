@@ -232,7 +232,7 @@ class ProfilLibrary {
                                       <span id="delete${element.id_quizz}"></span>`;
                                       
                                       if(userUrlObject!=null && userUrlObject.banned){
-                                        boxOfQuizzs += `<button class="btn btn-primary play" disabled data-element-id="${element.id_quizz} "type="button">Jouer</button>`;
+                                        boxOfQuizzs += `<button class="btn btn-secondary play" disabled data-element-id="${element.id_quizz} "type="button">Jouer</button>`;
                                       }
                                       else{
                                         boxOfQuizzs += `<button class="btn btn-primary play" data-element-id="${element.id_quizz} "type="button">Jouer</button>`;
