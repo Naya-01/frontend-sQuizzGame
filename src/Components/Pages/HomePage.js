@@ -18,8 +18,6 @@ const HomePage = async () => {
   container_title_page.appendChild(title_page);
   main.appendChild(container_title_page);
 
-  
-
   //Création du container qui va contenir quasi toute la page
   div_page = document.createElement("div");
   div_page.className = "container-fluid";
@@ -153,7 +151,7 @@ async function fetchExplorer(div_page){
     console.error("getExplorer::error: ", err);
   }
 }
-async function afficherQuizz(all_quizz, div_page, isExplorer=false){
+function afficherQuizz(all_quizz, div_page, isExplorer=false){
    // Créer une row
    for(let j = 0; j < all_quizz.length/3; j++){
     let container_3Q = document.createElement("div");
@@ -231,8 +229,7 @@ async function afficherQuizz(all_quizz, div_page, isExplorer=false){
   }  
 }
 
-async function redirectionQuizzPage(e){
-  e.preventDefault();
+function redirectionQuizzPage(){
   RedirectWithParams("/Quizz",this.id);
 }
 

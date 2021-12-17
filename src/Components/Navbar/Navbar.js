@@ -15,7 +15,7 @@ const Navbar = async () => {
         Redirect("/RegisterAndLoginPage");
     }
     else{
-        let user = await userLibrary.getUser(userSession.id_user);
+        let user = await userLibrary.getUserOfSession();
 
         navbar = `<nav class="navbar navbar-expand-sm navbar-dark bg-secondary">
         <img src="${logo_squizz_game}" alt="logo squizz game" id="logoSG" data-page="/">

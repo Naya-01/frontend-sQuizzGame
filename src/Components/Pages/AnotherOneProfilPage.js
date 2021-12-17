@@ -1,51 +1,65 @@
 import ProfilLibrary from "../../Domain/ProfilLibrary";
 import UserLibrary from "../../Domain/UserLibrary";
-import { getSessionObject } from "../../utils/session";
 import { Redirect, RedirectWithParams} from "../Router/Router";
 
 const profilLibrary = new ProfilLibrary();
 const userLibrary = new UserLibrary();
 
+/**
+ * makes the another one profil page
+ */
 const AnotherOneProfilPage = async () => {
   const main = document.querySelector("main");
-  let userSession = getSessionObject("user");
-  if (!userSession) {
-    Redirect("/RegisterAndLoginPage");
-  }
 
   let url_string = window.location;
   let url = new URL(url_string);
   let idUserUrl = url.searchParams.get("idUser");
+
+  //get objet of user session
+  let objetUserSession = await userLibrary.getUserOfSession();
+  //if not id user in url, display profil not found
   if (!idUserUrl)
     main.innerHTML = `
       <div class="in-middle">
         <h1 >Profil introuvable</h1>
       </div>`;
+  //if bad id user in url, display profil not found 
   else if (isNaN(idUserUrl) || idUserUrl < 0) {
     main.innerHTML = `
       <div class="in-middle">
         <h1 >Profil introuvable</h1>
       </div>`;
   }
-  else if (userSession.id_user == idUserUrl) {
+  //if id user in url is equal to the one of the session
+  else if (objetUserSession.id_user == idUserUrl) {
     Redirect("/Profil/MyProfil");
-  }  else {
+  } 
+  else {
+    
+    //display another one profil
     const page = await profilLibrary.getAnotherOneProfilPage(
-      userSession,
+      objetUserSession,
       idUserUrl
     );
     main.innerHTML = page;
     const subscribeButton = document.getElementById("subscribe");
     const unsubscribeButton = document.getElementById("unsubscribe");
-
+    
+    //if subscribe button is not displayed, listen the unsubscribe button
     if (subscribeButton == null) {
+      //if click on unsubscribe button, decrement number of subscription to user session
+      //and decrement number of subscribers to user in url
       unsubscribeButton.addEventListener("click", async (e) => {
         let elementIdUser = e.target.dataset.elementIdUser;
         let elementIdFollower = e.target.dataset.elementIdFollower;
         await userLibrary.unsubscribe(elementIdUser, elementIdFollower);
         AnotherOneProfilPage();
       });
-    } else {
+    }
+    //else, listen the subscribe button 
+    else {
+      //if click on subscribe button, increment number of subscription to user session
+      //and increment number of subscribers to user in url
       subscribeButton.addEventListener("click", async (e) => {
         let elementIdUser = e.target.dataset.elementIdUser;
         let elementIdFollower = e.target.dataset.elementIdFollower;
@@ -57,7 +71,8 @@ const AnotherOneProfilPage = async () => {
         AnotherOneProfilPage();
       });
     }
-    
+
+    //if click on the title of a quiz
     main.querySelectorAll(".titlesQuizzBox").forEach((titleDisplayed) => {
       titleDisplayed.addEventListener("click", (e) => {
       
@@ -80,6 +95,8 @@ const AnotherOneProfilPage = async () => {
         }
       });
     });
+
+    //if click the delete button of a quizz
     main.querySelectorAll(".delete").forEach((button) => {
       button.addEventListener("click", async (e) => {
   
@@ -115,18 +132,19 @@ const AnotherOneProfilPage = async () => {
         buttonNo.type = "button";
         parent.appendChild(buttonNo);
   
-        //listener to unban someone (press yes)
+        //listener to unban someone (click yes)
         buttonYes.addEventListener("click", async (e) => {
           await profilLibrary.deleteQuizzFromProfil(elementId);
           AnotherOneProfilPage();
         });
-        //refresh the page (press no)
+        //refresh the page (click no)
         buttonNo.addEventListener("click", (e) => {
           AnotherOneProfilPage();
         });
       });
     });
 
+    //if click the play button of a quizz
     main.querySelectorAll(".play").forEach((button) => {
       button.addEventListener("click", async (e) => {
         let elementId = e.target.dataset.elementId;

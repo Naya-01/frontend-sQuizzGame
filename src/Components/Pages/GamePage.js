@@ -128,6 +128,7 @@ function html_answer() {
     const divAnswer = document.getElementById('answers');
     let html_answer = "";
     list_answer = []; // reset de la liste
+    let percent = ((position+1)/questions.length)*100;
     for (const element of answers) {
         list_answer[list_answer.length] = element;
         let color;
@@ -137,7 +138,7 @@ function html_answer() {
             <div class="cards__single">
             
                  <div class="cards__front">
-                    <div class="answer p-5 mt-4 shadow p-3 container bg-dark text-white" style="width: 70%; height: 8vh;">
+                    <div class="answer text-center padding-card mt-4 shadow container bg-dark text-white" style="width: 70%; height: 8vh;">
                         ${element.answer}
                     </div>
                 </div>  
@@ -149,7 +150,7 @@ function html_answer() {
     }
     html_answer += `
                 <div class="progress mt-5">
-                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                    <div class="progress-bar" role="progressbar" style="width: ${percent}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">${percent}%</div>
                 </div>
 
             <button class="btn btn-primary mt-5" type="submit" id="nextQuestion">Question suivante</button>
@@ -343,7 +344,7 @@ function insertionAnswerBack() {
         if (element.correct) color = "bg-success";
         else color = "bg-danger";
         let divBack = `
-                     <div class="answer p-5 mt-4 shadow p-3 container ${color} text-white" style="width: 70%; height: 8vh;">
+                     <div class="answer padding-card mt-4 shadow container ${color} text-white" style="width: 70%; height: 8vh;">
                         ${element.answer}
                     </div>
         `;

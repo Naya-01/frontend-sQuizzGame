@@ -53,6 +53,34 @@
     }
 }
 
+@media screen and (min-width: 800px) {
+    .scores-size{
+        width: 200px;
+    }
+    .score{
+        width: 450px;
+    }
+}
+
+@media screen and (min-width: 1000px) {
+    .scores-size{
+        width: 95px;
+    }
+    .score{
+        width: 190px;
+    }
+}
+
+
+@media screen and (min-width: 1200px) {
+    .scores-size{
+        width: 100px;
+    }
+    .score{
+        width: 265px;
+    }
+}
+
 
 
 .in-middle{
@@ -260,6 +288,26 @@
 
 /*  ##################################   GAME PAGE   #########################################      */
 
+.padding-card{
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+#theQuestion{
+    font-size: 30px;
+}
+
+@media screen and (min-width: 720px){
+    .padding-card{
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    #theQuestion{
+        font-size: 25px;
+    }
+}
+
 .cards__single {
     display: flex;
     flex-direction: column;
@@ -284,22 +332,6 @@
     right: 0;
     left: 0;
     color: #20263f;
-}
-
-
-@media (min-width: 768px) {
-    .cards {
-        /*display: flex;*/
-        /*flex-direction: row;*/
-        /*justify-content: space-around;*/
-        /*align-content: center;*/
-        /*position: relative;*/
-        /*perspective: 1000px;*/
-        /*align-items: stretch;*/
-    }
-    .cards__single {
-        /*width: 20%;*/
-    }
 }
 
 .answer{

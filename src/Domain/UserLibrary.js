@@ -92,6 +92,53 @@ class UserLibrary {
       console.error("getUser::error: ", err);
     }
   }
+
+  async getUserOfSession() {
+    try {
+      const options = {
+        method: "GET", 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch("/api/users/getUserSession/",options);
+
+      if (!reponse.ok) {
+        throw new Error(
+          "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const user = await reponse.json();
+      return user;
+    } catch (err) {
+      console.error("getUserOfSession::error: ", err);
+    }
+  }
+
+  async getUserOfSessionWithSubs() {
+    try {
+      const options = {
+        method: "GET", 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch("/api/users/getUserSessionWithSubs/",options);
+
+      if (!reponse.ok) {
+        throw new Error(
+          "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const user = await reponse.json();
+      return user;
+    } catch (err) {
+      console.error("getUserOfSessionWithSubs::error: ", err);
+    }
+  }
+
   /**
    * 
    * @param integer id_user 
@@ -414,24 +461,7 @@ class UserLibrary {
     }
   }
 
-
-  async getUserByEmail(email){ // je l'utilise enflure de stefan
-    try {
-      const reponse = await fetch("/api/users/email/" + email);
-
-      if (!reponse.ok) {
-        throw new Error(
-            "fetch error : " + reponse.status + " : " + reponse.statusText
-        );
-      }
-      const user = await reponse.json();
-      return user;
-    } catch (err) {
-      console.error("getUserByEmail::error: ", err);
-    }
-  }
-
-  async userExist(email){
+  async userExist(email){ // USED IN LOGIN/REGISTER PAGE
     try {
       const reponse = await fetch("/api/users/userExist/" + email);
 
@@ -447,7 +477,7 @@ class UserLibrary {
     }
   }
 
-  async passwordMatch(email,password){
+  async passwordMatch(email,password){ // USED IN LOGIN/REGISTER PAGE
     try {
       const options = {
         method: "POST",
@@ -470,5 +500,22 @@ class UserLibrary {
       console.error("passwordMatch::error: ", err);
     }
   }
+
+  async isBanned(email){ // USED IN LOGIN/REGISTER PAGE
+    try {
+      const reponse = await fetch("/api/users/isBanned/email/" + email);
+
+      if (!reponse.ok) {
+        throw new Error(
+            "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const user = await reponse.json();
+      return user.banned;
+    } catch (err) {
+      console.error("isBanned::error: ", err);
+    }
+  }
+
 }
 export default UserLibrary;

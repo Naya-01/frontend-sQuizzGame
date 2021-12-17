@@ -18,12 +18,12 @@ const PanelAdminPage = async (filter) => {
   if (!filterUrl) filter="";
   else filter=filterUrl;
 
-  let user = await userLibrary.getUser(userSession.id_user);
+  let user = await userLibrary.getUserOfSession();
   if (!user.is_admin) Redirect("/");
   else {
     
     if(filter===undefined) filter="";
-    let page = await userLibrary.getPanelAdminPage(filter,userSession);
+    let page = await userLibrary.getPanelAdminPage(filter,user);
     main.innerHTML = page;
 
     await addEventListeners(filter);
