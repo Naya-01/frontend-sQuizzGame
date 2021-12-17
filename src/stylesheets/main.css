@@ -1,3 +1,12 @@
+#abonnes{
+    cursor: pointer;
+}
+
+#abonnements{
+    cursor: pointer;
+}
+
+
 .creator-size{
     width: 250px;
     font-size: 30px;
@@ -306,9 +315,10 @@
     width: 80%;
 } 
 #HomePageId .card-text{
-    height: 4rem;
+    min-height: 4em;
+    height: auto;
 }
-#HomePageId .btnJouer {
+#HomePageId .btnJouer {  
     width:100%;
 }
 #HomePageId .card-subtitle{
