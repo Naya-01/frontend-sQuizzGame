@@ -1,8 +1,8 @@
 import { getSessionObject } from "../../utils/session";
 import { RedirectWithParams,RedirectWithParamsInUrl } from "../Router/Router";
 const escape = require("escape-html");
-
-
+import {unescapeHtml} from "../../utils/unescapeHtml";
+import refreshIcon from "../../img/refresh.png";
 
 const HomePage = async () => {
   let div_page = document.createElement("div");
@@ -102,6 +102,37 @@ const HomePage = async () => {
 
   // Sous-Titre Explorer
   creerSousTitre("Explorer", div_page);
+  fetchExplorer(div_page);
+};
+
+async function creerSousTitre(nom_sous_titre, div_page){
+  let div_sous_titre = document.createElement("div");
+  div_sous_titre.className = "container";
+  div_sous_titre.id = "titre_"+nom_sous_titre;
+
+  let sous_titre = document.createElement("h4");
+  sous_titre.innerHTML = nom_sous_titre+"   ";
+  sous_titre.className = "m-5"
+    
+  if(nom_sous_titre === "Explorer"){
+    let refresh_btn = document.createElement("img");
+    refresh_btn.src = refreshIcon;
+    refresh_btn.alt = "bouton pour actualiser les quizz dans explorer"
+    refresh_btn.id = "refresh_btn";
+    refresh_btn.addEventListener("click", async (e) => {
+      for(let i=0; i < 3; i++){
+        div_page.removeChild(document.getElementsByClassName("container my-3 Explorer")[0]);
+      }
+      fetchExplorer(div_page);
+      
+    })
+    sous_titre.appendChild(refresh_btn);
+  }
+  div_sous_titre.appendChild(sous_titre);
+  div_page.appendChild(div_sous_titre);
+}
+
+async function fetchExplorer(div_page){
   try{
     const options = {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -117,29 +148,17 @@ const HomePage = async () => {
       );
     }
     let all_quizz_explorer = await reponse.json();
-    afficherQuizz(all_quizz_explorer, div_page);
+    afficherQuizz(all_quizz_explorer, div_page, true);
   }catch (err) {
     console.error("getExplorer::error: ", err);
   }
-};
-
-async function creerSousTitre(nom_sous_titre, div_page){
-  let div_sous_titre = document.createElement("div")
-  div_sous_titre.className = "container ";
-  div_sous_titre.id = "titre_"+nom_sous_titre;
-  let sous_titre = document.createElement("h4");
-  sous_titre.innerHTML = nom_sous_titre;
-  div_sous_titre.appendChild(sous_titre);
-  //div_page.appendChild(div_sous_titre);
-  div_page.appendChild(div_sous_titre);
 }
-
-async function afficherQuizz(all_quizz, div_page){
+async function afficherQuizz(all_quizz, div_page, isExplorer=false){
    // Créer une row
    for(let j = 0; j < all_quizz.length/3; j++){
     let container_3Q = document.createElement("div");
-    container_3Q.className = "container my-5"
-    //div_page.appendChild(container_3Q);
+    if(isExplorer)container_3Q.className = "container my-3 Explorer"
+    else container_3Q.className = "container my-3"
     div_page.appendChild(container_3Q);
     let row_3Q = document.createElement("div");
     row_3Q.className = "row";
@@ -154,7 +173,7 @@ async function afficherQuizz(all_quizz, div_page){
 
         // Création de la card quizz
         let div_card = document.createElement("div");
-        div_card.className = 'card';
+        div_card.className = 'card m-3';
         let div = document.createElement("div");
         div.className = 'card-body';
         div_card.appendChild(div);
@@ -163,7 +182,7 @@ async function afficherQuizz(all_quizz, div_page){
         // Nom du quizz
         let title = document.createElement("h5");
         title.className = 'card-title';
-        let title_texte = all_quizz[indice].name;
+        let title_texte = unescapeHtml(all_quizz[indice].name);
         // Tronquage du titre du quizz si il est trop long
         if(title_texte.length > 25){
           title_texte = title_texte.substring(0, 25);
@@ -174,13 +193,13 @@ async function afficherQuizz(all_quizz, div_page){
         div.appendChild(title);
         
         // Créateur du quizz
-        let creator = all_quizz[indice].user_name;
+        let creator = unescapeHtml(all_quizz[indice].user_name);
         let subtitle = document.createElement("a");
         subtitle.className = "card-subtitle mb-2 text-muted";
         subtitle.innerHTML = "par "+creator;
         subtitle.addEventListener("click", async (e) => {
           e.preventDefault();
-          let elementId = all_quizz[indice].id_user;
+          let elementId = all_quizz[indice].id_creator;
           RedirectWithParamsInUrl("/Profil","?idUser="+elementId);
         });
         div.appendChild(subtitle);
@@ -188,7 +207,7 @@ async function afficherQuizz(all_quizz, div_page){
         // Description du quizz
         let description = document.createElement("p");
         description.className = "card-text";
-        let description_texte = all_quizz[indice].description;
+        let description_texte = unescapeHtml(all_quizz[indice].description);
 
         // Tronquage de la description si elle est trop longue
         if(description_texte.length > 60){
@@ -222,7 +241,7 @@ async function boutonRecherche(main, div_page){
                           <table class="elementsContainer">
                             <tr>
                               <td>
-                                <input type="text" placeholder="Chercher" class="search" name="searchBar" id="searchBar" >
+                                <input type="text" placeholder="Rechercher" class="search" name="searchBar" id="searchBar" >
                               </td>
                               <td>
                                 <a href="#" id="searchButton">
@@ -242,7 +261,7 @@ async function boutonRecherche(main, div_page){
   let search = main.querySelector("#searchButton");
   search.addEventListener("click", async (e) => {
     e.preventDefault();
-    await rechercherQuizz();
+    await rechercherQuizz(div_page);
   });
 }
 async function rechercherQuizz(div_page){
