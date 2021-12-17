@@ -29,7 +29,7 @@ let myPage = `<div class="container">
         </div>
 
 
-<div class="row">
+<div class="row mb-5">
         <!--  Meilleurs Scores   -->
         <div class="col-lg-4 col-md-12 col-sm-12" id="best-scores">
             <div class="row m-auto">
