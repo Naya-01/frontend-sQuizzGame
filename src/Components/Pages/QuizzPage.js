@@ -331,8 +331,7 @@ async function QuizzPage(id) {
         btnMedium.className = btnMediumStyle;
         btnHard.className = btnHardStyle;
         difficulty = 1;
-        if(!difficultyPressed)difficultyPressed=true;
-        else difficultyPressed = false;
+        difficultyPressed = !difficultyPressed
     })
 
     btnMedium.addEventListener("click", e => {
@@ -343,8 +342,7 @@ async function QuizzPage(id) {
         btnHard.className = btnHardStyle;
         btnEasy.className = btnEasyStyle;
         difficulty = 2;
-        if(!difficultyPressed)difficultyPressed=true;
-        else difficultyPressed = false;
+        difficultyPressed = !difficultyPressed
     })
 
     btnHard.addEventListener("click", e => {
@@ -355,8 +353,7 @@ async function QuizzPage(id) {
         btnEasy.className = btnEasyStyle;
         btnMedium.className = btnMediumStyle;
         difficulty = 3;
-        if(!difficultyPressed)difficultyPressed=true;
-        else difficultyPressed = false;
+        difficultyPressed = !difficultyPressed
     })
 
     btnPlay.addEventListener("click", e => {
