@@ -94,7 +94,7 @@ const CreateQuizz = async () => {
 
   // Bouton pour creer un quizz
   containerCreateButton = document.createElement("div");
-  containerCreateButton.className = "container-fluid text-center";
+  containerCreateButton.className = "container-fluid text-center mb-4";
   const createQuizzButton = document.createElement("input");
   createQuizzButton.value = "Créer le quizz";
   createQuizzButton.type = "submit";
@@ -327,12 +327,6 @@ async function nouvelleQuestion(e) {
   
   divContainer.appendChild(divRowTitre);
   divContainer.appendChild(divRowAB);
-  
-  // TODO : A modifier le br
-  let br = document.createElement("br")
-  divContainer.appendChild(br);
-  
-  
   divContainer.appendChild(divRowCD);
 
   //Ajout de la div pour afficher l'erreur
@@ -425,8 +419,8 @@ async function createReponse(divCol,divCol2, lettre){
   reponseN.type = "text";
   reponseN.id = "reponse"+lettre+ "" + nbQuestions;
   reponseN.required = true;
-  reponseN.placeholder = "Saisissez la réponse "+lettre;
-  reponseN.className = "form-control";
+  reponseN.placeholder = "Réponse "+lettre;
+  reponseN.className = "form-control mb-4";
 
   let bonneReponse = document.createElement("input");
   bonneReponse.type = "radio"
