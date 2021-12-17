@@ -134,6 +134,9 @@ const AnotherOneProfilPage = async () => {
         RedirectWithParams("/Quizz",elementId);
       });
     });
+
+    document.getElementById("abonnes").addEventListener("click", profilLibrary.clickOnAbonnesOrAbonnements);
+    document.getElementById("abonnements").addEventListener("click", profilLibrary.clickOnAbonnesOrAbonnements);
     
   }
 };

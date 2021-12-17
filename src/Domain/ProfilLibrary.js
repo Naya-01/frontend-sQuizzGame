@@ -2,6 +2,7 @@ import adminImage from "../img/admin.png";
 import userImage from "../img/user.png";
 import UserLibrary from "./UserLibrary";
 import { getSessionObject } from "../utils/session";
+import Swal from "sweetalert2";
 const userLibrary = new UserLibrary();
 
 class ProfilLibrary {
@@ -23,13 +24,13 @@ class ProfilLibrary {
         <div class="row">
             <div class="col-md-6">
             <div class="text-center">
-                <h4>Abonnés</h4>
+                <h4 id="abonnes">Abonnés</h4>
                 <h5>${user.subscribers}</h5>
             </div>
             </div>
             <div class="col-md-6">
             <div class="text-center">
-                <h4>Abonnements</h4>
+                <h4 id="abonnements">Abonnements</h4>
                 <h5>${user.subscriptions}</h5>
             </div>
             </div>
@@ -42,7 +43,6 @@ class ProfilLibrary {
             </div>
         </div>`;
 
-        
       const quizzs = await this.getQuizzFromUser(userSession,null);
 
       let boxOfQuizz = await this.displayQuizzs(quizzs,null,user);
@@ -52,6 +52,62 @@ class ProfilLibrary {
     } catch (error) {
       console.error("getMyProfilPage::error: ", error);
     }
+  }
+
+  /**
+   * affiche les abonnés ou les abonnements
+   * @param {*} e : l'event 
+   */
+  async clickOnAbonnesOrAbonnements(e){
+    let options = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getSessionObject("user").token,
+      },
+    };
+
+    // On regarde si il n'y a pas de id_user dans l'url
+    let url_string = window.location;
+    let url = new URL(url_string);
+    let idUserUrl = url.searchParams.get("idUser");
+    let id_user;
+    if(idUserUrl === null){
+      id_user = getSessionObject("user").id_user;
+    }
+    else{
+      id_user = parseInt(idUserUrl);
+    }
+
+    let followers;
+    // On recolte les abonnes ou les abonnements
+    if(this.id === "abonnes"){
+      followers = await fetch("/api/users/all_followers/"+id_user, options);
+    }
+    else{
+      followers = await fetch("/api/users/all_subscriptions//"+id_user, options);
+    }
+    followers = await followers.json();
+    let followers_html = '';
+    // On mets les abonnés ou abonnements dans des paragraphes
+    followers.forEach(function(element){
+      followers_html += '<p><a href="/Profil?idUser='+element.id_user+'">'+element.name+'</a></p>';
+    });
+    // on affiche un message si la liste est vide
+    if(followers_html === '') followers_html += '<p>Aucun pour le moment...</p>';
+    // On affiche le pop-up avec la liste des abonnés ou abonnements
+    Swal.fire({
+      title: 'Abonnés',
+      html: followers_html,
+      padding: '3em',
+      color: 'black',
+      scrollbarPadding: true,
+      backdrop: `  rgba(80,80,80,0.7) `,
+      allowOutsideClick: true,
+      allowEscapeKey: true,
+      width: "80%",
+      confirmButtonText: 'Retour',
+    })
   }
 
   async getAnotherOneProfilPage(userSession,idUserUrl) {
@@ -81,12 +137,13 @@ class ProfilLibrary {
           <div class="row m-2">
               <div class="col-md-4">
                 <div class="text-center">
-                    <h4>Abonnés</h4>
+                    <h4 id="abonnes">Abonnés</h4>
                     <h5>${users.subscribers}</h5>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="text-center">`;
+                
                 let bool = await userLibrary.isFollowing(users.id_user2,users.id_user1);
                 if(bool==1){
                   page += `<button type="button" class="btn btn-outline-dark" id="unsubscribe" name="unsubscribe" data-element-id-user="${users.id_user2}" data-element-id-follower="${users.id_user1}">Se désabonner</button>`;
@@ -99,7 +156,7 @@ class ProfilLibrary {
               </div>
               <div class="col-md-4">
                 <div class="text-center">
-                    <h4>Abonnements</h4>
+                    <h4 id="abonnements">Abonnements</h4>
                     <h5>${users.subscriptions}</h5>
                 </div>
               </div>

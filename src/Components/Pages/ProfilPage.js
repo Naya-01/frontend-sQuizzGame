@@ -14,6 +14,9 @@ const ProfilPage = async () => {
   const page = await profilLibrary.getMyProfilPage(userSession);
   main.innerHTML = page;
 
+  document.getElementById("abonnes").addEventListener("click", profilLibrary.clickOnAbonnesOrAbonnements);
+  document.getElementById("abonnements").addEventListener("click", profilLibrary.clickOnAbonnesOrAbonnements);
+
   main.querySelectorAll(".delete").forEach((button) => {
     button.addEventListener("click", async (e) => {
 
