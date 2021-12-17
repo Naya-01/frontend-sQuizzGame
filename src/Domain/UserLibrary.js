@@ -112,7 +112,30 @@ class UserLibrary {
       const user = await reponse.json();
       return user;
     } catch (err) {
-      console.error("getUser::error: ", err);
+      console.error("getUserOfSession::error: ", err);
+    }
+  }
+
+  async getUserOfSessionWithSubs() {
+    try {
+      const options = {
+        method: "GET", 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch("/api/users/getUserSessionWithSubs/",options);
+
+      if (!reponse.ok) {
+        throw new Error(
+          "fetch error : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      const user = await reponse.json();
+      return user;
+    } catch (err) {
+      console.error("getUserOfSessionWithSubs::error: ", err);
     }
   }
 

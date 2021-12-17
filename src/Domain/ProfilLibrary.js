@@ -5,9 +5,9 @@ import { getSessionObject } from "../utils/session";
 const userLibrary = new UserLibrary();
 
 class ProfilLibrary {
-  async getMyProfilPage(userSession) {
+  async getMyProfilPage() {
     try {
-      let user = await userLibrary.getUser(userSession.id_user);
+      let user = await userLibrary.getUserOfSessionWithSubs();
       let page = `
         <div class="container">
         <div class="text-center">
@@ -43,7 +43,7 @@ class ProfilLibrary {
         </div>`;
 
         
-      const quizzs = await this.getQuizzFromUser(userSession,null);
+      const quizzs = await this.getQuizzFromUser(user,null);
 
       let boxOfQuizz = await this.displayQuizzs(quizzs,null,user);
       page += boxOfQuizz;
@@ -145,7 +145,7 @@ class ProfilLibrary {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: userSession.token,
+          Authorization: getSessionObject("user").token,
         },
       };
       let response;

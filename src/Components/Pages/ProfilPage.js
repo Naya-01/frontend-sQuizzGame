@@ -11,7 +11,7 @@ const ProfilPage = async () => {
     Redirect("/RegisterAndLoginPage");
   }
 
-  const page = await profilLibrary.getMyProfilPage(userSession);
+  const page = await profilLibrary.getMyProfilPage();
   main.innerHTML = page;
 
   main.querySelectorAll(".delete").forEach((button) => {
