@@ -16,6 +16,8 @@ const AnotherOneProfilPage = async () => {
   let url_string = window.location;
   let url = new URL(url_string);
   let idUserUrl = url.searchParams.get("idUser");
+
+  let objetUserSession = await userLibrary.getUserOfSession();
   if (!idUserUrl)
     main.innerHTML = `
       <div class="in-middle">
@@ -27,12 +29,12 @@ const AnotherOneProfilPage = async () => {
         <h1 >Profil introuvable</h1>
       </div>`;
   }
-  else if (userSession.id_user == idUserUrl) {
+  else if (objetUserSession.id_user == idUserUrl) {
     Redirect("/Profil/MyProfil");
   }  else {
-    let objetUser = await userLibrary.getUserOfSession();
+    
     const page = await profilLibrary.getAnotherOneProfilPage(
-      objetUser,
+      objetUserSession,
       idUserUrl
     );
     main.innerHTML = page;

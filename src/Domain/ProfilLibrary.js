@@ -58,7 +58,7 @@ class ProfilLibrary {
     try {
       let users = await userLibrary.getTwoUsersById(parseInt(userSession.id_user),parseInt(idUserUrl));
       let page;
-      if(users===undefined){
+      if(users===undefined || (!users.is_admin1 && users.banned2)){
         page = `
             <div class="in-middle">
               <h1 >Profil introuvable</h1>
@@ -229,8 +229,14 @@ class ProfilLibrary {
                                   boxOfQuizzs += `
                                   <p class="card-text" style ="height:4rem">${descriptionTexte}</p>
                                   <div class="d-grid gap-2">
-                                      <span id="delete${element.id_quizz}"></span>
-                                      <button class="btn btn-primary play" data-element-id="${element.id_quizz} "type="button">Jouer</button>`;
+                                      <span id="delete${element.id_quizz}"></span>`;
+                                      
+                                      if(userUrlObject!=null && userUrlObject.banned){
+                                        boxOfQuizzs += `<button class="btn btn-primary play" disabled data-element-id="${element.id_quizz} "type="button">Jouer</button>`;
+                                      }
+                                      else{
+                                        boxOfQuizzs += `<button class="btn btn-primary play" data-element-id="${element.id_quizz} "type="button">Jouer</button>`;
+                                      }
                                       if(userUrlObject==null || (!userUrlObject.is_admin && userSessionObject.is_admin)){
                                         boxOfQuizzs += `<button class="btn btn-danger delete" data-element-id="${element.id_quizz}"  type="button">Supprimer</button>`;
                                       }
