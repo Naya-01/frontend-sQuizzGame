@@ -66,7 +66,7 @@ let myPage = `<div class="container">
             </div>
             <div class="row m-auto mb-5">
                 <button class="btn btn-light btn-lg text-dark
-                border border-dark border-2 border fs-4" id="play">Commencer le Quizz</button>
+                border border-dark border-2 border fs-4 p-4" id="play">Commencer le Quizz</button>
             </div>
         </div>
         
@@ -315,32 +315,54 @@ async function QuizzPage(id) {
 
     let difficulty;
     let btnEasy = document.getElementById("easy");
+    let btnEasyStyle = btnEasy.className;
     let btnMedium = document.getElementById("medium");
+    let btnMediumStyle = btnMedium.className;
     let btnHard = document.getElementById("hard");
+    let btnHardStyle = btnHard.className;
     let btnPlay = document.getElementById("play");
+    let difficultyPressed = false;
 
     btnEasy.addEventListener("click", e => {
         e.preventDefault();
         if(document.getElementById("notif"))document.getElementById("notifRow").removeChild(document.getElementById("notif"));
+        if(btnEasy.className !== btnEasyStyle) btnEasy.className = btnEasyStyle;
+        else btnEasy.className = "btn cursor btn-light text-dark border border-success border-2 border rounded rounded-pill bg-white fs-4";
+        btnMedium.className = btnMediumStyle;
+        btnHard.className = btnHardStyle;
         difficulty = 1;
+        if(!difficultyPressed)difficultyPressed=true;
+        else difficultyPressed = false;
     })
 
     btnMedium.addEventListener("click", e => {
         e.preventDefault();
         if(document.getElementById("notif"))document.getElementById("notifRow").removeChild(document.getElementById("notif"));
+        if(btnMedium.className !== btnMediumStyle) btnMedium.className = btnMediumStyle;
+        else btnMedium.className = "btn cursor btn-light text-dark border border-warning border-2 border rounded rounded-pill bg-white fs-4";
+        btnHard.className = btnHardStyle;
+        btnEasy.className = btnEasyStyle;
         difficulty = 2;
+        if(!difficultyPressed)difficultyPressed=true;
+        else difficultyPressed = false;
     })
 
     btnHard.addEventListener("click", e => {
         e.preventDefault();
         if(document.getElementById("notif"))document.getElementById("notifRow").removeChild(document.getElementById("notif"));
+        if(btnHard.className !== btnHardStyle) btnHard.className = btnHardStyle;
+        else btnHard.className = "btn cursor btn-light text-dark border border-danger border-2 border rounded rounded-pill bg-white fs-4";
+        btnEasy.className = btnEasyStyle;
+        btnMedium.className = btnMediumStyle;
         difficulty = 3;
+        if(!difficultyPressed)difficultyPressed=true;
+        else difficultyPressed = false;
     })
 
     btnPlay.addEventListener("click", e => {
         e.preventDefault();
         if(document.getElementById("notif"))document.getElementById("notifRow").removeChild(document.getElementById("notif"));
-        if(!difficulty){
+        if(!difficultyPressed){
             let notifRow = document.getElementById("notifRow");
             let notif = document.createElement("span");
             notif.id="notif";
