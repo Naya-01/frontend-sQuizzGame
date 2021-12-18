@@ -20,7 +20,6 @@ let myPage = `<div class="container">
         <div class="row mb-5">
             <div class="col-3"></div>
             <div class="col-6">
-                <h2 class="text-center">Bienvenue sur mon quizz !</h2>
                 <p class="fs-4 text-center text-break" id="quizz-description"></p>
             </div>
             <div class="col-3"></div>
