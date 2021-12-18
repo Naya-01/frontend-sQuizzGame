@@ -1,5 +1,6 @@
 import ProfilLibrary from "../../Domain/ProfilLibrary";
 import { RedirectWithParams } from "../Router/Router";
+import Swal from 'sweetalert2';
 
 const profilLibrary = new ProfilLibrary();
 
@@ -12,11 +13,14 @@ const ProfilPage = async () => {
   //display my profil page
   const page = await profilLibrary.getMyProfilPage();
   main.innerHTML = page;
-  //if click the abonnes button
-  document.getElementById("abonnes").addEventListener("click", profilLibrary.clickOnAbonnesOrAbonnements);
-  //if click the abonnements button
-  document.getElementById("abonnements").addEventListener("click", profilLibrary.clickOnAbonnesOrAbonnements);
-  //if click the delete button of a quizz
+
+  
+  //if click the subscribers button
+  document.getElementById("abonnes").addEventListener("click", profilLibrary.clickOnSubscribersOrSubscriptions);
+  //if click the subscriptions button
+  document.getElementById("abonnements").addEventListener("click", profilLibrary.clickOnSubscribersOrSubscriptions);
+  
+  //if click the delete button of a quizz, ask first if the person is sure
   main.querySelectorAll(".delete").forEach((button) => {
     button.addEventListener("click", async (e) => {
 
@@ -52,10 +56,26 @@ const ProfilPage = async () => {
       buttonNo.type = "button";
       parent.appendChild(buttonNo);
 
-      //listener to unban someone (click yes)
+      //listener to delete a quizz (click yes)
       buttonYes.addEventListener("click", async (e) => {
         await profilLibrary.deleteQuizzFromProfil(elementId);
-        ProfilPage();
+        await ProfilPage();
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 5000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+        
+        Toast.fire({
+          icon: 'success',
+          title: 'Le quizz a été supprimé avec succès.'
+        })
       });
       //refresh the page (click no)
       buttonNo.addEventListener("click", (e) => {
@@ -66,7 +86,7 @@ const ProfilPage = async () => {
       
     });
   });
-  //if click the play button of a quizz
+  //if click the play button of a quizz, redirect to the page of that quizz game
   main.querySelectorAll(".play").forEach((button) => {
     button.addEventListener("click", async (e) => {
       let elementId = e.target.dataset.elementId;
@@ -75,7 +95,7 @@ const ProfilPage = async () => {
     });
   });
 
-  //if click on the title of a quiz
+  //if click on the title of a quizz
   main.querySelectorAll(".titlesQuizzBox").forEach((titleDisplayed) => {
     titleDisplayed.addEventListener("click", (e) => {
     

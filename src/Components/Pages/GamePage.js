@@ -128,7 +128,7 @@ function html_answer() {
     const divAnswer = document.getElementById('answers');
     let html_answer = "";
     list_answer = []; // reset de la liste
-    let percent = ((position+1)/questions.length)*100;
+    let percent =     Math.ceil(((position+1)/questions.length)*100);
     for (const element of answers) {
         list_answer[list_answer.length] = element;
         let color;

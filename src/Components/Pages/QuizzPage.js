@@ -20,9 +20,7 @@ let myPage = `<div class="container">
         <div class="row mb-5">
             <div class="col-3"></div>
             <div class="col-6">
-                <h2 class="text-center">Bienvenue sur mon quizz !</h2>
                 <p class="fs-4 text-center text-break" id="quizz-description"></p>
-                <p class="fs-4 text-center">Amusez-vous bien 😁</p>
             </div>
             <div class="col-3"></div>
         </div>
@@ -255,10 +253,17 @@ async function QuizzPage(id) {
     titre.innerHTML = quizz.name;
 
     let description = document.getElementById("quizz-description");
-    description.innerText = quizz.description;
+    description.innerHTML = quizz.description;
 
     let creatorName = document.getElementById("quizz-creator");
-    creatorName.innerText ="Créer par : "+quizz.username;
+    let creatorUserName;
+    if(quizz.username.length>7){
+        creatorUserName = quizz.username.substring(0,6)+"...";
+    }else{
+        creatorUserName = quizz.username;
+    }
+
+    creatorName.innerText ="Créer par : "+creatorUserName;
 
     let personnalsBestScores;
     try{
@@ -285,7 +290,7 @@ async function QuizzPage(id) {
         let row = document.createElement("div");
         row.className = "row mt-3";
         let span = document.createElement("span");
-        span.className = "fs-3 btn btn-light bg-warning fw-bolder text-dark border border-dark border-2 border";
+        span.className = "no-score fs-3 btn btn-light bg-grey fw-bolder text-dark border border-dark border-2 border";
         span.innerText = "Aucun score disponible";
         row.appendChild(span);
         bestScores.append(row);
@@ -329,34 +334,31 @@ async function QuizzPage(id) {
     btnEasy.addEventListener("click", e => {
         e.preventDefault();
         if(document.getElementById("notif"))document.getElementById("notifRow").removeChild(document.getElementById("notif"));
-        if(btnEasy.className !== btnEasyStyle) btnEasy.className = btnEasyStyle;
-        else btnEasy.className = "btn cursor btn-light text-dark border border-success border-2 border rounded rounded-pill bg-white fs-4";
+        btnEasy.className = "btn cursor btn-light text-dark border border-success border-2 border rounded rounded-pill bg-white fs-4";
         btnMedium.className = btnMediumStyle;
         btnHard.className = btnHardStyle;
         difficulty = 1;
-        difficultyPressed = !difficultyPressed
+        difficultyPressed = true;
     })
 
     btnMedium.addEventListener("click", e => {
         e.preventDefault();
         if(document.getElementById("notif"))document.getElementById("notifRow").removeChild(document.getElementById("notif"));
-        if(btnMedium.className !== btnMediumStyle) btnMedium.className = btnMediumStyle;
-        else btnMedium.className = "btn cursor btn-light text-dark border border-warning border-2 border rounded rounded-pill bg-white fs-4";
+        btnMedium.className = "btn cursor btn-light text-dark border border-warning border-2 border rounded rounded-pill bg-white fs-4";
         btnHard.className = btnHardStyle;
         btnEasy.className = btnEasyStyle;
         difficulty = 2;
-        difficultyPressed = !difficultyPressed
+        difficultyPressed = true;
     })
 
     btnHard.addEventListener("click", e => {
         e.preventDefault();
         if(document.getElementById("notif"))document.getElementById("notifRow").removeChild(document.getElementById("notif"));
-        if(btnHard.className !== btnHardStyle) btnHard.className = btnHardStyle;
-        else btnHard.className = "btn cursor btn-light text-dark border border-danger border-2 border rounded rounded-pill bg-white fs-4";
+        btnHard.className = "btn cursor btn-light text-dark border border-danger border-2 border rounded rounded-pill bg-white fs-4";
         btnEasy.className = btnEasyStyle;
         btnMedium.className = btnMediumStyle;
         difficulty = 3;
-        difficultyPressed = !difficultyPressed
+        difficultyPressed = true;
     })
 
     btnPlay.addEventListener("click", e => {
@@ -401,7 +403,7 @@ async function QuizzPage(id) {
         let row = document.createElement("div");
         row.className = "row mt-3";
         let span = document.createElement("span");
-        span.className = "fs-3 btn btn-light bg-warning fw-bolder text-dark border border-dark border-2 border";
+        span.className = "fs-3 no-score btn btn-light bg-grey fw-bolder text-dark border border-dark border-2 border";
         span.innerText = "Aucun score disponible";
         row.appendChild(span);
         bestScores.append(row);

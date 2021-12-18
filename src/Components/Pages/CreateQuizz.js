@@ -19,7 +19,7 @@ const CreateQuizz = async () => {
   main.innerHTML = " ";
 
   let divPage = document.createElement("div");
-  divPage.className = "container-fluid";
+  divPage.className = "container";
   divPage.id = "CreateQuizzId";
   main.appendChild(divPage);
   formAllQuestions = document.createElement("form");

@@ -62,10 +62,10 @@ class ProfilLibrary {
   }
 
   /**
-   * affiche les abonnés ou les abonnements
-   * @param {*} e : l'event 
+   * display the subscribers or subscriptions
+   * @param {Event} e
    */
-  async clickOnAbonnesOrAbonnements(e){
+  async clickOnSubscribersOrSubscriptions(e){
     let options = {
       method: "GET",
       headers: {
@@ -74,37 +74,41 @@ class ProfilLibrary {
       },
     };
 
-    // On regarde si il n'y a pas de id_user dans l'url
+    // we check if the is not an id user in the url
     let url_string = window.location;
     let url = new URL(url_string);
     let idUserUrl = url.searchParams.get("idUser");
     let id_user;
-    if(idUserUrl === null){
-      id_user = getSessionObject("user").id_user;
+    if(idUserUrl==null){
+      let userSession= await userLibrary.getUserOfSession();
+      id_user = userSession.id_user;
     }
     else{
       id_user = parseInt(idUserUrl);
     }
 
     let followers;
-    // On recolte les abonnes ou les abonnements
+    let title;
+    // we get the subscribers or subscriptions
     if(this.id === "abonnes"){
+      title="Abonnés";
       followers = await fetch("/api/users/all_followers/"+id_user, options);
     }
     else{
-      followers = await fetch("/api/users/all_subscriptions//"+id_user, options);
+      title="Abonnements";
+      followers = await fetch("/api/users/all_subscriptions/"+id_user, options);
     }
     followers = await followers.json();
     let followers_html = '';
-    // On mets les abonnés ou abonnements dans des paragraphes
+    // We put the subscribers or subscriptions in paragraphs
     followers.forEach(function(element){
       followers_html += '<p><a href="/Profil?idUser='+element.id_user+'">'+element.name+'</a></p>';
     });
-    // on affiche un message si la liste est vide
-    if(followers_html === '') followers_html += '<p>Aucun pour le moment...</p>';
-    // On affiche le pop-up avec la liste des abonnés ou abonnements
+    // a message is displayed if the list is empty
+    if(!followers_html) followers_html += '<p>Aucun pour le moment...</p>';
+    // We display the pop-up with the list of subscribers or subscriptions
     Swal.fire({
-      title: 'Abonnés',
+      title: title,
       html: followers_html,
       padding: '3em',
       color: 'black',
@@ -117,7 +121,7 @@ class ProfilLibrary {
     })
   }
 
-   /* 
+   /** 
    * @param {Object} userSession 
    * @param {number} idUserUrl 
    * @returns page html profil page of another one user
@@ -234,7 +238,7 @@ class ProfilLibrary {
         },
       };
       let response;
-      if(id_user_url===null){
+      if(!id_user_url){
         response = await fetch("/api/quizz/forUser/" + userSession.id_user,options);
       }
       else{
