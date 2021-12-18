@@ -256,7 +256,14 @@ async function QuizzPage(id) {
     description.innerHTML = quizz.description;
 
     let creatorName = document.getElementById("quizz-creator");
-    creatorName.innerText ="Créer par : "+quizz.username;
+    let creatorUserName;
+    if(quizz.username.length>7){
+        creatorUserName = quizz.username.substring(0,6)+"...";
+    }else{
+        creatorUserName = quizz.username;
+    }
+
+    creatorName.innerText ="Créer par : "+creatorUserName;
 
     let personnalsBestScores;
     try{
