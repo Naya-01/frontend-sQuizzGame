@@ -84,22 +84,7 @@ const addEventListeners = async () =>{
         await userLibrary.banUser(userToBan);
 
         await PanelAdminPage();
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 5000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-          }
-        })
-        
-        Toast.fire({
-          icon: 'success',
-          title: 'L\'utilisateur a été banni avec succès.'
-        })
+        sweetAlert("L'utilisateur a été banni avec succès.");
       });
       //refresh the page (click no)
       buttonNo.addEventListener("click", (e) => {
@@ -157,22 +142,7 @@ const addEventListeners = async () =>{
         };
         await userLibrary.upgradeUser(userToUpgrade);
         await PanelAdminPage();
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 5000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-          }
-        })
-        
-        Toast.fire({
-          icon: 'success',
-          title: 'L\'utilisateur a été promu avec succès.'
-        })
+        sweetAlert("L'utilisateur a été promu avec succès.");
       });
       //refresh the page (click no)
       buttonNo.addEventListener("click", (e) => {
@@ -221,22 +191,7 @@ const addEventListeners = async () =>{
         };
         await userLibrary.unbanUser(userToUnban);
         await PanelAdminPage();
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 5000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-          }
-        })
-        
-        Toast.fire({
-          icon: 'success',
-          title: 'L\'utilisateur a été débanni avec succès.'
-        })
+        sweetAlert("L'utilisateur a été débanni avec succès.");
       });
       //refresh the page (click no)
       buttonNo.addEventListener("click", (e) => {
@@ -279,6 +234,25 @@ const addEventListeners = async () =>{
       }
     });
   });
+}
+
+const sweetAlert = (tilte) => {
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 5000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  })
+  
+  Toast.fire({
+    icon: 'success',
+    title: tilte
+  })
 }
 
 export { PanelAdminPage };

@@ -79,8 +79,9 @@ class ProfilLibrary {
     let url = new URL(url_string);
     let idUserUrl = url.searchParams.get("idUser");
     let id_user;
-    if(!idUserUrl){
-      id_user = await userLibrary.getUserOfSession().id_user;
+    if(idUserUrl==null){
+      let userSession= await userLibrary.getUserOfSession();
+      id_user = userSession.id_user;
     }
     else{
       id_user = parseInt(idUserUrl);
