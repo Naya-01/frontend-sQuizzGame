@@ -419,7 +419,7 @@ async function QuizzPage(id) {
             let rowScoreColumn1Div = document.createElement("div");
             let spanFirstColumn = document.createElement("span");
             spanFirstColumn.className = "btn btn-light text-dark border border-dark border-2 border fs-4 margin-right-scores scores-size"
-            spanFirstColumn.innerText = ""+(i+1);
+            spanFirstColumn.innerText = getDifficulty(allBestScores[i].difficulty);
             let rowScoreColumn2Div = document.createElement("div");
             let spanSecondColumn = document.createElement("span");
             spanSecondColumn.className = "btn btn-light text-dark border border-dark border-2 border fs-4 score";
