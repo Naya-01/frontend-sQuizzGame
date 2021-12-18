@@ -283,7 +283,7 @@ async function QuizzPage(id) {
         let row = document.createElement("div");
         row.className = "row mt-3";
         let span = document.createElement("span");
-        span.className = "fs-3 btn btn-light bg-warning fw-bolder text-dark border border-dark border-2 border";
+        span.className = "no-score fs-3 btn btn-light bg-grey fw-bolder text-dark border border-dark border-2 border";
         span.innerText = "Aucun score disponible";
         row.appendChild(span);
         bestScores.append(row);
@@ -327,8 +327,7 @@ async function QuizzPage(id) {
     btnEasy.addEventListener("click", e => {
         e.preventDefault();
         if(document.getElementById("notif"))document.getElementById("notifRow").removeChild(document.getElementById("notif"));
-        if(btnEasy.className !== btnEasyStyle) btnEasy.className = btnEasyStyle;
-        else btnEasy.className = "btn cursor btn-light text-dark border border-success border-2 border rounded rounded-pill bg-white fs-4";
+        btnEasy.className = "btn cursor btn-light text-dark border border-success border-2 border rounded rounded-pill bg-white fs-4";
         btnMedium.className = btnMediumStyle;
         btnHard.className = btnHardStyle;
         difficulty = 1;
@@ -338,8 +337,7 @@ async function QuizzPage(id) {
     btnMedium.addEventListener("click", e => {
         e.preventDefault();
         if(document.getElementById("notif"))document.getElementById("notifRow").removeChild(document.getElementById("notif"));
-        if(btnMedium.className !== btnMediumStyle) btnMedium.className = btnMediumStyle;
-        else btnMedium.className = "btn cursor btn-light text-dark border border-warning border-2 border rounded rounded-pill bg-white fs-4";
+        btnMedium.className = "btn cursor btn-light text-dark border border-warning border-2 border rounded rounded-pill bg-white fs-4";
         btnHard.className = btnHardStyle;
         btnEasy.className = btnEasyStyle;
         difficulty = 2;
@@ -349,8 +347,7 @@ async function QuizzPage(id) {
     btnHard.addEventListener("click", e => {
         e.preventDefault();
         if(document.getElementById("notif"))document.getElementById("notifRow").removeChild(document.getElementById("notif"));
-        if(btnHard.className !== btnHardStyle) btnHard.className = btnHardStyle;
-        else btnHard.className = "btn cursor btn-light text-dark border border-danger border-2 border rounded rounded-pill bg-white fs-4";
+        btnHard.className = "btn cursor btn-light text-dark border border-danger border-2 border rounded rounded-pill bg-white fs-4";
         btnEasy.className = btnEasyStyle;
         btnMedium.className = btnMediumStyle;
         difficulty = 3;
@@ -399,7 +396,7 @@ async function QuizzPage(id) {
         let row = document.createElement("div");
         row.className = "row mt-3";
         let span = document.createElement("span");
-        span.className = "fs-3 btn btn-light bg-warning fw-bolder text-dark border border-dark border-2 border";
+        span.className = "fs-3 no-score btn btn-light bg-grey fw-bolder text-dark border border-dark border-2 border";
         span.innerText = "Aucun score disponible";
         row.appendChild(span);
         bestScores.append(row);
