@@ -22,7 +22,6 @@ let myPage = `<div class="container">
             <div class="col-6">
                 <h2 class="text-center">Bienvenue sur mon quizz !</h2>
                 <p class="fs-4 text-center text-break" id="quizz-description"></p>
-                <p class="fs-4 text-center">Amusez-vous bien 😁</p>
             </div>
             <div class="col-3"></div>
         </div>
@@ -255,7 +254,7 @@ async function QuizzPage(id) {
     titre.innerHTML = quizz.name;
 
     let description = document.getElementById("quizz-description");
-    description.innerText = quizz.description;
+    description.innerHTML = quizz.description;
 
     let creatorName = document.getElementById("quizz-creator");
     creatorName.innerText ="Créer par : "+quizz.username;
@@ -334,7 +333,7 @@ async function QuizzPage(id) {
         btnMedium.className = btnMediumStyle;
         btnHard.className = btnHardStyle;
         difficulty = 1;
-        difficultyPressed = !difficultyPressed
+        difficultyPressed = true;
     })
 
     btnMedium.addEventListener("click", e => {
@@ -345,7 +344,7 @@ async function QuizzPage(id) {
         btnHard.className = btnHardStyle;
         btnEasy.className = btnEasyStyle;
         difficulty = 2;
-        difficultyPressed = !difficultyPressed
+        difficultyPressed = true;
     })
 
     btnHard.addEventListener("click", e => {
@@ -356,7 +355,7 @@ async function QuizzPage(id) {
         btnEasy.className = btnEasyStyle;
         btnMedium.className = btnMediumStyle;
         difficulty = 3;
-        difficultyPressed = !difficultyPressed
+        difficultyPressed = true;
     })
 
     btnPlay.addEventListener("click", e => {
