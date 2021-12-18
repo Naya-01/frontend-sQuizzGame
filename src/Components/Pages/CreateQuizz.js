@@ -53,6 +53,7 @@ const CreateQuizz = async () => {
   containerTitleQuizz.appendChild(divTitleQuizz);
   let divErrorTitle = document.createElement("div");
   divErrorTitle.className = "row";
+  // Ajout du message d'erreur qui pourrait apparaître
   let errorTitle = document.createElement("p");
   errorTitle.id = "errorTitle";
   divErrorTitle.appendChild(errorTitle);
@@ -81,7 +82,7 @@ const CreateQuizz = async () => {
   // Ajout d'une nouvelle question qui est là par défaut
   nouvelleQuestion();
 
-  // Formulaire pour ajouter une question au quizz
+  // Bouton pour ajouter une question au quizz
   const newQuestionButton = document.createElement("input");
   containerNewQButton.className = "container-fluid my-3 text-center";
   newQuestionButton.id = "AjouterQuestion";
@@ -106,6 +107,11 @@ const CreateQuizz = async () => {
   divPage.appendChild(formAllQuestions);  
 };
 
+/**
+ * Envoie toutes les  informations au backend pour insérer le quizz en db
+ * @param {*} e : evenement
+ * @returns 
+ */
 async function soumettreQuizz(e){
   e.preventDefault();
   let erreur = 0;
@@ -237,7 +243,7 @@ async function soumettreQuizz(e){
 }
 
 /**
- * Création d'une nouvelle question
+ * Crée une nouvelle question à compléter
  * @param {*} e evenement
  */
 async function nouvelleQuestion(e) {
@@ -348,6 +354,11 @@ async function nouvelleQuestion(e) {
   
 };
 
+/**
+ * Supprime une question
+ * @param {*} e evenement
+ * @returns 
+ */
 async function supprimerQuestion(e){
   e.preventDefault();
   //Cas où on essaye de supprimer une question alors qu'il y en a qu'une
@@ -414,6 +425,12 @@ async function supprimerQuestion(e){
   }
 }
 
+/**
+ * Crée un champ réponse avec son bouton
+ * @param {*} divCol la div où sera placée le radio button
+ * @param {*} divCol2 la div où sera placé le champ pour une réponse
+ * @param {*} lettre A, B, C ou D correspondant au code de la réponse
+ */
 async function createReponse(divCol,divCol2, lettre){
   let reponseN = document.createElement("input");
   reponseN.type = "text";
