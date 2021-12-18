@@ -13,6 +13,7 @@ let questions;
 let answers;
 let difficulty;
 let html_difficulty;
+let time_answer;
 
 let myPage = `<div id="page" class="container-fluid">
         <div id="bar-progress" class="row">
@@ -128,7 +129,7 @@ function html_answer() {
     const divAnswer = document.getElementById('answers');
     let html_answer = "";
     list_answer = []; // reset de la liste
-    let percent = ((position+1)/questions.length)*100;
+    let percent =     Math.ceil(((position+1)/questions.length)*100);
     for (const element of answers) {
         list_answer[list_answer.length] = element;
         let color;
@@ -231,13 +232,13 @@ async function getScore(){
     for (let i = 0; i<answer_user.length-1;i++){
         if(answer_user[i].correct){
             if(difficulty===1){
-                score+=100*decompte*parseInt(difficulty);
+                score+=98*time_answer[i]*parseInt(difficulty);
             }
             if(difficulty===2){
-                score+=100*decompte*parseInt(difficulty);
+                score+=214*time_answer[i]*parseInt(difficulty);
             }
             if(difficulty===3){
-                score+=100*decompte*parseInt(difficulty);
+                score+=412*time_answer[i]*parseInt(difficulty);
             }
         }
     }
@@ -366,6 +367,7 @@ function saveAnswerUser() {
         let id_tmp = "answer_" + i;
         if (id === id_tmp) {
             answer_user[position] = list_answer[i - 1];
+            time_answer[position] = decompte;
         }
     }
     flipAnswer();
@@ -414,6 +416,7 @@ async function GamePage(params) {
 
     list_answer = [];
     answer_user = [];
+    time_answer = [];
     questions=null;
     answers=null;
     difficulty = params[1];

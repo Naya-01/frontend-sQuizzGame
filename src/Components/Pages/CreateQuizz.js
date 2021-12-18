@@ -19,7 +19,7 @@ const CreateQuizz = async () => {
   main.innerHTML = " ";
 
   let divPage = document.createElement("div");
-  divPage.className = "container-fluid";
+  divPage.className = "container";
   divPage.id = "CreateQuizzId";
   main.appendChild(divPage);
   formAllQuestions = document.createElement("form");
@@ -53,6 +53,7 @@ const CreateQuizz = async () => {
   containerTitleQuizz.appendChild(divTitleQuizz);
   let divErrorTitle = document.createElement("div");
   divErrorTitle.className = "row";
+  // Ajout du message d'erreur qui pourrait apparaître
   let errorTitle = document.createElement("p");
   errorTitle.id = "errorTitle";
   divErrorTitle.appendChild(errorTitle);
@@ -81,7 +82,7 @@ const CreateQuizz = async () => {
   // Ajout d'une nouvelle question qui est là par défaut
   nouvelleQuestion();
 
-  // Formulaire pour ajouter une question au quizz
+  // Bouton pour ajouter une question au quizz
   const newQuestionButton = document.createElement("input");
   containerNewQButton.className = "container-fluid my-3 text-center";
   newQuestionButton.id = "AjouterQuestion";
@@ -106,6 +107,11 @@ const CreateQuizz = async () => {
   divPage.appendChild(formAllQuestions);  
 };
 
+/**
+ * Envoie toutes les  informations au backend pour insérer le quizz en db
+ * @param {*} e : evenement
+ * @returns 
+ */
 async function soumettreQuizz(e){
   e.preventDefault();
   let erreur = 0;
@@ -237,7 +243,7 @@ async function soumettreQuizz(e){
 }
 
 /**
- * Création d'une nouvelle question
+ * Crée une nouvelle question à compléter
  * @param {*} e evenement
  */
 async function nouvelleQuestion(e) {
@@ -285,43 +291,47 @@ async function nouvelleQuestion(e) {
   divRowTitre.appendChild(divColTitre2);
   divRowTitre.appendChild(divColTitre3);
 
-  // Réponses A et B
+  // div pour réponses A et B
   let divRowAB = document.createElement("div");
   divRowAB.className = "row justify-content-around";
+
+  // Réponse A
   let divColA = document.createElement("div");
-  divColA.className = "col-1 m-auto";
+  divColA.className = "col-1 my-2";
   let divColA2 = document.createElement("div");
   divColA2.className = "col-5";
   createReponse(divColA,divColA2, "A");
   divRowAB.appendChild(divColA);
   divRowAB.appendChild(divColA2);
+
+  // Réponse B
   let divColB = document.createElement("div");
-  divColB.className = "col-1 m-auto";
+  divColB.className = "col-1 my-2";
   let divColB2 = document.createElement("div");
   divColB2.className = "col-5";
   createReponse(divColB,divColB2, "B");
   divRowAB.appendChild(divColB);
   divRowAB.appendChild(divColB2);
 
-  
-
-  // Réponses C et D
+  // Div pour réponses C et D
   let divRowCD = document.createElement("div");
   divRowCD.className = "row justify-content-around";
+
+  // Réponse C
   let divColC = document.createElement("div");
   divColC.className = "col-1 m-auto";
-
   let divColC2 = document.createElement("div");
   divColC2.className = "col-5";
-
   createReponse(divColC,divColC2,"C");
+  divRowCD.appendChild(divColC);
+  divRowCD.appendChild(divColC2);
+
+  // Réponse D
   let divColD = document.createElement("div");
   divColD.className = "col-1 m-auto";
   let divColD2 = document.createElement("div");
   divColD2.className = "col-5";
   createReponse(divColD,divColD2,"D");
-  divRowCD.appendChild(divColC);
-  divRowCD.appendChild(divColC2);
   divRowCD.appendChild(divColD);
   divRowCD.appendChild(divColD2);
   
@@ -329,25 +339,23 @@ async function nouvelleQuestion(e) {
   divContainer.appendChild(divRowAB);
   divContainer.appendChild(divRowCD);
 
-  //Ajout de la div pour afficher l'erreur
+  //Ajout de la div pour afficher l'erreur si il y en a une
   let divErrorQ = document.createElement("div");
   divErrorQ.className = "row mt-2";
   divErrorQ.id = "errorQ"+(nbQuestions);
-  /*
-  let errorQ = document.createElement("p");
-  errorQ.id = "errorQ"+(nbQuestions);
-  divErrorQ.appendChild(errorQ);
-  */
   divContainer.appendChild(divErrorQ);
-
 
   if(e != undefined) formAllQuestions.insertBefore(divContainer, containerNewQButton);
   else formAllQuestions.appendChild(divContainer);
-  console.log(nbQuestions);
   if(nbQuestions == 15) document.getElementById("AjouterQuestion").disabled = true; //ici
   
 };
 
+/**
+ * Supprime une question
+ * @param {*} e evenement
+ * @returns 
+ */
 async function supprimerQuestion(e){
   e.preventDefault();
   //Cas où on essaye de supprimer une question alors qu'il y en a qu'une
@@ -414,7 +422,13 @@ async function supprimerQuestion(e){
   }
 }
 
-async function createReponse(divCol,divCol2, lettre){
+/**
+ * Crée un champ réponse avec son bouton
+ * @param {*} divCol la div où sera placée le radio button
+ * @param {*} divCol2 la div où sera placé le champ pour une réponse
+ * @param {*} lettre A, B, C ou D correspondant au code de la réponse
+ */
+async function createReponse(divCol, divCol2, lettre){
   let reponseN = document.createElement("input");
   reponseN.type = "text";
   reponseN.id = "reponse"+lettre+ "" + nbQuestions;

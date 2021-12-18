@@ -1,6 +1,7 @@
 import { getSessionObject } from "../../utils/session";
 import { Redirect } from "../Router/Router";
 import logo_squizz_game from "../../img/SquizzGameTransparent.png";
+import logo_vinci from "../../img/vinci.png";
 import UserLibrary from "../../Domain/UserLibrary";
 const userLibrary = new UserLibrary();
 
@@ -44,7 +45,10 @@ const Navbar = async () => {
                     <a class="nav-link active" href="#" data-page="/logout">Se deconnecter</a>
                 </li>
             </ul>
-        </div>
+          </div>
+          <a href="https://www.vinci.be/fr/">
+            <img class="text-end" src="${logo_vinci}" alt="logo vinci" id="logoSG">
+          </a>
         </nav>`;
         navbarWrapper.innerHTML = navbar;
 
