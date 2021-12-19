@@ -153,6 +153,12 @@
     }
 }
 
+/********
+* Title: in middle
+* Author: Mohammad Usman
+* Date: 12/12/21
+* Availability: https://stackoverflow.com/questions/40523043/vertical-alignment-in-css-responsive
+*/
 .in-middle{
     flex-direction: column;
     justify-content: center;
@@ -162,6 +168,15 @@
   }
 
 /*  ##################################   SEARCH BOX   #########################################      */
+
+/********
+* Title: Title: search box
+* Author: GeekBase
+* Date: 9/12/21
+* Code version: see the table below
+* Availability: https://www.youtube.com/watch?v=csY6KW7cIUM
+*/
+
 .boxContainer {
   margin-left: 70%;
   width: 350px;
@@ -192,6 +207,10 @@
   font-size: 26;
   color: #2980b9;
 }
+
+/** END SEARCH BOX FROM GEEK BASE*/
+
+
 
 @media only screen and (max-width: 1100px) {
   /* For mobile phones: */
