@@ -232,6 +232,13 @@ function redirectionQuizzPage(){
   RedirectWithParams("/Quizz",this.id);
 }
 
+/***************************************************************************************
+*    Title: search box
+*    Author: GeekBase
+*    Date: 9/12/21
+*    Code version: see the table below
+*    Availability: https://www.youtube.com/watch?v=csY6KW7cIUM
+***************************************************************************************/
 async function boutonRecherche(main, div_page){
   main.innerHTML += `<div class="boxContainer">
                           <table class="elementsContainer">
@@ -263,7 +270,6 @@ async function boutonRecherche(main, div_page){
 async function rechercherQuizz(div_page){
   //Si l'utilisateur entre un champs vide, il reste sur la HomePage
   if(document.getElementById("searchBar").value.replace(/\s+/g, '') === '') return;
-  //div_page.innerHTML = "";
   div_page.innerHTML = "";
   let critere = escape(document.getElementById("searchBar").value);
   try{
@@ -282,7 +288,6 @@ async function rechercherQuizz(div_page){
     }
     let all_quizz_recherche = await reponse.json();
     let message_resultat = document.createElement("h4");
-    //div_page.appendChild(message_resultat);
     div_page.appendChild(message_resultat);
     if(all_quizz_recherche.length === 0){
       message_resultat.innerHTML = "Pas de résultat pour la recherche : "+critere;
