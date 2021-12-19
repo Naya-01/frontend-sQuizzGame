@@ -200,6 +200,13 @@ const addEventListeners = async () =>{
     });
   });
 
+    /********
+  * Title: search box | HTML & CSS
+  * Author: GeekBase
+  * Date: 9/12/21
+  * Code version: unknown
+  * Availability: https://www.youtube.com/watch?v=csY6KW7cIUM
+  */
   //if click the search button of the search bar, redirect 
   let searchButton = document.querySelector("#searchButton");
   let inputSearchBox = document.querySelector("#searchBar");
@@ -236,6 +243,10 @@ const addEventListeners = async () =>{
   });
 }
 
+/**
+ * Make an alert top right
+ * @param {String} tilte - the title to display in the alert 
+ */
 const sweetAlert = (tilte) => {
   const Toast = Swal.mixin({
     toast: true,
