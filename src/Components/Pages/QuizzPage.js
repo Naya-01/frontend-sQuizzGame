@@ -182,7 +182,7 @@ async function QuizzPage(id) {
     }else{
         creatorUserName = quizz.username;
     }
-    creatorName.innerHTML ="Créer par : "+creatorUserName;
+    creatorName.innerHTML ="Créé par : "+creatorUserName;
 
     // Je récupère les derniers scores du joueur
     let lastPersonnalsScores;
