@@ -258,7 +258,7 @@ function redirectionQuizzPage(){
 }
 
 /***************************************************************************************
-*    Title: search box
+*    Title: search box | HTML & CSS
 *    Author: GeekBase
 *    Date: 9/12/21
 *    Code version: see the table below
