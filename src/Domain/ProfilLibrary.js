@@ -122,19 +122,17 @@ class ProfilLibrary {
   }
 
    /** 
-   * @param {Object} userSession 
-   * @param {number} idUserUrl 
+   * @param {Object} userSession - objet of user in session
+   * @param {number} idUserUrl - id of user in url
    * @returns page html profil page of another one user
    */
   async getAnotherOneProfilPage(userSession,idUserUrl) {
     try {
-      let users = await userLibrary.getTwoUsersById(parseInt(userSession.id_user),parseInt(idUserUrl));
-      //user1 = user session
-      //user2 = user in the url, with 2 more columns (subscriptions and subscribers)
+      let userUrl = await userLibrary.getUser(idUserUrl);
       let page;
       //if the id user in url doesn't exist or, the user session is not admin
       //and the user in url is banned, display page don't found
-      if(users===undefined || (!users.is_admin1 && users.banned2)){
+      if(userUrl===undefined || (!userSession.is_admin && userUrl.banned)){
         page = `
             <div class="in-middle">
               <h1 >Profil introuvable</h1>
@@ -142,40 +140,41 @@ class ProfilLibrary {
          `;
           return page;
       }
-      
+      let userSessionSubscribers = await userLibrary.getSubscribers(userUrl.id_user);
+      let userSessionSubscriptions = await userLibrary.getSubscriptions(userUrl.id_user);
       page = `
           <div class="container">
           <div class="text-center">
-              <h1>${users.name2}</h1>
+              <h1>${userUrl.name}</h1>
           </div>`;
           // if the user in url is admin, display the admin image
-          if(users.is_admin2) page += `<img src="${adminImage}" class="rounded mx-auto d-block" alt="admin picture" height="350"></img>`;
+          if(userUrl.is_admin) page += `<img src="${adminImage}" class="rounded mx-auto d-block" alt="admin picture" height="350"></img>`;
           //else, display the member image
           else page += `<img src="${userImage}" class="rounded mx-auto d-block" alt="user picture" height="250">`;
           //if the user session is admin, display the email of the user in url
-          if(users.is_admin1) page+=`
+          if(userSession.is_admin) page+=`
             <div class="text-center m-4">
-              <div><span><strong>Email :</strong> ${users.email2}</span></div>
+              <div><span><strong>Email :</strong> ${userUrl.email}</span></div>
             </div>`;
           page += `
           <div class="row m-2">
               <div class="col-md-4">
                 <div class="text-center">
                     <h4 id="abonnes">Abonnés</h4>
-                    <h5>${users.subscribers}</h5>
+                    <h5>${userSessionSubscribers}</h5>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="text-center">`;
                 //check if user session if following the user in url
-                let bool = await userLibrary.isFollowing(users.id_user2,users.id_user1);
+                let bool = await userLibrary.isFollowing(userUrl.id_user,userSession.id_user);
                 //if yes, display unsubscribe button
                 if(bool==1){
-                  page += `<button type="button" class="btn btn-outline-dark" id="unsubscribe" name="unsubscribe" data-element-id-user="${users.id_user2}" data-element-id-follower="${users.id_user1}">Se désabonner</button>`;
+                  page += `<button type="button" class="btn btn-outline-dark" id="unsubscribe" name="unsubscribe" data-element-id-user="${userUrl.id_user}" data-element-id-follower="${userSession.id_user}">Se désabonner</button>`;
                 }
                 //else, display subscribe button
                 else{
-                  page += `<button type="button" class="btn btn-outline-dark" id="subscribe" data-element-id-user="${users.id_user2}" data-element-id-follower="${users.id_user1}">S'abonner</button>`;
+                  page += `<button type="button" class="btn btn-outline-dark" id="subscribe" data-element-id-user="${userUrl.id_user}" data-element-id-follower="${userSession.id_user}">S'abonner</button>`;
                 }
                   page += `
                   </div>
@@ -183,7 +182,7 @@ class ProfilLibrary {
               <div class="col-md-4">
                 <div class="text-center">
                     <h4 id="abonnements">Abonnements</h4>
-                    <h5>${users.subscriptions}</h5>
+                    <h5>${userSessionSubscriptions}</h5>
                 </div>
               </div>
           </div>
@@ -196,24 +195,8 @@ class ProfilLibrary {
           </div>`;
 
         
-      const quizzs = await this.getQuizzFromUser(userSession, users.id_user2);
-      const userUrlObject={
-        id_user: users.id_user2,
-        name: users.name2,
-        email: users.email2,
-        password: users.password2,
-        banned: users.banned2,
-        is_admin: users.is_admin2
-      }
-      const userSessionObject={
-        id_user: users.id_user1,
-        name: users.name1,
-        email: users.email1,
-        password: users.password1,
-        banned: users.banned1,
-        is_admin: users.is_admin1
-      }
-      let boxOfQuizz = await this.displayQuizzs(quizzs,userUrlObject,userSessionObject);
+      const quizzs = await this.getQuizzFromUser(userSession, userUrl.id_user);
+      let boxOfQuizz = await this.displayQuizzs(quizzs,userUrl,userSession);
       page += boxOfQuizz;
       page += `</div>`;
       return page;

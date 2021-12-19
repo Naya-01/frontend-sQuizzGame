@@ -2,6 +2,7 @@ import { getSessionObject } from "../utils/session";
 class UserLibrary {
   async getPanelAdminPage(filter,userSession) {
     try {
+      let searchBox = this.getSearchBox();
       let page = `
         <div class="container">
           <div class="text-center">
@@ -14,11 +15,7 @@ class UserLibrary {
                           <input type="text" placeholder="Chercher" class="search" name="searchBar" id="searchBar" value="${filter}">
                       </td>
                       <td>
-                        <a href="#" id="searchButton">
-                          <span class="material-icons">
-                            search
-                          </span>
-                        </a>
+                        ${searchBox}
                       </td>
                   </tr>
               </table>
@@ -45,6 +42,24 @@ class UserLibrary {
     } catch (err) {
       console.error("getPanelAdminPage::error: ", err);
     }
+  }
+
+  /**
+   * Title: How to make a flat design search box | HTML & CSS
+   * Author: GeekBase
+   * Date: 9/12/21
+   * Code version: unknown
+   * Availability: https://www.youtube.com/watch?v=csY6KW7cIUM
+   * @returns {searchBox} searchbox html
+   */
+  getSearchBox(){
+    let searchBox = `
+      <a href="#" id="searchButton">
+        <span class="material-icons">
+          search
+        </span>
+      </a>`;
+    return searchBox;
   }
 
   async getUsersWithFilter(filter) { // utilisé plus haut
@@ -266,9 +281,16 @@ class UserLibrary {
     }
   }
 
-  async getSubscribers(id_user) { // PAS UTILISE
+  async getSubscribers(id_user) { //utilisé profil library
     try {
-      const reponse = await fetch("/api/users/subscribers/"+id_user);
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch("/api/users/subscribers/"+id_user, options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -282,9 +304,16 @@ class UserLibrary {
     }
   }
 
-  async getSubscriptions(id_user) {// PAS UTILISE
+  async getSubscriptions(id_user) { //utilisé profil library
     try {
-      const reponse = await fetch("/api/users/subscriptions/"+id_user);
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch("/api/users/subscriptions/"+id_user, options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -292,7 +321,9 @@ class UserLibrary {
         );
       }
       const nb = await reponse.json();
-      return nb.count;
+      console.log(nb[0].nbAbonnements);
+      
+      return nb[0].nbAbonnements;
     } catch (err) {
       console.error("getSubscriptions::error: ", err);
     }

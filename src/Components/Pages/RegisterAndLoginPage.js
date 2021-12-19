@@ -109,12 +109,23 @@ function RegisterAndLoginPage() {
     btnNotAccount.addEventListener("click", flipForm);
     btnAccount.addEventListener("click", flipForm);
 
+    const enterRegister = document.getElementById("password-register");
+    const enterLogin = document.getElementById("password-login");
+
+    enterRegister.addEventListener("keyup", async function (e) {
+        e.preventDefault();
+        if (e.code === "Enter") await onSubmitRegister(e);
+    });
+    enterLogin.addEventListener("keyup", async function (e) {
+        e.preventDefault();
+        if (e.code === "Enter") await onSubmitLogin(e);
+    });
 
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 4000,
+        timer: 6000,
         timerProgressBar: true,
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -143,13 +154,11 @@ function RegisterAndLoginPage() {
         }
 
         let userFound = await user.userExist(email.value);
-        console.log(userFound);
         if(userFound){
             Toast.fire({
                 icon: 'error',
                 title: 'Cette email est déjà utilisé'
             });
-            console.log(email.value);
             return;
         } else if(!validerEmail(email.value)){
             Toast.fire({
@@ -191,7 +200,6 @@ function RegisterAndLoginPage() {
                 );
             }
             const user = await response.json();
-            console.log("user authenticated", user);
             // save the user into the localStorage
             setSessionObject("user", user);
             Navbar();
@@ -263,7 +271,6 @@ function RegisterAndLoginPage() {
                 );
             }
             const user = await response.json();
-            console.log("user authenticated", user);
             // save the user into the localStorage
             setSessionObject("user", user);
             Navbar();

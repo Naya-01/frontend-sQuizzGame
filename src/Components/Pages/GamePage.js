@@ -13,6 +13,8 @@ let questions;
 let answers;
 let difficulty;
 let html_difficulty;
+let time_answer;
+let finale_score = 0;
 
 let myPage = `<div id="page" class="container-fluid">
         <div id="bar-progress" class="row">
@@ -41,6 +43,44 @@ let myPage = `<div id="page" class="container-fluid">
 
     </div>`;
 
+
+
+async function GamePage(params) {
+    // if user tries to access directly with /Game with no parameters
+    if (params === undefined) {
+        Redirect("/");
+        return;
+    }
+    const myMain = document.querySelector("main");
+    myMain.innerHTML = myPage;
+
+    list_answer = [];
+    answer_user = [];
+    time_answer = [];
+    finale_score = 0;
+    decompte = 0;
+    questions = null;
+    answers = null;
+    difficulty = params[1];
+    getDifficulty(difficulty);
+    position = 0;
+    let difficult = document.getElementById("difficulty");
+    difficult.innerText = html_difficulty;
+
+
+    await getQuestions(params[0]);
+    insertProgressBar();
+    window.myInterval = setInterval(timer, 1000);
+    await questionSuivante(position);
+
+
+}
+
+
+
+/*
+* We get the questions with fetch and we put them in the questions array
+* */
 async function getQuestions(_id_quizz) {
     try {
         const options = {
@@ -50,7 +90,7 @@ async function getQuestions(_id_quizz) {
                 Authorization: getSessionObject("user").token
             },
         };
-        const response = await fetch("/api/questions?quizz=" + _id_quizz,options);
+        const response = await fetch("/api/questions?quizz=" + _id_quizz, options);
 
         if (!response.ok) {
             throw new Error(
@@ -62,7 +102,10 @@ async function getQuestions(_id_quizz) {
         console.error("getQuestions::error: ", err);
     }
 }
-
+/*
+* We get the answers with fetch
+* @return answers
+* */
 async function getAnswers(_id_question) {
     try {
         const options = {
@@ -72,7 +115,7 @@ async function getAnswers(_id_question) {
                 Authorization: getSessionObject("user").token
             },
         };
-        const response = await fetch("/api/answers/allAnswers/" + _id_question,options);
+        const response = await fetch("/api/answers/allAnswers/" + _id_question, options);
 
         if (!response.ok) {
             throw new Error(
@@ -86,11 +129,14 @@ async function getAnswers(_id_question) {
         console.error("getAnswers::error: ", err);
     }
 }
-
+/*
+* We set the properties of the ProgressBar
+* And we add it in the page
+* */
 function insertProgressBar() {
     //Bar
     let divBar = document.getElementById('bar-progress');
-    bar = new ProgressBar.Line(divBar, {
+    bar = new ProgressBar.Line(divBar, {  // add in the page
         strokeWidth: 4,
         easing: 'linear',
         duration: getDifficulty(difficulty),
@@ -106,20 +152,19 @@ function insertProgressBar() {
     bar.set(pc);  // Number from 0.0 to 1.0
     bar.animate(0);
 }
-
+/*
+* countdown for the user
+* */
 function timer() {
     //countdown
-    timer = function () {
-        if (decompte === 0) {
-            clearInterval(timer);
-            flipAnswer();
-            return;
-        }
-        const cool = document.getElementById('cooldown');
-        decompte -= 1;
-        cool.innerText = decompte;
+    const cool = document.getElementById('cooldown');
+    if (decompte === 0) {
+        clearInterval(timer);
+        flipAnswer();
+        return;
     }
-    window.myInterval = setInterval(timer, 1000);
+    decompte -= 1;
+    cool.innerText = decompte;
 }
 
 
@@ -128,7 +173,7 @@ function html_answer() {
     const divAnswer = document.getElementById('answers');
     let html_answer = "";
     list_answer = []; // reset de la liste
-    let percent =     Math.ceil(((position+1)/questions.length)*100);
+    let percent = Math.ceil(((position + 1) / questions.length) * 100);
     for (const element of answers) {
         list_answer[list_answer.length] = element;
         let color;
@@ -157,7 +202,9 @@ function html_answer() {
     `;
     divAnswer.innerHTML = html_answer;
 }
-
+/*
+* Summary of  questions & answers
+*/
 function showQuestionWithMyAnswer() {
     let id = this.id;
     let index = id - 1;
@@ -180,7 +227,9 @@ function showQuestionWithMyAnswer() {
         }
     })
 }
-
+/*
+* disposition of the questions answered with theirs answers
+*/
 function html_endGame() {
     let modalPage = "";
     let color;
@@ -203,10 +252,12 @@ function html_endGame() {
     }
     return modalPage;
 }
-
+/*
+Modal for the summary
+ */
 function endGame() {
     Swal.fire({
-        title: 'Récapitulatif des réponses',
+        title: 'Récapitulatif des réponses & votre score : ' + finale_score,
         html: html_endGame(),
         width: 1000,
         padding: '3em',
@@ -225,26 +276,30 @@ function endGame() {
     let sal = document.getElementById('swal2-html-container');
     sal.style.overflow = "visible";
 }
-
-async function getScore(){
+/*
+We get the final score of the user
+ */
+async function getScore() {
     let score = 0;
-    for (let i = 0; i<answer_user.length-1;i++){
-        if(answer_user[i].correct){
-            if(difficulty===1){
-                score+=100*decompte*parseInt(difficulty);
+    for (let i = 0; i < answer_user.length - 1; i++) {
+        if (answer_user[i].correct) {
+            if (difficulty === 1) {
+                score += 98 * time_answer[i] * parseInt(difficulty);
             }
-            if(difficulty===2){
-                score+=100*decompte*parseInt(difficulty);
+            if (difficulty === 2) {
+                score += 214 * time_answer[i] * parseInt(difficulty);
             }
-            if(difficulty===3){
-                score+=100*decompte*parseInt(difficulty);
+            if (difficulty === 3) {
+                score += 412 * time_answer[i] * parseInt(difficulty);
             }
         }
     }
-    return score;
+    finale_score = score;
 }
-
-async function saveDatabase(){
+/*
+We save the answers user in the DB with the score
+ */
+async function saveDatabase() {
     let participation;
     try {
         let options = {
@@ -252,7 +307,7 @@ async function saveDatabase(){
             body: JSON.stringify({
                 "id_quizz": questions[0].id_quizz,
                 "id_user": getSessionObject("user").id_user,
-                "score": await getScore(),
+                "score": finale_score,
                 "difficulty": parseInt(difficulty)
             }),
             headers: {
@@ -268,7 +323,7 @@ async function saveDatabase(){
         console.log(err);
     }
     participation = await participation.json();
-    for (let i = 0; i < answer_user.length-1;i++){
+    for (let i = 0; i < answer_user.length - 1; i++) {
         try {
             let options = {
                 method: "POST",
@@ -293,12 +348,12 @@ async function saveDatabase(){
 }
 
 
-
 // we change the question and the answer
 async function questionSuivante(index) {
     //recupération de mes questions depuis 1 quizz
     if (index > questions.length - 1) {
         flipAnswer();
+        await getScore();
         endGame();
         await saveDatabase();
         return;
@@ -318,7 +373,7 @@ async function questionSuivante(index) {
     btnNext.addEventListener("click", async e => {
         e.preventDefault();
         clearInterval(window.myInterval);
-        restartCooldown();
+        restartCountdown();
         if (answer_user[position] === undefined) answer_user[position] = "vide";
         await questionSuivante(++position);
     })
@@ -327,8 +382,8 @@ async function questionSuivante(index) {
     answerFlip.forEach((answer) => answer.addEventListener("click", saveAnswerUser));
 }//fin question suivant
 
-//restart the cooldown when the user click on the next question button
-function restartCooldown() {
+//restart the countdown when the user click on the next question button
+function restartCountdown() {
     bar.set(1); //restart progress bar
     bar.animate(0); //restart progress bar
     getDifficulty(difficulty);
@@ -366,6 +421,7 @@ function saveAnswerUser() {
         let id_tmp = "answer_" + i;
         if (id === id_tmp) {
             answer_user[position] = list_answer[i - 1];
+            time_answer[position] = decompte;
         }
     }
     flipAnswer();
@@ -383,7 +439,9 @@ function flipAnswer() {
         theAnswer.classList.add("flip");
     }
 }
-
+/*
+Set the difficulty who the player has chosen
+ */
 function getDifficulty(id) {
     if (id === 1) {
         decompte = 30;
@@ -402,34 +460,6 @@ function getDifficulty(id) {
     }
 }
 
-
-async function GamePage(params) {
-    // if user tries to access directly with /Game with no parameters
-    if (params === undefined) {
-        Redirect("/");
-        return;
-    }
-    const myMain = document.querySelector("main");
-    myMain.innerHTML = myPage;
-
-    list_answer = [];
-    answer_user = [];
-    questions=null;
-    answers=null;
-    difficulty = params[1];
-    getDifficulty(difficulty);
-    position = 0;
-    let difficult = document.getElementById("difficulty");
-    difficult.innerText = html_difficulty;
-
-
-    await getQuestions(params[0]);
-    insertProgressBar();
-    timer();
-    await questionSuivante(position);
-
-
-}
 
 export {GamePage};
 
