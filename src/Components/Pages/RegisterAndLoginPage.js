@@ -109,6 +109,17 @@ function RegisterAndLoginPage() {
     btnNotAccount.addEventListener("click", flipForm);
     btnAccount.addEventListener("click", flipForm);
 
+    const enterRegister = document.getElementById("password-register");
+    const enterLogin = document.getElementById("password-login");
+
+    enterRegister.addEventListener("keyup", async function (e) {
+        e.preventDefault();
+        if (e.code === "Enter") await onSubmitRegister(e);
+    });
+    enterLogin.addEventListener("keyup", async function (e) {
+        e.preventDefault();
+        if (e.code === "Enter") await onSubmitLogin(e);
+    });
 
     const Toast = Swal.mixin({
         toast: true,
