@@ -14,7 +14,7 @@ let answers;
 let difficulty;
 let html_difficulty;
 let time_answer;
-let finale_score=0;
+let finale_score = 0;
 
 let myPage = `<div id="page" class="container-fluid">
         <div id="bar-progress" class="row">
@@ -52,7 +52,7 @@ async function getQuestions(_id_quizz) {
                 Authorization: getSessionObject("user").token
             },
         };
-        const response = await fetch("/api/questions?quizz=" + _id_quizz,options);
+        const response = await fetch("/api/questions?quizz=" + _id_quizz, options);
 
         if (!response.ok) {
             throw new Error(
@@ -74,7 +74,7 @@ async function getAnswers(_id_question) {
                 Authorization: getSessionObject("user").token
             },
         };
-        const response = await fetch("/api/answers/allAnswers/" + _id_question,options);
+        const response = await fetch("/api/answers/allAnswers/" + _id_question, options);
 
         if (!response.ok) {
             throw new Error(
@@ -111,17 +111,15 @@ function insertProgressBar() {
 
 function timer() {
     //countdown
-    timer = function () {
-        if (decompte === 0) {
-            clearInterval(timer);
-            flipAnswer();
-            return;
-        }
-        const cool = document.getElementById('cooldown');
-        decompte -= 1;
-        cool.innerText = decompte;
+    const cool = document.getElementById('cooldown');
+    if (decompte === 0) {
+        clearInterval(timer);
+        flipAnswer();
+        return;
     }
-    window.myInterval = setInterval(timer, 1000);
+    decompte -= 1;
+    cool.innerText = decompte;
+    // window.myInterval = setInterval(timer, 1000);
 }
 
 
@@ -130,7 +128,7 @@ function html_answer() {
     const divAnswer = document.getElementById('answers');
     let html_answer = "";
     list_answer = []; // reset de la liste
-    let percent =     Math.ceil(((position+1)/questions.length)*100);
+    let percent = Math.ceil(((position + 1) / questions.length) * 100);
     for (const element of answers) {
         list_answer[list_answer.length] = element;
         let color;
@@ -208,7 +206,7 @@ function html_endGame() {
 
 function endGame() {
     Swal.fire({
-        title: 'Récapitulatif des réponses & votre score : '+finale_score,
+        title: 'Récapitulatif des réponses & votre score : ' + finale_score,
         html: html_endGame(),
         width: 1000,
         padding: '3em',
@@ -228,26 +226,26 @@ function endGame() {
     sal.style.overflow = "visible";
 }
 
-async function getScore(){
+async function getScore() {
     let score = 0;
-    for (let i = 0; i<answer_user.length-1;i++){
-        if(answer_user[i].correct){
-            if(difficulty===1){
-                score+=98*time_answer[i]*parseInt(difficulty);
+    for (let i = 0; i < answer_user.length - 1; i++) {
+        if (answer_user[i].correct) {
+            if (difficulty === 1) {
+                score += 98 * time_answer[i] * parseInt(difficulty);
             }
-            if(difficulty===2){
-                score+=214*time_answer[i]*parseInt(difficulty);
+            if (difficulty === 2) {
+                score += 214 * time_answer[i] * parseInt(difficulty);
             }
-            if(difficulty===3){
-                score+=412*time_answer[i]*parseInt(difficulty);
+            if (difficulty === 3) {
+                score += 412 * time_answer[i] * parseInt(difficulty);
             }
         }
     }
-    finale_score=score;
+    finale_score = score;
     // return score;
 }
 
-async function saveDatabase(){
+async function saveDatabase() {
     let participation;
     try {
         let options = {
@@ -271,7 +269,7 @@ async function saveDatabase(){
         console.log(err);
     }
     participation = await participation.json();
-    for (let i = 0; i < answer_user.length-1;i++){
+    for (let i = 0; i < answer_user.length - 1; i++) {
         try {
             let options = {
                 method: "POST",
@@ -294,7 +292,6 @@ async function saveDatabase(){
     }
 
 }
-
 
 
 // we change the question and the answer
@@ -420,10 +417,10 @@ async function GamePage(params) {
     list_answer = [];
     answer_user = [];
     time_answer = [];
-    finale_score=0;
-    decompte=0;
-    questions=null;
-    answers=null;
+    finale_score = 0;
+    decompte = 0;
+    questions = null;
+    answers = null;
     difficulty = params[1];
     getDifficulty(difficulty);
     position = 0;
@@ -433,7 +430,8 @@ async function GamePage(params) {
 
     await getQuestions(params[0]);
     insertProgressBar();
-    timer();
+    // timer();
+    window.myInterval = setInterval(timer, 1000);
     await questionSuivante(position);
 
 
