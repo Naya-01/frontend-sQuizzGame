@@ -324,24 +324,26 @@ async function saveDatabase() {
     }
     participation = await participation.json();
     for (let i = 0; i < answer_user.length - 1; i++) {
-        try {
-            let options = {
-                method: "POST",
-                body: JSON.stringify({
-                    "id_participation": participation.id_participation,
-                    "id_answer": answer_user[i].id_answer,
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: getSessionObject("user").token,
-                },
-            };
-            let retour = await fetch("/api/participations/answers/", options);
-            if (!retour.ok) {
-                throw new Error("fetch error : " + retour.status + " : " + retour.statusText);
+        if(answer_user[i]!=="vide"){
+            try {
+                let options = {
+                    method: "POST",
+                    body: JSON.stringify({
+                        "id_participation": participation.id_participation,
+                        "id_answer": answer_user[i].id_answer,
+                    }),
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: getSessionObject("user").token,
+                    },
+                };
+                let retour = await fetch("/api/participations/answers/", options);
+                if (!retour.ok) {
+                    throw new Error("fetch error : " + retour.status + " : " + retour.statusText);
+                }
+            } catch (err) {
+                console.log(err);
             }
-        } catch (err) {
-            console.log(err);
         }
     }
 
