@@ -243,6 +243,10 @@ const addEventListeners = async () =>{
   });
 }
 
+/**
+ * Make an alert top right
+ * @param {String} tilte - the title to display in the alert 
+ */
 const sweetAlert = (tilte) => {
   const Toast = Swal.mixin({
     toast: true,
