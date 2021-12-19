@@ -112,7 +112,7 @@ const HomePage = async () => {
 async function creerSousTitre(nom_sous_titre, div_page){
   //Création du container 
   let div_sous_titre = document.createElement("div");
-  div_sous_titre.className = "container-fluid";
+  div_sous_titre.className = "container";
   div_sous_titre.id = "titre_"+nom_sous_titre;
 
   //Création du sous-titre
