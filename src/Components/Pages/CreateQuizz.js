@@ -112,7 +112,7 @@ const CreateQuizz = async () => {
 
 /**
  * Envoie toutes les  informations au backend pour insérer le quizz en db
- * @param {*} e : evenement
+ * @param {Event} e : evenement
  * @returns 
  */
 async function soumettreQuizz(e){
@@ -251,7 +251,7 @@ async function soumettreQuizz(e){
 
 /**
  * Crée une nouvelle question à compléter
- * @param {*} e evenement
+ * @param {Event} e evenement
  */
 async function nouvelleQuestion(e) {
   if (e != undefined) e.preventDefault();
@@ -360,7 +360,7 @@ async function nouvelleQuestion(e) {
 
 /**
  * Supprime une question
- * @param {*} e evenement
+ * @param {Event} e evenement
  * @returns 
  */
 async function supprimerQuestion(e){
@@ -431,9 +431,9 @@ async function supprimerQuestion(e){
 
 /**
  * Crée un champ réponse avec son bouton
- * @param {*} divCol la div où sera placée le radio button
- * @param {*} divCol2 la div où sera placé le champ pour une réponse
- * @param {*} lettre A, B, C ou D correspondant au code de la réponse
+ * @param {object} divCol la div où sera placée le radio button
+ * @param {object} divCol2 la div où sera placé le champ pour une réponse
+ * @param {string} lettre A, B, C ou D correspondant au code de la réponse
  */
 async function createReponse(divCol, divCol2, lettre){
   //Création input texte de la réponse

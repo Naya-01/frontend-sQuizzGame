@@ -106,8 +106,8 @@ const HomePage = async () => {
 
 /**
  * Crée et ajoute à la page un sous titre
- * @param {*} nom_sous_titre le nom du sous titre
- * @param {*} div_page la div à laquelle on ajoutera le sous titre
+ * @param {string} nom_sous_titre le nom du sous titre
+ * @param {object} div_page la div à laquelle on ajoutera le sous titre
  */
 async function creerSousTitre(nom_sous_titre, div_page){
   //Création du container 
@@ -142,7 +142,7 @@ async function creerSousTitre(nom_sous_titre, div_page){
 
 /**
  * Fais un fetch pour obtenir les quizz explorer et les affiche
- * @param {*} div_page la div à laquelle on ajoutera le sous titre
+ * @param {object} div_page la div à laquelle on ajoutera le sous titre
  */
 async function fetchExplorer(div_page){
   try{
@@ -168,9 +168,9 @@ async function fetchExplorer(div_page){
 
 /**
  * Affiche tous les quizz
- * @param {*} all_quizz les quizz à afficher
- * @param {*} div_page  la div à laquelle on ajoutera le sous titre
- * @param {*} isExplorer pour savoir si il s'agit des quizz explorer
+ * @param {object} all_quizz les quizz à afficher
+ * @param {object} div_page  la div à laquelle on ajoutera le sous titre
+ * @param {boolean} isExplorer pour savoir si il s'agit des quizz explorer
  */
 function afficherQuizz(all_quizz, div_page, isExplorer=false){
    // Créer une row
@@ -264,6 +264,11 @@ function redirectionQuizzPage(){
 *    Code version: see the table below
 *    Availability: https://www.youtube.com/watch?v=csY6KW7cIUM
 ***************************************************************************************/
+/**
+ * Créer la barre de recherche
+ * @param {object} main 
+ * @param {object} div_page 
+ */
 async function boutonRecherche(main, div_page){
   //Ajout de la barre de recherche
   main.innerHTML += `<div class="boxContainer">
@@ -296,7 +301,7 @@ async function boutonRecherche(main, div_page){
 
 /**
  * Effectue une recherche sur les quizz
- * @param {*} div_page  la div à laquelle on ajoutera le sous titre 
+ * @param {object} div_page  la div à laquelle on ajoutera le sous titre 
  */
 async function rechercherQuizz(div_page){
   //Si l'utilisateur entre un champs vide, il reste sur la HomePage
