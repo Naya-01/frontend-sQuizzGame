@@ -108,7 +108,7 @@ const CreateQuizz = async () => {
   formAllQuestions.addEventListener("submit", soumettreQuizz);
   
   divPage.appendChild(formAllQuestions);  
-};
+}
 
 /**
  * Envoie toutes les  informations au backend pour insérer le quizz en db
@@ -356,7 +356,7 @@ async function nouvelleQuestion(e) {
   else formAllQuestions.appendChild(divContainer);
   if(nbQuestions == 15) document.getElementById("AjouterQuestion").disabled = true; //ici
   
-};
+}
 
 /**
  * Supprime une question
@@ -456,6 +456,6 @@ async function createReponse(divCol, divCol2, lettre){
   divCol.appendChild(bonneReponse);
   divCol2.appendChild(reponseN);
   
-};
+}
 
 export default CreateQuizz;
