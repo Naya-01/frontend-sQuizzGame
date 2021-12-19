@@ -18,11 +18,15 @@ const CreateQuizz = async () => {
   main = document.querySelector("main");
   main.innerHTML = " ";
 
+  //Création du container contenant toute la page
   let divPage = document.createElement("div");
   divPage.className = "container";
   divPage.id = "CreateQuizzId";
   main.appendChild(divPage);
+
+  //Création du formulaire
   formAllQuestions = document.createElement("form");
+
   containerNewQButton = document.createElement("div");
 
   //Ajout Titre de la page
@@ -36,7 +40,6 @@ const CreateQuizz = async () => {
   // Ajout du titre du quizz
   let containerTitleQuizz = document.createElement("div");
   containerTitleQuizz.className = "container-fluid rounded-lg mb-3 p-3";
-  
   let divTitleQuizz = document.createElement("div");
   divTitleQuizz.className = "row";
   let titleQuizz = document.createElement("input");
@@ -105,17 +108,18 @@ const CreateQuizz = async () => {
   formAllQuestions.addEventListener("submit", soumettreQuizz);
   
   divPage.appendChild(formAllQuestions);  
-};
+}
 
 /**
  * Envoie toutes les  informations au backend pour insérer le quizz en db
- * @param {*} e : evenement
+ * @param {Event} e : evenement
  * @returns 
  */
 async function soumettreQuizz(e){
   e.preventDefault();
   let erreur = 0;
   let titleQuizz = document.getElementById("titleQuizz").value;
+  //Test que le titre ne soit pas trop long
   if(titleQuizz.length > 150){
     document.getElementById("errorTitle").innerHTML = "Le titre est trop long";
     erreur++;
@@ -125,7 +129,7 @@ async function soumettreQuizz(e){
   //Récupération des questions
   for(let i=0; i < nbQuestions; i++){
     let message = "enonceQ"+(i+1);
-    let enonceQuestionN = document.getElementById(message).value;// + (i+1));
+    let enonceQuestionN = document.getElementById(message).value;
     let answerA = document.getElementById("reponseA" + (i+1)).value;
     let answerB = document.getElementById("reponseB" + (i+1)).value;
     let answerC = document.getElementById("reponseC" + (i+1)).value;
@@ -133,6 +137,7 @@ async function soumettreQuizz(e){
 
     let idError = "errorQ"+(i+1);
     document.getElementById(idError).innerHTML = ""; // on reinitialise
+    //Test si un des champs est trop long
     if(enonceQuestionN.length > 200){
       let errorQ = document.createElement("p");
       errorQ.innerHTML += "L'énonce est trop long.";
@@ -190,6 +195,7 @@ async function soumettreQuizz(e){
         break;
       }
     }
+    //Création de la question
     let newQuestion = {question: enonceQuestionN,
                         answers : [{answer:answerA, "correct":aBool},
                                    {answer:answerB, "correct":bBool},
@@ -197,6 +203,8 @@ async function soumettreQuizz(e){
                                    {answer:answerD, "correct":dBool}, ]};
     allQuestions[i] = newQuestion;
   }
+  //On va ajouter le quizz
+  if(erreur != 0 ) return; // si il y a eu une erreur on n'ajoute pas le quizz
   try{
     let options = {
       method: "POST",
@@ -211,7 +219,6 @@ async function soumettreQuizz(e){
         Authorization: getSessionObject("user").token
       },
     };
-    if(erreur != 0 ) return;
     let reponse = await fetch("/api/quizz/", options);
     if (!reponse.ok) {
       throw new Error(
@@ -221,8 +228,9 @@ async function soumettreQuizz(e){
   } catch (err) {
     console.error("createQuizz::error: ", err);
   }
-
+  //On retourne à la HomePage
   Redirect("/");
+  //On affiche une notification comme quoi le quizz a bien été ajouté
   const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -233,18 +241,17 @@ async function soumettreQuizz(e){
       toast.addEventListener('mouseenter', Swal.stopTimer)
       toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
-  })
-  
+  });
   Toast.fire({
     icon: 'success',
     title: 'Votre quizz a bien été créé.'
-  })
+  });
   
 }
 
 /**
  * Crée une nouvelle question à compléter
- * @param {*} e evenement
+ * @param {Event} e evenement
  */
 async function nouvelleQuestion(e) {
   if (e != undefined) e.preventDefault();
@@ -269,7 +276,7 @@ async function nouvelleQuestion(e) {
   //Ajout titre de la question
   let enonceQuestion = document.createElement("input");
   enonceQuestion.type = "text";
-  enonceQuestion.placeholder = "Saisissez votre question"
+  enonceQuestion.placeholder = "Saisissez votre question";
   enonceQuestion.id = "enonceQ" + nbQuestions;
   enonceQuestion.required = true;
   enonceQuestion.className = "form-control";
@@ -281,7 +288,7 @@ async function nouvelleQuestion(e) {
   // Ajout du bouton pour supprimer une question
   let closeImage = document.createElement("img");
   closeImage.src = closeIcon;
-  closeImage.alt = "bouton pour supprimer une question"
+  closeImage.alt = "bouton pour supprimer une question";
   closeImage.id = "closeQ"+nbQuestions;
   closeImage.addEventListener("click", supprimerQuestion);
   divColTitre3.className = "col-1";
@@ -347,13 +354,13 @@ async function nouvelleQuestion(e) {
 
   if(e != undefined) formAllQuestions.insertBefore(divContainer, containerNewQButton);
   else formAllQuestions.appendChild(divContainer);
-  if(nbQuestions == 15) document.getElementById("AjouterQuestion").disabled = true; //ici
+  if(nbQuestions == 15) document.getElementById("AjouterQuestion").disabled = true; 
   
-};
+}
 
 /**
  * Supprime une question
- * @param {*} e evenement
+ * @param {Event} e evenement
  * @returns 
  */
 async function supprimerQuestion(e){
@@ -424,11 +431,12 @@ async function supprimerQuestion(e){
 
 /**
  * Crée un champ réponse avec son bouton
- * @param {*} divCol la div où sera placée le radio button
- * @param {*} divCol2 la div où sera placé le champ pour une réponse
- * @param {*} lettre A, B, C ou D correspondant au code de la réponse
+ * @param {object} divCol la div où sera placée le radio button
+ * @param {object} divCol2 la div où sera placé le champ pour une réponse
+ * @param {string} lettre A, B, C ou D correspondant au code de la réponse
  */
 async function createReponse(divCol, divCol2, lettre){
+  //Création input texte de la réponse
   let reponseN = document.createElement("input");
   reponseN.type = "text";
   reponseN.id = "reponse"+lettre+ "" + nbQuestions;
@@ -436,8 +444,9 @@ async function createReponse(divCol, divCol2, lettre){
   reponseN.placeholder = "Réponse "+lettre;
   reponseN.className = "form-control mb-4";
 
+  //Création radio button de la réponse
   let bonneReponse = document.createElement("input");
-  bonneReponse.type = "radio"
+  bonneReponse.type = "radio";
   bonneReponse.value = lettre;
   bonneReponse.name = "radioBonneRep"+nbQuestions;
   bonneReponse.id = "radioBonneRep"+nbQuestions+""+lettre;
@@ -447,6 +456,6 @@ async function createReponse(divCol, divCol2, lettre){
   divCol.appendChild(bonneReponse);
   divCol2.appendChild(reponseN);
   
-};
+}
 
 export default CreateQuizz;
