@@ -161,13 +161,13 @@ function RegisterAndLoginPage() {
         } else if(name.value.length>20 ||name.value.length<3){
             Toast.fire({
                 icon: 'error',
-                title: 'La longueur de votre nom doit etre compris entre 3 et 20 caractères'
+                title: 'La longueur de votre nom doit être compris entre 3 et 20 caractères'
             });
             return;
         } else if(password.value.length>60 || password.value.length<8){
             Toast.fire({
                 icon: 'error',
-                title: 'la longueur de votre mot de passe doit etre compris entre 8 et 60 caractères'
+                title: 'La longueur de votre mot de passe doit être compris entre 8 et 60 caractères'
             });
             return;
         }
