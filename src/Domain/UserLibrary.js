@@ -2,6 +2,7 @@ import { getSessionObject } from "../utils/session";
 class UserLibrary {
   async getPanelAdminPage(filter,userSession) {
     try {
+      let searchBox = this.getSearchBox();
       let page = `
         <div class="container">
           <div class="text-center">
@@ -14,11 +15,7 @@ class UserLibrary {
                           <input type="text" placeholder="Chercher" class="search" name="searchBar" id="searchBar" value="${filter}">
                       </td>
                       <td>
-                        <a href="#" id="searchButton">
-                          <span class="material-icons">
-                            search
-                          </span>
-                        </a>
+                        ${searchBox}
                       </td>
                   </tr>
               </table>
@@ -45,6 +42,24 @@ class UserLibrary {
     } catch (err) {
       console.error("getPanelAdminPage::error: ", err);
     }
+  }
+
+  /**
+   * Title: How to make a flat design search box | HTML & CSS
+   * Author: GeekBase
+   * Date: 9/12/21
+   * Code version: unknown
+   * Availability: https://www.youtube.com/watch?v=csY6KW7cIUM
+   * @returns {searchBox} searchbox html
+   */
+  getSearchBox(){
+    let searchBox = `
+      <a href="#" id="searchButton">
+        <span class="material-icons">
+          search
+        </span>
+      </a>`;
+    return searchBox;
   }
 
   async getUsersWithFilter(filter) { // utilisé plus haut
