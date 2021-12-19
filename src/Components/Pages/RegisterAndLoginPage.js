@@ -154,13 +154,11 @@ function RegisterAndLoginPage() {
         }
 
         let userFound = await user.userExist(email.value);
-        console.log(userFound);
         if(userFound){
             Toast.fire({
                 icon: 'error',
                 title: 'Cette email est déjà utilisé'
             });
-            console.log(email.value);
             return;
         } else if(!validerEmail(email.value)){
             Toast.fire({
@@ -202,7 +200,6 @@ function RegisterAndLoginPage() {
                 );
             }
             const user = await response.json();
-            console.log("user authenticated", user);
             // save the user into the localStorage
             setSessionObject("user", user);
             Navbar();
@@ -274,7 +271,6 @@ function RegisterAndLoginPage() {
                 );
             }
             const user = await response.json();
-            console.log("user authenticated", user);
             // save the user into the localStorage
             setSessionObject("user", user);
             Navbar();

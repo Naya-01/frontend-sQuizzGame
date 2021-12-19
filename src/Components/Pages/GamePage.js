@@ -119,7 +119,6 @@ function timer() {
     }
     decompte -= 1;
     cool.innerText = decompte;
-    // window.myInterval = setInterval(timer, 1000);
 }
 
 
@@ -242,7 +241,6 @@ async function getScore() {
         }
     }
     finale_score = score;
-    // return score;
 }
 
 async function saveDatabase() {
@@ -430,7 +428,6 @@ async function GamePage(params) {
 
     await getQuestions(params[0]);
     insertProgressBar();
-    // timer();
     window.myInterval = setInterval(timer, 1000);
     await questionSuivante(position);
 
