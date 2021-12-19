@@ -201,13 +201,13 @@ const addEventListeners = async () =>{
   });
 
     /********
-  * Title: search box | HTML & CSS
+  * Title: How to make a flat design search box | HTML & CSS
   * Author: GeekBase
   * Date: 9/12/21
   * Code version: unknown
   * Availability: https://www.youtube.com/watch?v=csY6KW7cIUM
   */
-  //if click the search button of the search bar, redirect 
+  //if click the search button of the search bar, refresh page with users matching filter
   let searchButton = document.querySelector("#searchButton");
   let inputSearchBox = document.querySelector("#searchBar");
   searchButton.addEventListener("click", async (e) => {
