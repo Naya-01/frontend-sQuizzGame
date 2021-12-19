@@ -31,7 +31,7 @@ const HomePage = async () => {
   creerSousTitre("Tendances",div_page);
   try{
     const options = {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: getSessionObject("user").token
@@ -65,7 +65,7 @@ const HomePage = async () => {
   let id_user = getSessionObject("user").id_user;
   try{
     const options = {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: getSessionObject("user").token
@@ -100,18 +100,27 @@ const HomePage = async () => {
   // Sous-Titre Explorer
   creerSousTitre("Explorer", div_page);
   fetchExplorer(div_page);
-};
+}
 
+/**
+ * Crée et ajoute à la page un sous titre
+ * @param {*} nom_sous_titre le nom du sous titre
+ * @param {*} div_page la div à laquelle on ajoutera le sous titre
+ */
 async function creerSousTitre(nom_sous_titre, div_page){
+  //Création du container 
   let div_sous_titre = document.createElement("div");
   div_sous_titre.className = "container";
   div_sous_titre.id = "titre_"+nom_sous_titre;
 
+  //Création du sous-titre
   let sous_titre = document.createElement("h4");
   sous_titre.innerHTML = nom_sous_titre+"   ";
   sous_titre.className = "m-5"
-    
+  
+  // Si c'est l'explorer on ajoutera un btn
   if(nom_sous_titre === "Explorer"){
+    // Ajout du bouton pour actualiser l'explorer
     let refresh_btn = document.createElement("img");
     refresh_btn.src = refreshIcon;
     refresh_btn.alt = "bouton pour actualiser les quizz dans explorer"
@@ -129,10 +138,14 @@ async function creerSousTitre(nom_sous_titre, div_page){
   div_page.appendChild(div_sous_titre);
 }
 
+/**
+ * Fais un fetch pour obtenir les quizz explorer et les affiche
+ * @param {*} div_page la div à laquelle on ajoutera le sous titre
+ */
 async function fetchExplorer(div_page){
   try{
     const options = {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      method: "GET", 
       headers: {
         "Content-Type": "application/json",
         Authorization: getSessionObject("user").token
@@ -150,6 +163,13 @@ async function fetchExplorer(div_page){
     console.error("getExplorer::error: ", err);
   }
 }
+
+/**
+ * Affiche tous les quizz
+ * @param {*} all_quizz les quizz à afficher
+ * @param {*} div_page  la div à laquelle on ajoutera le sous titre
+ * @param {*} isExplorer pour savoir si il s'agit des quizz explorer
+ */
 function afficherQuizz(all_quizz, div_page, isExplorer=false){
    // Créer une row
    for(let j = 0; j < all_quizz.length/3; j++){
@@ -160,13 +180,13 @@ function afficherQuizz(all_quizz, div_page, isExplorer=false){
     let row_3Q = document.createElement("div");
     row_3Q.className = "row";
     container_3Q.appendChild(row_3Q);
+    // Créer et affiche une rangée de 3 quizz
     for(let i=0; i <  3; i++){ 
         let indice = i+(j*3);
         let col = document.createElement("div");
         col.className = "col-sm-4";
         row_3Q.appendChild(col);
         if(all_quizz[indice] == undefined) break;
-        
 
         // Création de la card quizz
         let div_card = document.createElement("div");
@@ -228,6 +248,9 @@ function afficherQuizz(all_quizz, div_page, isExplorer=false){
   }  
 }
 
+/**
+ * Redirige vers la page du quizz en question
+ */
 function redirectionQuizzPage(){
   RedirectWithParams("/Quizz",this.id);
 }
@@ -240,6 +263,7 @@ function redirectionQuizzPage(){
 *    Availability: https://www.youtube.com/watch?v=csY6KW7cIUM
 ***************************************************************************************/
 async function boutonRecherche(main, div_page){
+  //Ajout de la barre de recherche
   main.innerHTML += `<div class="boxContainer">
                           <table class="elementsContainer">
                             <tr>
@@ -260,13 +284,18 @@ async function boutonRecherche(main, div_page){
   searchBar.addEventListener("keypress", async (e) => {
     if(e.key === "Enter") await rechercherQuizz(div_page);
   });
-
+  // Quand on appuye sur la loupe on lance la recherche
   let search = main.querySelector("#searchButton");
   search.addEventListener("click", async (e) => {
     e.preventDefault();
     await rechercherQuizz(div_page);
   });
 }
+
+/**
+ * Effectue une recherche sur les quizz
+ * @param {*} div_page  la div à laquelle on ajoutera le sous titre 
+ */
 async function rechercherQuizz(div_page){
   //Si l'utilisateur entre un champs vide, il reste sur la HomePage
   if(document.getElementById("searchBar").value.replace(/\s+/g, '') === '') return;
@@ -274,7 +303,7 @@ async function rechercherQuizz(div_page){
   let critere = escape(document.getElementById("searchBar").value);
   try{
     const options = {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: getSessionObject("user").token
@@ -289,6 +318,7 @@ async function rechercherQuizz(div_page){
     let all_quizz_recherche = await reponse.json();
     let message_resultat = document.createElement("h4");
     div_page.appendChild(message_resultat);
+    //Si on a pas de résultat
     if(all_quizz_recherche.length === 0){
       message_resultat.innerHTML = "Pas de résultat pour la recherche : "+critere;
     }
