@@ -266,9 +266,16 @@ class UserLibrary {
     }
   }
 
-  async getSubscribers(id_user) { // PAS UTILISE
+  async getSubscribers(id_user) { //utilisé profil library
     try {
-      const reponse = await fetch("/api/users/subscribers/"+id_user);
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch("/api/users/subscribers/"+id_user, options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -282,9 +289,16 @@ class UserLibrary {
     }
   }
 
-  async getSubscriptions(id_user) {// PAS UTILISE
+  async getSubscriptions(id_user) { //utilisé profil library
     try {
-      const reponse = await fetch("/api/users/subscriptions/"+id_user);
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getSessionObject("user").token,
+        },
+      };
+      const reponse = await fetch("/api/users/subscriptions/"+id_user, options);
 
       if (!reponse.ok) {
         throw new Error(
@@ -292,7 +306,9 @@ class UserLibrary {
         );
       }
       const nb = await reponse.json();
-      return nb.count;
+      console.log(nb[0].nbAbonnements);
+      
+      return nb[0].nbAbonnements;
     } catch (err) {
       console.error("getSubscriptions::error: ", err);
     }
