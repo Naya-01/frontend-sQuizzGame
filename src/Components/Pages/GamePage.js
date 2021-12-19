@@ -14,6 +14,7 @@ let answers;
 let difficulty;
 let html_difficulty;
 let time_answer;
+let finale_score=0;
 
 let myPage = `<div id="page" class="container-fluid">
         <div id="bar-progress" class="row">
@@ -207,7 +208,7 @@ function html_endGame() {
 
 function endGame() {
     Swal.fire({
-        title: 'Récapitulatif des réponses',
+        title: 'Récapitulatif des réponses & votre score : '+finale_score,
         html: html_endGame(),
         width: 1000,
         padding: '3em',
@@ -242,7 +243,8 @@ async function getScore(){
             }
         }
     }
-    return score;
+    finale_score=score;
+    // return score;
 }
 
 async function saveDatabase(){
@@ -253,7 +255,7 @@ async function saveDatabase(){
             body: JSON.stringify({
                 "id_quizz": questions[0].id_quizz,
                 "id_user": getSessionObject("user").id_user,
-                "score": await getScore(),
+                "score": finale_score,
                 "difficulty": parseInt(difficulty)
             }),
             headers: {
@@ -300,6 +302,7 @@ async function questionSuivante(index) {
     //recupération de mes questions depuis 1 quizz
     if (index > questions.length - 1) {
         flipAnswer();
+        await getScore();
         endGame();
         await saveDatabase();
         return;
@@ -417,6 +420,8 @@ async function GamePage(params) {
     list_answer = [];
     answer_user = [];
     time_answer = [];
+    finale_score=0;
+    decompte=0;
     questions=null;
     answers=null;
     difficulty = params[1];
