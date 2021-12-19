@@ -129,7 +129,7 @@ async function soumettreQuizz(e){
   //Récupération des questions
   for(let i=0; i < nbQuestions; i++){
     let message = "enonceQ"+(i+1);
-    let enonceQuestionN = document.getElementById(message).value;// + (i+1));
+    let enonceQuestionN = document.getElementById(message).value;
     let answerA = document.getElementById("reponseA" + (i+1)).value;
     let answerB = document.getElementById("reponseB" + (i+1)).value;
     let answerC = document.getElementById("reponseC" + (i+1)).value;
@@ -241,11 +241,11 @@ async function soumettreQuizz(e){
       toast.addEventListener('mouseenter', Swal.stopTimer)
       toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
-  })
+  });
   Toast.fire({
     icon: 'success',
     title: 'Votre quizz a bien été créé.'
-  })
+  });
   
 }
 
@@ -276,7 +276,7 @@ async function nouvelleQuestion(e) {
   //Ajout titre de la question
   let enonceQuestion = document.createElement("input");
   enonceQuestion.type = "text";
-  enonceQuestion.placeholder = "Saisissez votre question"
+  enonceQuestion.placeholder = "Saisissez votre question";
   enonceQuestion.id = "enonceQ" + nbQuestions;
   enonceQuestion.required = true;
   enonceQuestion.className = "form-control";
@@ -288,7 +288,7 @@ async function nouvelleQuestion(e) {
   // Ajout du bouton pour supprimer une question
   let closeImage = document.createElement("img");
   closeImage.src = closeIcon;
-  closeImage.alt = "bouton pour supprimer une question"
+  closeImage.alt = "bouton pour supprimer une question";
   closeImage.id = "closeQ"+nbQuestions;
   closeImage.addEventListener("click", supprimerQuestion);
   divColTitre3.className = "col-1";
@@ -354,7 +354,7 @@ async function nouvelleQuestion(e) {
 
   if(e != undefined) formAllQuestions.insertBefore(divContainer, containerNewQButton);
   else formAllQuestions.appendChild(divContainer);
-  if(nbQuestions == 15) document.getElementById("AjouterQuestion").disabled = true; //ici
+  if(nbQuestions == 15) document.getElementById("AjouterQuestion").disabled = true; 
   
 }
 
@@ -446,7 +446,7 @@ async function createReponse(divCol, divCol2, lettre){
 
   //Création radio button de la réponse
   let bonneReponse = document.createElement("input");
-  bonneReponse.type = "radio"
+  bonneReponse.type = "radio";
   bonneReponse.value = lettre;
   bonneReponse.name = "radioBonneRep"+nbQuestions;
   bonneReponse.id = "radioBonneRep"+nbQuestions+""+lettre;
