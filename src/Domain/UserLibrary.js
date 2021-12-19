@@ -45,10 +45,10 @@ class UserLibrary {
   }
 
   /**
-   * Title: Title: search box
+   * Title: How to make a flat design search box | HTML & CSS
    * Author: GeekBase
    * Date: 9/12/21
-   * Code version: see the table below
+   * Code version: unknown
    * Availability: https://www.youtube.com/watch?v=csY6KW7cIUM
    * @returns {searchBox} searchbox html
    */

@@ -154,7 +154,7 @@
 }
 
 /********
-* Title: in middle
+* Title: Vertical alignment in css responsive
 * Author: Mohammad Usman
 * Date: 12/12/21
 * Availability: https://stackoverflow.com/questions/40523043/vertical-alignment-in-css-responsive
@@ -170,10 +170,10 @@
 /*  ##################################   SEARCH BOX   #########################################      */
 
 /********
-* Title: Title: search box
+* Title: How to make a flat design search box | HTML & CSS
 * Author: GeekBase
 * Date: 9/12/21
-* Code version: see the table below
+* Code version: unknown
 * Availability: https://www.youtube.com/watch?v=csY6KW7cIUM
 */
 
@@ -213,7 +213,6 @@
 
 
 @media only screen and (max-width: 1100px) {
-  /* For mobile phones: */
   [class="boxContainer"] {
     margin-left: 75%;
     width: 250px;
