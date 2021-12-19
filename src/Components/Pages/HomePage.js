@@ -5,7 +5,7 @@ import refreshIcon from "../../img/refresh.png";
 
 const HomePage = async () => {
   let div_page = document.createElement("div");
-  let main = document.querySelector("main")
+  let main = document.querySelector("main");
   main.innerHTML = "";  // on reinitialise le main
   div_page.innerHTML = ""; // on reinitialise la div_home_page
 
@@ -49,6 +49,7 @@ const HomePage = async () => {
     if(all_quizz_tendances.length == 0){
       let message = document.createElement("p");
       message.innerHTML = "Pas de quizz en tendances pour le moment ...";
+      message.className = "m-5";
       let tendances = document.getElementById("titre_Tendances");
       tendances.appendChild(message);
     }
@@ -85,6 +86,7 @@ const HomePage = async () => {
     if(all_quizz_abonnements.length == 0){
       let message = document.createElement("p");
       message.innerHTML = "Pas de quizz dans les abonnements pour le moment ...";
+      message.className = "m-5";
       let abonnements = document.getElementById("titre_Abonnements");
       // pour gérer le cas où l'utilisateur spamme le bouton Home, on ne duplique pas le message suivant
       if(abonnements != null && !abonnements.innerHTML.includes("Pas de quizz dans les abonnements pour le moment ...")) abonnements.appendChild(message); 
@@ -110,20 +112,20 @@ const HomePage = async () => {
 async function creerSousTitre(nom_sous_titre, div_page){
   //Création du container 
   let div_sous_titre = document.createElement("div");
-  div_sous_titre.className = "container";
+  div_sous_titre.className = "container-fluid";
   div_sous_titre.id = "titre_"+nom_sous_titre;
 
   //Création du sous-titre
   let sous_titre = document.createElement("h4");
   sous_titre.innerHTML = nom_sous_titre+"   ";
-  sous_titre.className = "m-5"
+  sous_titre.className = "m-5";
   
   // Si c'est l'explorer on ajoutera un btn
   if(nom_sous_titre === "Explorer"){
     // Ajout du bouton pour actualiser l'explorer
     let refresh_btn = document.createElement("img");
     refresh_btn.src = refreshIcon;
-    refresh_btn.alt = "bouton pour actualiser les quizz dans explorer"
+    refresh_btn.alt = "bouton pour actualiser les quizz dans explorer";
     refresh_btn.id = "refresh_btn";
     refresh_btn.addEventListener("click", async (e) => {
       for(let i=0; i < 3; i++){
@@ -174,8 +176,8 @@ function afficherQuizz(all_quizz, div_page, isExplorer=false){
    // Créer une row
    for(let j = 0; j < all_quizz.length/3; j++){
     let container_3Q = document.createElement("div");
-    if(isExplorer)container_3Q.className = "container my-3 Explorer"
-    else container_3Q.className = "container my-3"
+    if(isExplorer)container_3Q.className = "container my-3 Explorer";
+    else container_3Q.className = "container my-3";
     div_page.appendChild(container_3Q);
     let row_3Q = document.createElement("div");
     row_3Q.className = "row";
@@ -316,8 +318,11 @@ async function rechercherQuizz(div_page){
       );
     }
     let all_quizz_recherche = await reponse.json();
+    let div_container_res = document.createElement("div");
+    div_container_res.className = "container";
     let message_resultat = document.createElement("h4");
-    div_page.appendChild(message_resultat);
+    div_container_res.appendChild(message_resultat);
+    div_page.appendChild(div_container_res);
     //Si on a pas de résultat
     if(all_quizz_recherche.length === 0){
       message_resultat.innerHTML = "Pas de résultat pour la recherche : "+critere;
