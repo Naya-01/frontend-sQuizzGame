@@ -1,34 +1,26 @@
 import { getSessionObject } from "../utils/session";
 class UserLibrary {
+  /**
+   * Get panel admin page
+   * @param {String} filter - filter of research 
+   * @param {Object} userSession - user objet of session 
+   * @returns {String} html panel admin page 
+   */
   async getPanelAdminPage(filter,userSession) {
     try {
-      let searchBox = this.getSearchBox();
+      let searchBox = this.getSearchBox(filter);
       let page = `
         <div class="container">
           <div class="text-center">
               <h1>Gestion administrative</h1>
           </div>
-          <div class="boxContainer">
-              <table class="elementsContainer">
-                  <tr>
-                      <td>
-                          <input type="text" placeholder="Chercher" class="search" name="searchBar" id="searchBar" value="${filter}">
-                      </td>
-                      <td>
-                        ${searchBox}
-                      </td>
-                  </tr>
-              </table>
-          </div>
+          ${searchBox}        
           <h3>`;
           if(!filter) page +="Tous les utilisateurs"; else page +=`Recherche : ${filter}`;
-
           page += `
           </h3>
           <div id="users">
-          
-          
-`;
+      `;
       let users;
       if(!filter) users = await this.getUsers();
       else users = await this.getUsersWithFilter(filter);
@@ -50,19 +42,36 @@ class UserLibrary {
    * Date: 9/12/21
    * Code version: unknown
    * Availability: https://www.youtube.com/watch?v=csY6KW7cIUM
+   * @param {String} filter - filter of research
    * @returns {searchBox} searchbox html
    */
-  getSearchBox(){
+  getSearchBox(filter){
     let searchBox = `
-      <a href="#" id="searchButton">
-        <span class="material-icons">
-          search
-        </span>
-      </a>`;
+    <div class="boxContainer">
+      <table class="elementsContainer">
+        <tr>
+          <td>
+            <input type="text" placeholder="Rechercher" class="search" name="searchBar" id="searchBar" value="${filter}">
+          </td>
+          <td>
+            <a href="#" id="searchButton">
+              <span class="material-icons">
+                search
+              </span>
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>`;
     return searchBox;
   }
 
-  async getUsersWithFilter(filter) { // utilisé plus haut
+  /**
+   * Get all users matching the filter
+   * @param {String} filter - filter of the research
+   * @returns {Array} all users matching the filter
+   */
+  async getUsersWithFilter(filter) { 
     try {
       const options = {
         method: "GET", 
@@ -108,6 +117,10 @@ class UserLibrary {
     }
   }
 
+  /**
+   * Get the user of the session
+   * @returns {Object} user of the session
+   */
   async getUserOfSession() {
     try {
       const options = {
@@ -131,6 +144,10 @@ class UserLibrary {
     }
   }
 
+  /**
+   * Get the user of the session with his subsribers and subscriptions
+   * @returns {Object} user of session with his subs and subscriptions
+   */
   async getUserOfSessionWithSubs() {
     try {
       const options = {
@@ -155,12 +172,12 @@ class UserLibrary {
   }
 
   /**
-   * 
+   * Checj if a user is following another one
    * @param integer id_user 
    * @paraminteger id_follower 
    * @returns 1 if id_follower is following id_user
    */
-  async isFollowing(id_user,id_follower) { // utilisé profilLibrary
+  async isFollowing(id_user,id_follower) { 
     try {
       const options = {
         method: "GET", 
@@ -183,7 +200,12 @@ class UserLibrary {
     }
   }
 
-  async subscribe(users) { // utilisé dans another one
+  /**
+   * Subscribe to a user
+   * @param {Object} users - user follower and who will be followed 
+   * @returns {Object} user follower and who will be followed 
+   */
+  async subscribe(users) { 
     try {
       if(!users) return false;
       const options = {
@@ -209,7 +231,12 @@ class UserLibrary {
     }
   }
 
-  async unsubscribe(id_user,id_follower) { // utilisé dans another one profil page
+  /**
+   * Unsubscribe to a user
+   * @param {Object} users - user follower and who will be unfollowed 
+   * @returns {Object} user follower and who will be unfollowed 
+   */
+  async unsubscribe(id_user,id_follower) {
     try {
       const options = {
         method: "DELETE", 
@@ -233,7 +260,15 @@ class UserLibrary {
     }
   }
 
-  async getTwoUsersById(id1,id2) {// utilisé ProfilLibrary
+  /**
+   * Get 2 users but getting the number of subscribers and subscriptions for the id2 in addition
+   * user1 = user session
+   * user2 = user in the url, with 2 more columns (subscriptions and subscribers)
+   * @param {number} id1 - id of first user 
+   * @param {number} id2 - id of second user we want his subscriber and subscriptions too
+   * @returns {object} object having 2 users, the 2nd one with the subscribers and subscriptions, the 2st one simple data, and if no tuple then undefined
+   */
+  async getTwoUsersById(id1,id2) {
     try {
       const options = {
         method: "GET", 
@@ -257,7 +292,11 @@ class UserLibrary {
   }
   
 
-  async getUsers() { //utilisé plus haut
+  /**
+   * Get all resources (users)
+   * @returns {Array} Array of resources
+   */
+  async getUsers() { 
     try {
       const options = {
         method: "GET",
@@ -281,7 +320,12 @@ class UserLibrary {
     }
   }
 
-  async getSubscribers(id_user) { //utilisé profil library
+  /**
+   * Get number of subscribers of a user
+   * @param {number} id_user - id of user to get subscribers 
+   * @returns {number} number of subscribers of the id_user
+   */
+  async getSubscribers(id_user) {
     try {
       const options = {
         method: "GET",
@@ -304,7 +348,12 @@ class UserLibrary {
     }
   }
 
-  async getSubscriptions(id_user) { //utilisé profil library
+  /**
+   * Get number of subscriptions of a user
+   * @param {number} id_user - id of user to get subscriptions
+   * @returns {number} number of subscriptions of the id_user
+   */
+  async getSubscriptions(id_user) {
     try {
       const options = {
         method: "GET",
@@ -329,7 +378,12 @@ class UserLibrary {
     }
   }
 
-  async banUser(user_object) { // utilisé panel admin page
+  /**
+   * Ban a user
+   * @param {Object} user_object - object of the user we want to ban
+   * @returns {boolean} true if the user is not ban or not admin yet, false otherwise
+   */ 
+  async banUser(user_object) {
     try {
 
       const options = {
@@ -355,6 +409,11 @@ class UserLibrary {
     }
   }
 
+  /**
+   * Upgrade a user by id
+   * @param {Object} user_object - object of the user we want to upgrade
+   * @returns {boolean} true if the user has been upgraded into admin
+   */ 
   async upgradeUser(user_object) { // utilisé panel admin
     try {
 
@@ -381,7 +440,12 @@ class UserLibrary {
     }
   }
 
-  async isAdmin(id_user) { //pas utilisé
+  /**
+   * Check if a user is admin by id
+   * @param {number} id_user - id of the user we want to know if is admin
+   * @returns {boolean} true if user is admin
+   */ 
+  async isAdmin(id_user) { 
     try {
 
       const reponse = await fetch("/api/users/isAdmin/"+id_user);
@@ -399,7 +463,11 @@ class UserLibrary {
   }
 
   
-
+  /**
+   * Unban a user
+   * @param {Object} user_object - object of the user we want to ban
+   * @returns {boolean} true if the user is not banned, false otherwise
+   */ 
   async unbanUser(user_object) {//utilisé dans panel admin
     try {
 
@@ -426,6 +494,12 @@ class UserLibrary {
     }
   }
 
+  /**
+   * Display all users in html with ban, unban, and upgrade buttons.
+   * @param {Object} users - all users of the DB
+   * @param {Object} userSession - object of user of the session
+   * @returns {String} html of all users
+   */
   async displayUsers(users,userSession) {
     try {
       
@@ -440,22 +514,29 @@ class UserLibrary {
                   <div class="card m-3" style="width: 18rem;">
                       <div class="card-body">
                           <a href="#" ><h5 class="card-title linkUsername" data-element-id="${element.id_user}">${element.name}</h5></a>`;
+                           //if the length of the user email is greater than 60 then we shorten it
+                          let classToAdd="";
                           let descriptionTexte = element.email;
                           if(descriptionTexte.length > 60){
                             descriptionTexte = descriptionTexte.substring(0, 55);
                             descriptionTexte += " ...";
+                            classToAdd="emailsUsersBox underline";
                           }
+                          //display user email
                           boxOfUsers += `
-                          <h6 class="card-subtitle mb-2 text-muted emailsUsersBox underline" style ="height:2rem" data-element-id="${element.id_user}" data-element-long-email="${element.email}" data-element-email="${descriptionTexte} ">${descriptionTexte}</h6>
+                          <h6 class="card-subtitle mb-2 text-muted ${classToAdd}" style ="height:2rem" data-element-id="${element.id_user}" data-element-long-email="${element.email}" data-element-email="${descriptionTexte} ">${descriptionTexte}</h6>
                           <span id="email${element.id_user}" hidden>0</span>`;
+                          
                           boxOfUsers += `
                           <div class="d-grid gap-2">`;
+                          //is the user is admin, can do nothing
                           if(element.is_admin){
                             boxOfUsers +=`
-                            <span class="card-text">Role : Admin</span>
+                            <span class="card-text m-1">Role : Admin</span>
                             <button class="btn btn-secondary upgrade " disabled data-element-id="${element.id_user}" type="button">Promouvoir</button>
                             <button class="btn btn-secondary ban " disabled data-element-id="${element.id_user}"  type="button">Bannir</button>`;}
-                          else if(element.banned){
+                            //if the user is banned, display unban button
+                            else if(element.banned){
                             boxOfUsers +=`
                             <span class="card-text">Role : Banni</span>
                             <span id="ban${element.id_user}"></span>
@@ -465,6 +546,7 @@ class UserLibrary {
                             `;
                             
                           }
+                          //if the user is member, display upgrade and ban buttons
                           else{
                           boxOfUsers +=`
                             <span class="card-text">Role : Membre</span>
@@ -492,7 +574,12 @@ class UserLibrary {
     }
   }
 
-  async userExist(email){ // USED IN LOGIN/REGISTER PAGE
+  /**
+   * Check if a user exists by email
+   * @param {String} email - email of the user
+   * @returns {boolean} true if the user exists, else otherwise
+   */
+  async userExist(email){ 
     try {
       const reponse = await fetch("/api/users/userExist/" + email);
 
@@ -508,7 +595,13 @@ class UserLibrary {
     }
   }
 
-  async passwordMatch(email,password){ // USED IN LOGIN/REGISTER PAGE
+  /**
+   * Check if the password is correct for the user email
+   * @param {String} email - email of the user
+   * @param {String} password - password of the user
+   * @returns {boolean} true if the password is correct, false otherwise
+   */
+  async passwordMatch(email,password){ 
     try {
       const options = {
         method: "POST",
@@ -532,7 +625,12 @@ class UserLibrary {
     }
   }
 
-  async isBanned(email){ // USED IN LOGIN/REGISTER PAGE
+  /**
+   * Check if a user is banned by email
+   * @param {String} email - email of the user we want to know if banned
+   * @returns {boolean} true if user is banned
+   */
+  async isBanned(email){ 
     try {
       const reponse = await fetch("/api/users/isBanned/email/" + email);
 

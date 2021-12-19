@@ -7,8 +7,8 @@ const userLibrary = new UserLibrary();
 
 class ProfilLibrary {
   /**
-   * 
-   * @returns page html profil page of user session  
+   * Get my profil page
+   * @returns {String} html profil page of user session  
    */
   async getMyProfilPage() {
     try {
@@ -62,6 +62,7 @@ class ProfilLibrary {
   }
 
   /**
+   * Get pop-up with subscribers or subscriptions
    * display the subscribers or subscriptions
    * @param {Event} e
    */
@@ -124,7 +125,7 @@ class ProfilLibrary {
    /** 
    * @param {Object} userSession - objet of user in session
    * @param {number} idUserUrl - id of user in url
-   * @returns page html profil page of another one user
+   * @returns {String} html profil page of another one user
    */
   async getAnotherOneProfilPage(userSession,idUserUrl) {
     try {
@@ -206,10 +207,10 @@ class ProfilLibrary {
   }
 
   /**
-   * 
+   * Get quizzs from a user
    * @param {Object} userSession 
    * @param {number} id_user_url 
-   * @returns quizzs of the user in url, otherwhise, of the user session
+   * @returns {String} quizzs of the user in url, otherwhise, of the user session
    */
   async getQuizzFromUser(userSession,id_user_url) {
     try {
@@ -243,9 +244,9 @@ class ProfilLibrary {
   }
 
   /**
-   * 
+   * Delete a quizz from the profil
    * @param {number} id_quizz 
-   * @returns true if deleted
+   * @returns {boolean} true if deleted
    */
   async deleteQuizzFromProfil(id_quizz) {
     try {
@@ -272,11 +273,11 @@ class ProfilLibrary {
   }
 
   /**
-   * 
+   * Display all quizzs
    * @param {Object} quizzs 
    * @param {Object} userUrlObject 
    * @param {Object} userSessionObject 
-   * @returns box of quizzs in with all quizzs of user session or a user whose id is in the url
+   * @returns {String} box of quizzs in with all quizzs of user session or a user whose id is in the url
    */
   async displayQuizzs(quizzs,userUrlObject,userSessionObject) {
   try{
@@ -291,14 +292,16 @@ class ProfilLibrary {
                 <div class="card m-3" style="width: 18rem;">
                     <div class="card-body">`;
                         //if the length of the quizz title is greater than 20 then we shorten it
+                        let classToAdd="";
                         let titreQuizz=element.name;
                         if(titreQuizz.length > 20){
                           titreQuizz = titreQuizz.substring(0, 20);
                           titreQuizz += " ...";
+                          classToAdd="titlesQuizzBox underline";
                         }
                         //display quizz title
                         boxOfQuizzs += `
-                          <h5 class="card-title titlesQuizzBox underline" style ="height:2rem" data-element-id="${element.id_quizz}" data-element-long-name-quizz="${element.name}" data-element-name-quizz="${titreQuizz}">${titreQuizz}</h5>
+                          <h5 class="card-title ${classToAdd}" style ="height:2rem" data-element-id="${element.id_quizz}" data-element-long-name-quizz="${element.name}" data-element-name-quizz="${titreQuizz}">${titreQuizz}</h5>
                           <span id="quizz${element.id_quizz}" hidden>0</span>`;
                         //if there is no user id in the url, the name of the user in
                         //session is displayed
