@@ -291,7 +291,15 @@ async function QuizzPage(id) {
             let rowScoreColumn2Div = document.createElement("div");
             let spanSecondColumn = document.createElement("span");
             spanSecondColumn.className = "btn btn-light text-dark border border-dark border-2 border fs-4 score";
-            spanSecondColumn.innerText = allBestScores[i].name+" | "+allBestScores[i].score;
+
+            let allBestScoresName = allBestScores[i].name;
+            if(allBestScoresName.length>8){
+                allBestScoresName = allBestScores[i].name.substring(0,7)+"...";
+            }
+
+            console.log(allBestScoresName)
+
+            spanSecondColumn.innerText = allBestScoresName+" | "+allBestScores[i].score;
             rowScoreColumn1Div.appendChild(spanFirstColumn);
             rowScoreColumn1.appendChild(rowScoreColumn1Div);
             rowScore.appendChild(rowScoreColumn1);
